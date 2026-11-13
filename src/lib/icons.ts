@@ -18,6 +18,12 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'radius-by-distance': 'table',
+  'how-big-is-a-radius': 'target',
+  'how-long-to-travel': 'route',
+  'what-is-miles-away': 'pin',
+  'what-a-radius-is-good-for': 'compass',
+  'other-distances': 'ruler',
   'how-to-see-a-mile-radius-from-where-you-are': 'pin',
   'what-x-miles-from-me-means-on-this-map': 'measure',
   'find-the-places-within-a-radius-of-you': 'target',

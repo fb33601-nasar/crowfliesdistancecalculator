@@ -1,9 +1,10 @@
 ---
 // How many listed towns fall inside circles around eight cities, counted from public/data/towns.json at build time.
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { haversine, formatNumber } from '../../lib/geo';
 type Row = [string, string, string, number, number, number];
-const towns: Row[] = JSON.parse(readFileSync(new URL('../../../public/data/towns.json', import.meta.url), 'utf8'));
+const towns: Row[] = JSON.parse(readFileSync(join(process.cwd(), 'public/data/towns.json'), 'utf8'));
 const centers: [string, number, number][] = [
   ['New York', 40.7128, -74.006],
   ['London', 51.5085, -0.1257],

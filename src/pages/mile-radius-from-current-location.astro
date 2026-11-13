@@ -8,6 +8,7 @@ import Article, { frontmatter as fm } from '../content/mile-radius-from-current-
 import { nearMeFaqs } from '../content/nearme-faq';
 import { SITE, abs } from '../lib/site';
 import '../styles/calculator.css';
+import { RADIUS_MILES, radiusSlug } from '../data/radius-pages';
 
 const crumbs = [
   { name: 'Home', href: '/' },
@@ -24,6 +25,7 @@ const toc = [
   ['mile-radius-on-a-phone', 'On a phone'],
   ['mile-radius-vs-kilometer-radius', 'Miles vs kilometers'],
   ['limits-of-a-radius-from-your-location', 'Limits'],
+  ['radius-by-distance', 'Radius by distance'],
   ['frequently-asked-questions', 'Frequently asked questions'],
 ];
 const appSchema = {
@@ -77,6 +79,12 @@ const appSchema = {
     </nav>
 
     <Article components={{ h2: H2 }} />
+
+    <H2 id="radius-by-distance">Mile radius from me by distance</H2>
+    <p>Each page below opens the tool at that distance, with the area, travel times and towns at that range worked out in advance.</p>
+    <ul class="radius-links radius-links-grid">
+      {RADIUS_MILES.map((m) => <li><a href={radiusSlug(m)}>{m} mile radius</a></li>)}
+    </ul>
 
     <H2 id="frequently-asked-questions">Frequently asked questions</H2>
     <div class="faq">

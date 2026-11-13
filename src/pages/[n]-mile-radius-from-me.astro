@@ -1,0 +1,229 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import Callout from '../components/Callout.astro';
+import NearMeTool from '../components/calculator/NearMeTool';
+import { RADIUS_MILES, RADIUS_DATE, radiusSlug, AREA_REFS } from '../data/radius-pages';
+import { capArea, capCircumference, compass, formatDuration, formatNumber, haversine, sphericalBearing, METRES_PER_SQ_MILE } from '../lib/geo';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+export function getStaticPaths() {
+  return RADIUS_MILES.map((n) => ({ params: { n: String(n) }, props: { n } }));
+}
+const { n } = Astro.props as { n: number };
+const MI = 1609.344;
+const r = n * MI;
+const slug = radiusSlug(n);
+const f = (v: number, d?: number) => formatNumber(v, d ?? (v >= 100 ? 0 : v >= 10 ? 1 : 2));
+const km = n * 1.609344;
+const sqmi = capArea(r) / METRES_PER_SQ_MILE;
+const sqkm = capArea(r) / 1e6;
+const circ = capCircumference(r) / MI;
+const unit = n === 1 ? 'mile' : 'miles';
+
+// Area comparison with the nearest reference on a log scale.
+const ref = [...AREA_REFS].sort((a, b) => Math.abs(Math.log(a[1] / sqmi)) - Math.abs(Math.log(b[1] / sqmi)))[0];
+const ratio = sqmi / ref[1];
+const compare =
+  ratio > 1.15 ? `about ${f(ratio, ratio < 10 ? 1 : 0)} times the size of ${ref[0]}`
+  : ratio < 0.87 ? (1 / ratio < 10 ? `about ${f(ratio * 100, 0)}% of the size of ${ref[0]}` : `about 1/${Math.round(1 / ratio)} of the size of ${ref[0]}`)
+  : ratio >= 1 ? `a little larger than ${ref[0]}` : `a little smaller than ${ref[0]}`;
+
+// Travel times to the edge: road route 1.19 x the straight line.
+const DETOUR = 1.19;
+const modes = [
+  ['Walking', 3],
+  ['Running', 6],
+  ['Cycling', 10],
+  ['Driving in town', 30],
+  ['Driving on highways', 60],
+] as const;
+const times = modes.map(([name, mph]) => ({ name, mph, straight: n / mph, road: (n * DETOUR) / mph }));
+
+// What lies about n miles from some well-known cities, from the town list.
+type Row = [string, string, string, number, number, number];
+const towns: Row[] = JSON.parse(readFileSync(join(process.cwd(), 'public/data/towns.json'), 'utf8'));
+const regions = new Intl.DisplayNames(['en'], { type: 'region' });
+const label = (t: Row) => (t[2] === 'US' ? `${t[0]}, ${t[1]}` : t[2] === 'GB' ? t[0] : `${t[0]}, ${regions.of(t[2]) ?? t[2]}`);
+const CITIES: [string, number, number, string][] = [
+  ['New York', 40.7128, -74.006, 'US'],
+  ['Los Angeles', 34.0522, -118.2437, 'US'],
+  ['Chicago', 41.85, -87.65, 'US'],
+  ['Houston', 29.7633, -95.3633, 'US'],
+  ['Phoenix', 33.4484, -112.074, 'US'],
+  ['Atlanta', 33.749, -84.388, 'US'],
+  ['Denver', 39.7392, -104.9903, 'US'],
+  ['Seattle', 47.6062, -122.3321, 'US'],
+  ['London', 51.5085, -0.1257, 'GB'],
+];
+const band = n <= 3 ? [0.7, 1.1] : [0.85, 1.05];
+const examples = CITIES.map(([name, lat, lon]) => {
+  const c = { lat, lon };
+  const near = towns.filter((t) => Math.abs(t[3] - lat) * 69 < n * 1.2 + 1);
+  let inside = 0;
+  const ring: { t: Row; d: number; b: number }[] = [];
+  for (const t of near) {
+    const d = haversine(c, { lat: t[3], lon: t[4] });
+    if (d <= r) inside++;
+    if (d >= r * band[0] && d <= r * band[1] && t[0] !== name) ring.push({ t, d, b: sphericalBearing(c, { lat: t[3], lon: t[4] }) });
+  }
+  ring.sort((a, b) => b.t[5] - a.t[5]);
+  const picks: typeof ring = [];
+  for (const x of ring) {
+    if (picks.some((p) => Math.abs(((p.b - x.b + 540) % 360) - 180) < 60)) continue;
+    picks.push(x);
+    if (picks.length === 3) break;
+  }
+  return { name, inside, picks };
+}).filter((e) => e.picks.length > 0);
+
+// Bucketed guidance on what this size of circle is good for.
+const scale =
+  n <= 3 ? 'walk' : n <= 10 ? 'local' : n <= 30 ? 'commute' : n <= 100 ? 'region' : n <= 300 ? 'trip' : 'continent';
+
+const idx = RADIUS_MILES.indexOf(n);
+const neighbours = RADIUS_MILES.filter((_, i) => Math.abs(i - idx) <= 3 && i !== idx);
+
+const title = `${n} Mile Radius From Me`;
+const seoTitle = `${n} Mile Radius From Me: Map What's Within ${n} ${n === 1 ? 'Mile' : 'Miles'}`;
+const description = `Draw a ${n} mile radius from your current location. See the towns within ${n} ${unit} of you, what lies ${n} ${unit} away in each direction and how long it takes to get there.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Mile radius from current location', href: '/mile-radius-from-current-location/' },
+  { name: `${n} mile radius`, href: slug },
+];
+const walk = times[0];
+const drive = times[4];
+const faqs = [
+  { q: `How do I see a ${n} mile radius from my location?`, a: `Press Use my current location at the top of this page and allow your browser to share it. The tool draws a ${n} mile circle around you, counts the towns inside it and names the largest town near the edge in each direction.` },
+  { q: `How many square miles is a ${n} mile radius?`, a: `A ${n} mile radius covers about ${f(sqmi)} square miles, or ${f(sqkm)} square kilometers. That is ${compare}.` },
+  { q: `How far is ${n} ${unit} in kilometers?`, a: `${n} ${unit} is ${f(km, 2)} kilometers, so a ${n} mile radius is the same as a ${f(km, 1)} km radius. The circle is ${f(n * 2, 0)} miles (${f(km * 2, 1)} km) across.` },
+  { q: `How long does it take to drive ${n} ${unit}?`, a: `At an average of 60 mph on highways, the edge of a ${n} mile radius is about ${formatDuration(drive.road)} away by road, assuming the route is 19% longer than the straight line. In town traffic at 30 mph it is about ${formatDuration(times[3].road)}.` },
+  { q: `How long does it take to walk ${n} ${unit}?`, a: `At a steady 3 mph, walking ${n} ${unit} in a straight line takes about ${formatDuration(walk.straight)}. Following real streets and paths, reaching the edge of a ${n} mile radius takes closer to ${formatDuration(walk.road)}.` },
+  { q: `Is a ${n} mile radius measured by road?`, a: `No. A radius is a straight line distance, as the crow flies. Driving to a place ${n} ${unit} away usually means covering more than ${n} ${unit} of road, because roads bend around rivers, hills and buildings.` },
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${slug}#calculator`),
+  name: `${n} Mile Radius From Me`,
+  url: abs(slug),
+  description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={seoTitle} description={description} path={slug} breadcrumbs={crumbs} faqs={faqs} schema={[appSchema]} datePublished={RADIUS_DATE} dateModified={RADIUS_DATE}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{title}</h1>
+    <p class="lede">See everything within {n} {unit} of where you are now: the towns inside the circle, what lies {n} {unit} away in each direction and how long it takes to get there.</p>
+  </div>
+
+  <div class="wrap">
+    <NearMeTool client:load initialMiles={n} />
+  </div>
+
+  <div class="wrap article">
+    <p>A {n} mile radius from you is a circle {f(n * 2, 0)} {n * 2 === 1 ? 'mile' : 'miles'} across with you at the center. It covers about {f(sqmi)} square miles ({f(sqkm)} km²), which is {compare}. Every place on its edge is exactly {n} {unit} away in a straight line, and everything inside is closer.</p>
+
+    <H2 id="how-big-is-a-radius">{`How big is a ${n} mile radius?`}</H2>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">A {n} mile radius in numbers</p>
+      <table>
+        <caption class="visually-hidden">A {n} mile radius in numbers</caption>
+        <tbody>
+          <tr><th scope="row">Radius</th><td class="num">{n} {unit}</td><td class="num">{f(km, 2)} km</td></tr>
+          <tr><th scope="row">Diameter, edge to edge</th><td class="num">{n * 2} miles</td><td class="num">{f(km * 2, 2)} km</td></tr>
+          <tr><th scope="row">Circumference, around the edge</th><td class="num">{f(circ)} miles</td><td class="num">{f(circ * 1.609344)} km</td></tr>
+          <tr><th scope="row">Area inside</th><td class="num">{f(sqmi)} sq mi</td><td class="num">{f(sqkm)} km²</td></tr>
+          <tr><th scope="row">Radius in feet and meters</th><td class="num">{formatNumber(n * 5280, 0)} ft</td><td class="num">{formatNumber(n * 1609.344, 0)} m</td></tr>
+          <tr><th scope="row">Radius in nautical miles</th><td class="num" colspan="2">{f(n * 1.609344 / 1.852, 2)} nmi</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Area grows with the square of the radius.
+      {idx > 0 && <> A {RADIUS_MILES[idx - 1]} mile radius covers {f(capArea(RADIUS_MILES[idx - 1] * MI) / METRES_PER_SQ_MILE)} square miles, so stepping up to {n} {unit} takes in {f(sqmi / (capArea(RADIUS_MILES[idx - 1] * MI) / METRES_PER_SQ_MILE), 1)} times the ground.</>}
+      {idx < RADIUS_MILES.length - 1 && <> Going out to {RADIUS_MILES[idx + 1]} miles would cover {f(capArea(RADIUS_MILES[idx + 1] * MI) / METRES_PER_SQ_MILE)} square miles.</>}
+    </p>
+
+    <H2 id="how-long-to-travel">{`How long does it take to travel ${n} ${unit}?`}</H2>
+    <p>The edge of the circle is {n} {unit} away in a straight line, but the trip there follows roads and paths. The table gives both: the straight line time, and a road time that assumes the route is 19% longer, the median we measured across 18 city pairs.</p>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">Time to cover {n} {unit}</p>
+      <table>
+        <caption class="visually-hidden">Time to cover {n} {unit}</caption>
+        <thead><tr><th scope="col">How you travel</th><th scope="col" class="num">Average speed</th><th scope="col" class="num">Straight line</th><th scope="col" class="num">By road or path</th></tr></thead>
+        <tbody>
+          {times.map((t) => <tr><th scope="row">{t.name}</th><td class="num">{t.mph} mph</td><td class="num">{formatDuration(t.straight)}</td><td class="num">{formatDuration(t.road)}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p>These are steady averages with no stops. Traffic lights, congestion, hills and rest breaks all add time, so treat the road column as a best case.</p>
+
+    {examples.length >= 3 && (
+      <>
+        <H2 id="what-is-miles-away">{`What is ${n} ${unit} away from a big city?`}</H2>
+        <p>To show what a {n} mile radius looks like on the ground, the table lists towns that sit roughly {n} {unit} from the center of some well-known cities, and how many towns of 5,000 or more people fall inside the circle.</p>
+        <div class="table-scroll">
+          <p class="table-title" aria-hidden="true">Towns about {n} {unit} from the city center</p>
+          <table>
+            <caption class="visually-hidden">Towns about {n} {unit} from the city center</caption>
+            <thead><tr><th scope="col">From</th><th scope="col">Towns about {n} {unit} away</th><th scope="col" class="num">Towns inside</th></tr></thead>
+            <tbody>
+              {examples.map((e) => (
+                <tr>
+                  <th scope="row">{e.name}</th>
+                  <td set:html={e.picks.map((p) => `${label(p.t)} <span class="muted">(${f(p.d / MI, 1)} mi ${compass(p.b).abbr})</span>`).join(', ')} />
+                  <td class="num">{formatNumber(e.inside, 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">Straight line distances from each city's center to each town's center. Town list from GeoNames.</p>
+      </>
+    )}
+
+    <H2 id="what-a-radius-is-good-for">{`What a ${n} mile radius is good for`}</H2>
+    {scale === 'walk' && <p>A {n} mile radius is walking scale. It is the right size for checking what is within walking distance of a home, a hotel or a school: shops, parks, stations and cafés. On foot, the edge is roughly {formatDuration(walk.road)} away by the streets; by bike it is only a few minutes. Many city services, from grocery delivery to school catchments, work at this distance.</p>}
+    {scale === 'local' && <p>A {n} mile radius is local scale: the neighborhood and the nearby suburbs. It suits delivery zones, the area a plumber or cleaner will travel to, and searches for a gym, a doctor or a nursery close to home. By car the edge is usually a short drive away, around {formatDuration(times[3].road)} in town traffic.</p>}
+    {scale === 'commute' && <p>A {n} mile radius is commuting scale. It is a common setting on job and property sites, and it roughly marks how far many people will travel to work each day. At an average of 30 mph through traffic the edge is about {formatDuration(times[3].road)} away by car, or {formatDuration(drive.road)} if most of the trip is on fast roads.</p>}
+    {scale === 'region' && <p>A {n} mile radius is regional scale. It covers a whole metropolitan area and the countryside around it, and it is a typical size for sales territories, service areas and day trips. At highway speed the edge is about {formatDuration(drive.road)} away by car, so a round trip fits into a day.</p>}
+    {scale === 'trip' && <p>A {n} mile radius is road trip scale. It reaches across state lines in most of the United States and covers a large part of a smaller country. At highway speed the edge is roughly {formatDuration(drive.road)} of driving away, which makes it a natural limit for a weekend away or a long day's drive.</p>}
+    {scale === 'continent' && <p>A {n} mile radius is continental scale. It spans several states or countries, and at this size the curve of the Earth begins to matter: the real area is slightly smaller than the flat formula π r² gives. Driving to the edge would take about {formatDuration(drive.road)} at highway speed, so for most people this distance means a flight.</p>}
+
+    <Callout title="Straight line or driving distance?">
+      {`Most websites that filter results "within ${n} ${unit} of me" use`} the straight line distance from a point, often the middle of your ZIP code or postcode. If you need to know how far a particular place is by road, check it with the <a href="/distance-between-two-addresses/">address distance calculator</a>.
+    </Callout>
+
+    <H2 id="other-distances">Other distances from your location</H2>
+    <ul class="radius-links">
+      {neighbours.map((m) => <li><a href={radiusSlug(m)}>{m} mile radius from me</a></li>)}
+      <li><a href="/mile-radius-from-current-location/">Any distance or travel time</a></li>
+      <li><a href="/radius-map/">Radius around any address</a></li>
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {faqs.map((q, i) => (
+        <details open={i < 2}>
+          <summary><h3>{q.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{q.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current="/mile-radius-from-current-location/" />
+  </div>
+</Base>

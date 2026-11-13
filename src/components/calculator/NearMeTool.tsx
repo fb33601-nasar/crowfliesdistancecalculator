@@ -59,13 +59,13 @@ function nearestTown(p: LatLon, towns: Town[]): { town: Town; d: number } | null
   return best;
 }
 
-export default function NearMeTool() {
+export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: number }) {
   const [center, setCenter] = useState<Place>(EXAMPLE);
   const [isExample, setIsExample] = useState(true);
   const [loc, setLoc] = useState<LocState>({ kind: 'idle' });
   const [mode, setMode] = useState<Mode>('distance');
   const [unit, setUnit] = useState<Unit>('mi');
-  const [distText, setDistText] = useState('25');
+  const [distText, setDistText] = useState(String(initialMiles));
   const [minutes, setMinutes] = useState(60);
   const [travel, setTravel] = useState<Travel>('drive');
   const [towns, setTowns] = useState<Town[]>([]);

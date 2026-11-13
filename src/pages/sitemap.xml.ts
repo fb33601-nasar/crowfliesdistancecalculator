@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../lib/site';
+import { RADIUS_MILES, RADIUS_DATE, radiusSlug } from '../data/radius-pages';
 
 /**
  * One plain sitemap at /sitemap.xml. Every indexable page registers here with
@@ -14,6 +15,7 @@ export const GET: APIRoute = () => {
   const entries = Object.values(pages)
     .map((p) => p.frontmatter)
     .filter((f) => f?.slug)
+    .concat(RADIUS_MILES.map((n) => ({ slug: radiusSlug(n), dateModified: RADIUS_DATE })))
     .sort((a, b) => a.slug.localeCompare(b.slug));
 
   const urls = entries

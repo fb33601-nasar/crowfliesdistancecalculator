@@ -1056,3 +1056,32 @@ td.heading svg {
   color: var(--ink-faint);
   margin-top: 0.5rem !important;
 }
+.muted {
+  color: var(--ink-faint);
+  font-size: 0.92em;
+}
+.radius-links {
+  list-style: none;
+  padding: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.radius-links li {
+  margin: 0 !important;
+}
+.radius-links a {
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 650;
+  font-size: var(--step--1);
+  text-decoration: none;
+}
+.radius-links a:hover {
+  border-color: var(--course);
+  color: var(--course);
+}

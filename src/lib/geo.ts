@@ -242,8 +242,8 @@ export function formatDuration(hours: number): string {
   const days = Math.floor(totalMinutes / 1440);
   const h = Math.floor((totalMinutes % 1440) / 60);
   const m = totalMinutes % 60;
-  if (days > 0) return `${days} d ${h} h`;
-  if (h > 0) return `${h} h ${m} min`;
+  if (days > 0) return h ? `${days} d ${h} h` : `${days} d`;
+  if (h > 0) return m ? `${h} h ${m} min` : `${h} h`;
   return `${m} min`;
 }
 
