@@ -61,20 +61,20 @@ Big metropolitan areas fill up fast because GeoNames lists many suburbs and boro
 
 Many people asking "what is within 2 hours of me" mean travel time, not miles. Switch the tool to **Travel time**, pick the length of the trip and how you will travel, and it draws an estimated circle for that trip.
 
-The estimate assumes steady average speeds of 3 mph on foot, 10 mph by bike and 40 mph by car, with the route 19% longer than the straight line.
+The estimate assumes steady average speeds of 3 mph on foot and 10 mph by bike. By car, the average rises with the length of the trip, because longer drives spend more of their time on fast roads: 30 mph for trips up to half an hour, 40 mph up to an hour, 50 mph up to two hours and 60 mph beyond that. In every case the route is taken as 19% longer than the straight line.
 
 <div class="table-scroll">
   <p class="table-title" aria-hidden="true">Estimated straight line reach by travel time</p>
   <table>
     <caption class="visually-hidden">Estimated straight line reach by travel time</caption>
-    <thead><tr><th scope="col">Trip length</th><th scope="col" class="num">On foot, 3 mph</th><th scope="col" class="num">By bike, 10 mph</th><th scope="col" class="num">By car, 40 mph</th></tr></thead>
+    <thead><tr><th scope="col">Trip length</th><th scope="col" class="num">On foot, 3 mph</th><th scope="col" class="num">By bike, 10 mph</th><th scope="col" class="num">By car</th></tr></thead>
     <tbody>
-      <tr><th scope="row">15 minutes</th><td class="num">0.6 mi</td><td class="num">2.1 mi</td><td class="num">8.4 mi</td></tr>
-      <tr><th scope="row">30 minutes</th><td class="num">1.3 mi</td><td class="num">4.2 mi</td><td class="num">16.8 mi</td></tr>
+      <tr><th scope="row">15 minutes</th><td class="num">0.6 mi</td><td class="num">2.1 mi</td><td class="num">6.3 mi</td></tr>
+      <tr><th scope="row">30 minutes</th><td class="num">1.3 mi</td><td class="num">4.2 mi</td><td class="num">12.6 mi</td></tr>
       <tr><th scope="row">1 hour</th><td class="num">2.5 mi</td><td class="num">8.4 mi</td><td class="num">33.6 mi</td></tr>
-      <tr><th scope="row">2 hours</th><td class="num">5.0 mi</td><td class="num">16.8 mi</td><td class="num">67.2 mi</td></tr>
-      <tr><th scope="row">3 hours</th><td class="num">7.6 mi</td><td class="num">25.2 mi</td><td class="num">100.8 mi</td></tr>
-      <tr><th scope="row">5 hours</th><td class="num">12.6 mi</td><td class="num">42.0 mi</td><td class="num">168.1 mi</td></tr>
+      <tr><th scope="row">2 hours</th><td class="num">5.0 mi</td><td class="num">16.8 mi</td><td class="num">84.0 mi</td></tr>
+      <tr><th scope="row">3 hours</th><td class="num">7.6 mi</td><td class="num">25.2 mi</td><td class="num">151.3 mi</td></tr>
+      <tr><th scope="row">5 hours</th><td class="num">12.6 mi</td><td class="num">42.0 mi</td><td class="num">252.1 mi</td></tr>
     </tbody>
   </table>
 </div>
@@ -83,7 +83,7 @@ A time circle is a rough guide, not a drive time map. On an interstate you may c
 
 ## How long does it take to reach the edge?
 
-Going the other way, the tool shows how long the edge of a distance circle takes to reach on foot, by bike and by car, using the same speeds and the same 1.19 road factor.
+Going the other way, the tool shows how long the edge of a distance circle takes to reach on foot, by bike and by car, at 3, 10 and 40 mph with the same 1.19 road factor.
 
 <div class="table-scroll">
   <p class="table-title" aria-hidden="true">Rough time to reach the edge of a radius from you</p>

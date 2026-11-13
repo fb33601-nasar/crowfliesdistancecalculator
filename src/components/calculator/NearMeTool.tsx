@@ -26,6 +26,11 @@ const MI = 1609.344;
 const UNIT_M: Record<Unit, number> = { mi: MI, km: 1000 };
 /** Typical door-to-door speeds, in mph. */
 const SPEED: Record<Travel, number> = { walk: 3, bike: 10, drive: 40 };
+/** Longer drives spend more time on fast roads, so the average speed rises with trip length. */
+export function speedFor(travel: Travel, minutes: number): number {
+  if (travel !== 'drive') return SPEED[travel];
+  return minutes <= 30 ? 30 : minutes <= 60 ? 40 : minutes <= 120 ? 50 : 60;
+}
 const TRAVEL_LABEL: Record<Travel, string> = { walk: 'walking', bike: 'cycling', drive: 'driving' };
 /** Median road route over straight line in our 18-pair sample. */
 const DETOUR = 1.19;
@@ -59,14 +64,22 @@ function nearestTown(p: LatLon, towns: Town[]): { town: Town; d: number } | null
   return best;
 }
 
-export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: number }) {
+interface ToolProps {
+  /** opening distance, in the opening unit */
+  initialMiles?: number;
+  initialUnit?: Unit;
+  /** open in travel-time mode with this many minutes */
+  initialMinutes?: number;
+}
+
+export default function NearMeTool({ initialMiles = 25, initialUnit = 'mi', initialMinutes }: ToolProps) {
   const [center, setCenter] = useState<Place>(EXAMPLE);
   const [isExample, setIsExample] = useState(true);
   const [loc, setLoc] = useState<LocState>({ kind: 'idle' });
-  const [mode, setMode] = useState<Mode>('distance');
-  const [unit, setUnit] = useState<Unit>('mi');
+  const [mode, setMode] = useState<Mode>(initialMinutes ? 'time' : 'distance');
+  const [unit, setUnit] = useState<Unit>(initialUnit);
   const [distText, setDistText] = useState(String(initialMiles));
-  const [minutes, setMinutes] = useState(60);
+  const [minutes, setMinutes] = useState(initialMinutes ?? 60);
   const [travel, setTravel] = useState<Travel>('drive');
   const [towns, setTowns] = useState<Town[]>([]);
   const [view, setView] = useState<'map' | 'globe'>('map');
@@ -77,7 +90,7 @@ export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: numbe
 
   const distValue = Math.max(0, Number(distText.replace(/,/g, '')) || 0);
   const radius = useMemo(() => {
-    if (mode === 'time') return ((minutes / 60) * SPEED[travel] * MI) / DETOUR;
+    if (mode === 'time') return ((minutes / 60) * speedFor(travel, minutes) * MI) / DETOUR;
     return Math.min(distValue * UNIT_M[unit], 5_000_000);
   }, [mode, minutes, travel, distValue, unit]);
 
@@ -333,7 +346,7 @@ export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: numbe
                   ))}
                 </div>
                 <p className="calc-note">
-                  An estimate: {SPEED[travel]} mph average, with roads {Math.round((DETOUR - 1) * 100)}% longer than the straight line. That gives a
+                  An estimate: {speedFor(travel, minutes)} mph average, with roads {Math.round((DETOUR - 1) * 100)}% longer than the straight line. That gives a
                   circle of about {fmt(radius)}.
                 </p>
               </>
@@ -406,6 +419,8 @@ export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: numbe
               </div>
             )}
 
+            {mode === 'distance' && (
+              <>
             <table className="calc-times nearme-times">
               <caption>Time to reach the edge</caption>
               <tbody>
@@ -418,6 +433,8 @@ export default function NearMeTool({ initialMiles = 25 }: { initialMiles?: numbe
               </tbody>
             </table>
             <p className="calc-note">Rough times for a route {Math.round((DETOUR - 1) * 100)}% longer than the straight line, with no stops.</p>
+              </>
+            )}
 
             <div className="calc-actions">
               <button type="button" onClick={copyLink}>{copied ? 'Link copied' : 'Copy link'}</button>

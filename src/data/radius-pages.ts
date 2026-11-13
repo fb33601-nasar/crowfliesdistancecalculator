@@ -30,3 +30,27 @@ export const AREA_REFS: [name: string, sqmi: number][] = [
   ['Alaska', 665384],
   ['the contiguous United States', 3119885],
 ];
+
+/** Travel-time pages: hours get "N hour radius from me", minutes get "N minute radius map". */
+export const RADIUS_HOURS = [1, 2, 3, 4, 5, 6, 8, 10, 12];
+export const RADIUS_MINUTES = [15, 20, 30, 45];
+export const hourSlug = (n: number) => `/${n}-hour-radius-from-me/`;
+export const minuteSlug = (n: number) => `/${n}-minute-radius-map/`;
+export const RADIUS_KM = [3, 5, 10, 20, 25, 30, 40, 50];
+export const kmSlug = (n: number) => `/${n}-km-radius-from-my-location/`;
+
+/** Average driving speed (mph) used for a trip of this length; longer trips use more fast road. */
+export const driveMph = (minutes: number) => (minutes <= 30 ? 30 : minutes <= 60 ? 40 : minutes <= 120 ? 50 : 60);
+export const DETOUR = 1.19;
+
+export const US_CITIES: [string, number, number][] = [
+  ['New York', 40.7128, -74.006],
+  ['Los Angeles', 34.0522, -118.2437],
+  ['Chicago', 41.85, -87.65],
+  ['Houston', 29.7633, -95.3633],
+  ['Phoenix', 33.4484, -112.074],
+  ['Atlanta', 33.749, -84.388],
+  ['Denver', 39.7392, -104.9903],
+  ['Seattle', 47.6062, -122.3321],
+  ['Dallas', 32.7831, -96.8067],
+];

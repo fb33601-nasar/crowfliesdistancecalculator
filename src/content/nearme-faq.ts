@@ -13,7 +13,7 @@ export const nearMeFaqs: { q: string; a: string }[] = [
   },
   {
     q: 'Can I draw a radius by travel time, like 2 hours from me?',
-    a: 'Yes. Switch to Travel time, pick the length of the trip and whether you are driving, cycling or walking. The tool draws an estimated circle using average speeds of 40, 10 and 3 mph and a route 19% longer than the straight line. Two hours by car comes out at about 67 miles.',
+    a: 'Yes. Switch to Travel time, pick the length of the trip and whether you are driving, cycling or walking. The tool draws an estimated circle from average speeds (3 mph on foot, 10 mph by bike, and 30 to 60 mph by car depending on trip length) and a route 19% longer than the straight line. Two hours by car comes out at about 84 miles.',
   },
   {
     q: 'Why is my location wrong?',

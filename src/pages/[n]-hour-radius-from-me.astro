@@ -1,0 +1,9 @@
+---
+import TimeRadiusPage from '../components/TimeRadiusPage.astro';
+import { RADIUS_HOURS } from '../data/radius-pages';
+export function getStaticPaths() {
+  return RADIUS_HOURS.map((n) => ({ params: { n: String(n) }, props: { n } }));
+}
+const { n } = Astro.props as { n: number };
+---
+<TimeRadiusPage minutes={n * 60} />

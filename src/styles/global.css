@@ -1085,3 +1085,8 @@ td.heading svg {
   border-color: var(--course);
   color: var(--course);
 }
+tr.is-highlight th,
+tr.is-highlight td {
+  background: color-mix(in srgb, var(--course) 8%, #fff);
+  font-weight: 700;
+}

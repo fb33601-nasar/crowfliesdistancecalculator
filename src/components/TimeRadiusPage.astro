@@ -1,0 +1,189 @@
+---
+// Shared page for "N hour radius from me" and "N minute radius map".
+import Base from '../layouts/Base.astro';
+import H2 from './H2.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import RelatedTools from './RelatedTools.astro';
+import Callout from './Callout.astro';
+import NearMeTool from './calculator/NearMeTool';
+import { AREA_REFS, DETOUR, RADIUS_DATE, RADIUS_HOURS, RADIUS_MINUTES, driveMph, hourSlug, minuteSlug, US_CITIES } from '../data/radius-pages';
+import { capArea, compass, formatDuration, formatNumber, METRES_PER_SQ_MILE } from '../lib/geo';
+import { ringAround, townLabel, compareArea } from '../lib/server/towns';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+interface Props { minutes: number }
+const { minutes } = Astro.props;
+const MI = 1609.344;
+const isHour = minutes >= 60;
+const n = isHour ? minutes / 60 : minutes;
+const span = isHour ? `${n} ${n === 1 ? 'hour' : 'hours'}` : `${n} minutes`;
+const spanAdj = isHour ? `${n} hour` : `${n} minute`;
+const slug = isHour ? hourSlug(n) : minuteSlug(n);
+const f = (v: number, d?: number) => formatNumber(v, d ?? (v >= 100 ? 0 : v >= 10 ? 1 : 2));
+const h = minutes / 60;
+
+const mph = driveMph(minutes);
+const roadMiles = h * mph;
+const reach = roadMiles / DETOUR; // straight line miles
+const r = reach * MI;
+const sqmi = capArea(r) / METRES_PER_SQ_MILE;
+const compare = compareArea(sqmi, AREA_REFS, f);
+
+const rows = [
+  { name: 'Walking', mph: 3 },
+  { name: 'Cycling', mph: 10 },
+  { name: 'Driving in heavy town traffic', mph: 20 },
+  { name: 'Driving in town', mph: 30 },
+  { name: `Mixed driving (the tool's estimate)`, mph, model: true },
+  { name: 'Mostly highway', mph: 60 },
+  { name: 'Open interstate or motorway', mph: 70 },
+].map((x) => ({ ...x, road: h * x.mph, straight: (h * x.mph) / DETOUR }));
+
+const examples = US_CITIES.map(([name, lat, lon]) => ({ name, ...ringAround(name, lat, lon, r) })).filter((e) => e.picks.length > 0);
+
+const breaks = isHour && n > 2 ? Math.floor(n / 2) : 0;
+
+const all = [...RADIUS_MINUTES.map((m) => ({ m, href: minuteSlug(m), label: `${m} minute radius` })), ...RADIUS_HOURS.map((x) => ({ m: x * 60, href: hourSlug(x), label: `${x} hour radius` }))];
+const i = all.findIndex((x) => x.m === minutes);
+const neighbours = all.filter((_, j) => Math.abs(j - i) <= 3 && j !== i);
+
+const title = isHour ? `${n} Hour Radius From Me` : `${n} Minute Radius Map`;
+const seoTitle = isHour ? `${n} Hour Radius From Me: How Far Can You Drive in ${n} ${n === 1 ? 'Hour' : 'Hours'}?` : `${n} Minute Radius Map: How Far Is ${n} Minutes From Me?`;
+const description = `Map a ${spanAdj} radius from your location by car, bike or on foot. A ${span} drive reaches about ${f(reach, 0)} miles in a straight line, with towns at that range listed.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Mile radius from current location', href: '/mile-radius-from-current-location/' },
+  { name: `${spanAdj} radius`, href: slug },
+];
+const faqs = [
+  { q: `How far can I drive in ${span}?`, a: `At an average of ${mph} mph, a ${spanAdj} drive covers about ${f(roadMiles, 0)} miles of road. Because roads wind, that reaches about ${f(reach, 0)} miles from your start in a straight line. On open highway at 70 mph you could cover ${f(h * 70, 0)} road miles.` },
+  { q: `How do I see a ${spanAdj} radius from my location?`, a: `Press Use my current location at the top of this page and allow your browser to share it. The tool opens in travel time mode at ${span} by car. Change the trip length or switch to cycling or walking, and the circle and the towns inside it update.` },
+  { q: `How far can I walk in ${span}?`, a: `At a steady 3 mph, ${span} of walking covers about ${f(h * 3, 1)} miles (${f(h * 3 * 1.609344, 1)} km), which reaches about ${f((h * 3) / DETOUR, 1)} miles from your start in a straight line once streets and paths are allowed for.` },
+  { q: `How far can I cycle in ${span}?`, a: `At 10 mph, a typical relaxed pace, ${span} of cycling covers about ${f(h * 10, 1)} miles, reaching about ${f((h * 10) / DETOUR, 1)} miles in a straight line. A fit rider at 15 mph would go half as far again.` },
+  { q: `Is a ${spanAdj} radius the same as a drive time map?`, a: `No. The circle is an estimate that assumes the same average speed in every direction. A true drive time map follows the road network, so it stretches along highways and shrinks around lakes, hills and busy city centers.` },
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${slug}#calculator`),
+  name: title,
+  url: abs(slug),
+  description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={seoTitle} description={description} path={slug} breadcrumbs={crumbs} faqs={faqs} schema={[appSchema]} datePublished={RADIUS_DATE} dateModified={RADIUS_DATE}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{title}</h1>
+    <p class="lede">{`See how far you can get from where you are in ${span} by car, by bike or on foot, and which towns fall inside that range.`}</p>
+  </div>
+
+  <div class="wrap">
+    <NearMeTool client:load initialMinutes={minutes} />
+  </div>
+
+  <div class="wrap article">
+    <p>{`A ${spanAdj} drive from you reaches about ${f(reach, 0)} miles (${f(reach * 1.609344, 0)} km) in a straight line, assuming an average of ${mph} mph and roads ${Math.round((DETOUR - 1) * 100)}% longer than the direct line. That circle covers about ${f(sqmi)} square miles, ${compare}. Walking, the same ${span} takes you about ${f((h * 3) / DETOUR, 1)} miles from home.`}</p>
+
+    <H2 id="how-far-in-time">{`How far can you go in ${span}?`}</H2>
+    <p>{`The distance you cover in ${span} depends almost entirely on speed, and speed depends on how you travel and what roads you use. The table shows the road distance at each average speed, and how far that gets you from your start in a straight line.`}</p>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`Distance covered in ${span}`}</p>
+      <table>
+        <caption class="visually-hidden">{`Distance covered in ${span}`}</caption>
+        <thead><tr><th scope="col">How you travel</th><th scope="col" class="num">Average speed</th><th scope="col" class="num">Road distance</th><th scope="col" class="num">Straight line reach</th></tr></thead>
+        <tbody>
+          {rows.map((x) => (
+            <tr class={x.model ? 'is-highlight' : undefined}>
+              <th scope="row">{x.name}</th>
+              <td class="num">{x.mph} mph</td>
+              <td class="num">{f(x.road)} mi</td>
+              <td class="num">{f(x.straight)} mi</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>{`For a ${spanAdj} trip the tool uses ${mph} mph by car. Short trips are mostly town streets, so the average is low; longer trips spend more of their time on fast roads, so the tool raises the average to 40 mph for trips up to an hour, 50 mph up to two hours and 60 mph beyond.`}</p>
+
+    <H2 id="how-big-is-the-area">{`How big is a ${spanAdj} drive radius?`}</H2>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`A ${spanAdj} drive radius in numbers`}</p>
+      <table>
+        <caption class="visually-hidden">{`A ${spanAdj} drive radius in numbers`}</caption>
+        <tbody>
+          <tr><th scope="row">Straight line radius</th><td class="num">{f(reach)} miles</td><td class="num">{f(reach * 1.609344)} km</td></tr>
+          <tr><th scope="row">Road miles driven</th><td class="num">{f(roadMiles)} miles</td><td class="num">{f(roadMiles * 1.609344)} km</td></tr>
+          <tr><th scope="row">Width of the circle</th><td class="num">{f(reach * 2)} miles</td><td class="num">{f(reach * 2 * 1.609344)} km</td></tr>
+          <tr><th scope="row">Area inside</th><td class="num">{f(sqmi)} sq mi</td><td class="num">{f(sqmi * 2.589988)} km²</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    {examples.length >= 3 && (
+      <>
+        <H2 id="towns-in-range">{`Towns about ${span} from big US cities`}</H2>
+        <p>{`To show what a ${spanAdj} drive radius means on the ground, the table lists towns that sit about ${f(reach, 0)} miles from the center of some major US cities, the straight line reach of a ${spanAdj} drive at ${mph} mph. Real drive times to these towns will be shorter along interstates and longer where the roads wander.`}</p>
+        <div class="table-scroll">
+          <p class="table-title" aria-hidden="true">{`Towns about ${f(reach, 0)} miles from the city center`}</p>
+          <table>
+            <caption class="visually-hidden">{`Towns about ${f(reach, 0)} miles from the city center`}</caption>
+            <thead><tr><th scope="col">From</th><th scope="col">Towns at the edge of a {spanAdj} radius</th><th scope="col" class="num">Towns inside</th></tr></thead>
+            <tbody>
+              {examples.map((e) => (
+                <tr>
+                  <th scope="row">{e.name}</th>
+                  <td set:html={e.picks.map((p) => `${townLabel(p.t)} <span class="muted">(${f(p.d / MI, 0)} mi ${compass(p.b).abbr})</span>`).join(', ')} />
+                  <td class="num">{formatNumber(e.inside, 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">Straight line distances between city and town centers. Towns of 5,000+ people, from GeoNames.</p>
+      </>
+    )}
+
+    <H2 id="radius-vs-drive-time-map">{`A ${spanAdj} radius vs a drive time map`}</H2>
+    <p>{`A circle assumes you travel at the same speed in every direction. Real trips do not. From a city near an interstate, ${span} heading along the highway might take you ${f(h * 65, 0)} miles, while ${span} through the downtown grid or over hill roads might take you a third of that.`}</p>
+    <p>A drive time map, also called an isochrone, solves this by following the actual road network outward from your start and stopping when the time runs out. The result is an irregular shape with long arms along fast roads. It is more accurate for one trip, but it changes with the time of day and traffic, and it needs a routing service to draw.</p>
+    <p>{`The circle is the quick answer: a fair picture of what is "about ${span} away" in general, good for shortlisting places before you check the route to any one of them.`}</p>
+
+    <H2 id="plan-your-trip">{`Planning a trip of ${span}`}</H2>
+    <ul>
+      <li>{`Leave room for stops. ${breaks > 0 ? `Driving safety advice commonly suggests a break of about 15 minutes every two hours, which adds roughly ${breaks * 15} minutes to a ${spanAdj} drive.` : `On a trip this short a stop is rarely needed, but parking and walking to the door can add several minutes at each end.`}`}</li>
+      <li>Check the time of day. Rush hour can halve the average speed in and around cities, shrinking the real circle.</li>
+      <li>{`Count both ways for a day out. A ${span} radius is one way; going there and back takes ${isHour ? `${n * 2} hours` : `${n * 2} minutes`} of travel before any time at the destination.`}</li>
+      <li>Check a route for any place that matters. Use the <a href="/distance-between-two-addresses/">address distance calculator</a> for the road distance and time to one destination.</li>
+    </ul>
+
+    <Callout title="Change the speed to match your trip">
+      {`If you know your route is mostly interstate, the real circle is bigger than the estimate. Switch the tool to Distance and set the radius to your expected road miles divided by ${DETOUR}: at 65 mph for ${span}, that is about ${f((h * 65) / DETOUR, 0)} miles.`}
+    </Callout>
+
+    <H2 id="other-times">Other travel times from your location</H2>
+    <ul class="radius-links">
+      {neighbours.map((x) => <li><a href={x.href}>{x.label}</a></li>)}
+      <li><a href="/mile-radius-from-current-location/">Any distance or travel time</a></li>
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {faqs.map((q, k) => (
+        <details open={k < 2}>
+          <summary><h3>{q.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{q.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current="/mile-radius-from-current-location/" />
+  </div>
+</Base>

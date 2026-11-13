@@ -18,6 +18,13 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-far-in-time': 'route',
+  'how-big-is-the-area': 'target',
+  'towns-in-range': 'pin',
+  'radius-vs-drive-time-map': 'globe',
+  'plan-your-trip': 'compass',
+  'other-times': 'ruler',
+  'what-is-km-away': 'pin',
   'radius-by-distance': 'table',
   'how-big-is-a-radius': 'target',
   'how-long-to-travel': 'route',
