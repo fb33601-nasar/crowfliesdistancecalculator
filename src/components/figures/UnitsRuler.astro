@@ -1,0 +1,36 @@
+---
+// One kilometer, one mile and one nautical mile drawn to the same scale.
+const px = 460 / 1.852; // pixels per km, so a nautical mile spans 460px
+const rows = [
+  { name: 'Kilometer', km: 1, note: '1 km', color: '#9aa3d8' },
+  { name: 'Mile', km: 1.609344, note: '1.609 km', color: '#161b3d' },
+  { name: 'Nautical mile', km: 1.852, note: '1.852 km', color: '#c4157a' },
+];
+---
+<figure>
+  <svg viewBox="0 0 760 250" role="img" aria-labelledby="ur-t ur-d" class="fig-light">
+    <title id="ur-t">A kilometer, a mile and a nautical mile to scale</title>
+    <desc id="ur-d">Three bars drawn to the same scale. A kilometer is the shortest. A mile is 1.609 kilometers. A nautical mile is the longest at 1.852 kilometers.</desc>
+    <rect width="760" height="250" fill="#fff" />
+    {Array.from({ length: 3 }, (_, i) => (
+      <line x1={160 + i * px} y1="22" x2={160 + i * px} y2="214" stroke="#d5dee6" stroke-dasharray="3 5" />
+    ))}
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+      {rows.map((r, i) => {
+        const y = 40 + i * 62;
+        const w = r.km * px;
+        return (
+          <g>
+            <text x="20" y={y + 21} font-size="15" font-weight="700" fill="#161b3d">{r.name}</text>
+            <rect x="160" y={y} width={w} height="30" rx="6" fill={r.color} />
+            <text x={160 + w + 12} y={y + 21} font-size="14" font-weight="650" fill="#414873">{r.note}</text>
+          </g>
+        );
+      })}
+      <text x="160" y="236" font-size="12" fill="#6b7299">0 km</text>
+      <text x={160 + px} y="236" font-size="12" fill="#6b7299" text-anchor="middle">1 km</text>
+      <text x={160 + 2 * px} y="236" font-size="12" fill="#6b7299" text-anchor="middle">2 km</text>
+    </g>
+  </svg>
+  <figcaption>A nautical mile is about 15% longer than a statute mile, so the same trip is a smaller number in nautical miles.</figcaption>
+</figure>

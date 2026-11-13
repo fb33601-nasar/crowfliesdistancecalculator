@@ -164,6 +164,16 @@ export default function Calculator() {
   }
 
   const others = UNITS.filter((u) => u !== unit);
+  const distanceLabel = result ? `${formatNumber(toUnit(result.distance, unit))} ${UNIT_LABEL[unit].short}` : '';
+
+  useEffect(() => {
+    if (!picking) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPicking(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [picking]);
   const isShort = result !== null && result.distance < 1500;
 
   return (
@@ -176,10 +186,7 @@ export default function Calculator() {
             placeholder="City, address or coordinates"
             value={a}
             onChange={(p) => setPlace('a', p)}
-            onPickOnMap={() => {
-              setPicking('a');
-              showMap();
-            }}
+            onPickOnMap={() => setPicking('a')}
           />
           <button type="button" className="calc-swap" onClick={swap} aria-label="Swap start and end">
             <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
@@ -192,10 +199,7 @@ export default function Calculator() {
             placeholder="City, address or coordinates"
             value={b}
             onChange={(p) => setPlace('b', p)}
-            onPickOnMap={() => {
-              setPicking('b');
-              showMap();
-            }}
+            onPickOnMap={() => setPicking('b')}
           />
         </form>
 
@@ -299,19 +303,48 @@ export default function Calculator() {
         </div>
         <div className="calc-stage">
           <div hidden={view !== 'globe'} className="calc-globe">
-            <Globe a={a} b={b} labelA={a?.name} labelB={b?.name} />
+            <Globe
+              a={a}
+              b={b}
+              labelA={a ? short(a.name) : ''}
+              labelB={b ? short(b.name) : ''}
+              distanceLabel={distanceLabel}
+              picking={picking}
+              onPick={pickFromMap}
+            />
           </div>
           {mapWanted && (
             <div hidden={view !== 'map'} className="calc-map">
               <Suspense fallback={<p className="map-status">Loading the map…</p>}>
-                <MapView a={a} b={b} line={line} picking={picking} visible={view === 'map'} onPick={pickFromMap} />
+                <MapView
+                  a={a}
+                  b={b}
+                  labelA={a ? short(a.name) : ''}
+                  labelB={b ? short(b.name) : ''}
+                  distanceLabel={distanceLabel}
+                  unit={unit}
+                  line={line}
+                  picking={picking}
+                  visible={view === 'map'}
+                  onPick={pickFromMap}
+                />
               </Suspense>
+            </div>
+          )}
+          {picking && (
+            <div className="calc-picking" role="status">
+              <span>
+                Click the {view === 'globe' ? 'globe' : 'map'} to place point {picking.toUpperCase()}
+              </span>
+              <button type="button" onClick={() => setPicking(null)}>
+                Cancel
+              </button>
             </div>
           )}
         </div>
         <p className="calc-hint">
           {view === 'globe'
-            ? 'The shortest path over the Earth, seen from above its halfway point.'
+            ? 'Drag to turn the globe. The magenta arc is the shortest path over the Earth.'
             : 'Drag a pin to move it. The line bends on a flat map because the map is stretched, not the route.'}
         </p>
       </div>

@@ -1,0 +1,25 @@
+---
+import { icon } from '../lib/icons';
+import { ALL_ROUTES } from '../data/routes';
+import { geodesic, haversine } from '../lib/geo';
+const gaps = ALL_ROUTES.map(([a, b]) => {
+  const g = geodesic(a, b).distance;
+  return Math.abs(haversine(a, b) - g) / g;
+});
+const meanGap = (gaps.reduce((x, y) => x + y, 0) / gaps.length) * 100;
+const facts = [
+  { i: 'globe', v: '12,430 mi', l: 'The farthest two places can be apart, halfway around the world' },
+  { i: 'formula', v: `${meanGap.toFixed(2)}%`, l: 'Average error of the simpler sphere formula on our 29 test routes' },
+  { i: 'ruler', v: '1.852 km', l: 'Exact length of one nautical mile, the unit used in the air and at sea' },
+  { i: 'bird', v: '25–30 mph', l: 'How fast a crow actually cruises once it is in the air' },
+];
+---
+<ul class="facts" aria-label="Key facts about straight line distance">
+  {facts.map((f) => (
+    <li>
+      <span class="facts-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={icon(f.i)} /></span>
+      <strong>{f.v}</strong>
+      <span>{f.l}</span>
+    </li>
+  ))}
+</ul>

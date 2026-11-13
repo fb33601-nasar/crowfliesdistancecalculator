@@ -1,0 +1,12 @@
+---
+import { icon } from '../lib/icons';
+interface Props { title: string; kind?: 'tip' | 'note' }
+const { title, kind = 'tip' } = Astro.props;
+---
+<aside class={`callout callout-${kind}`}>
+  <span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={icon(kind === 'tip' ? 'tip' : 'info')} /></span>
+  <div>
+    <p class="callout-title">{title}</p>
+    <div class="callout-body"><slot /></div>
+  </div>
+</aside>

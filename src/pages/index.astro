@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
 import Calculator from '../components/calculator/Calculator';
 import Article, { frontmatter } from '../content/home.mdx';
 import { homeFaqs } from '../content/home-faq';
@@ -80,15 +81,15 @@ const appSchema = {
       </ol>
     </nav>
 
-    <Article />
+    <Article components={{ h2: H2 }} />
 
-    <h2 id="frequently-asked-questions">Frequently asked questions</h2>
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
     <div class="faq">
-      {homeFaqs.map((f) => (
-        <>
-          <h3>{f.q}</h3>
+      {homeFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
           <p>{f.a}</p>
-        </>
+        </details>
       ))}
     </div>
 

@@ -6,26 +6,32 @@ const { routes, caption } = Astro.props;
 const rows = routes.map(([a, b]) => {
   const g = geodesic(a, b);
   const mi = g.distance / METRES_PER_MILE;
+  const d = mi < 100 ? 1 : 0;
   return {
     name: `${a.name} to ${b.name}`,
-    mi: formatNumber(mi, mi < 100 ? 1 : 0),
-    km: formatNumber(g.distance / 1000, mi < 100 ? 1 : 0),
-    nmi: formatNumber(g.distance / METRES_PER_NAUTICAL_MILE, mi < 100 ? 1 : 0),
+    miRaw: mi,
+    mi: formatNumber(mi, d),
+    km: formatNumber(g.distance / 1000, d),
+    nmi: formatNumber(g.distance / METRES_PER_NAUTICAL_MILE, d),
+    bearing: g.initialBearing,
     heading: `${Math.round(g.initialBearing)}° ${compass(g.initialBearing).abbr}`,
     jet: formatDuration(mi / 550),
   };
 });
+const max = Math.max(...rows.map((r) => r.miRaw));
 ---
 <div class="table-scroll">
-  <table>
-    <caption>{caption}</caption>
+  <p class="table-title" aria-hidden="true">{caption}</p>
+  <table class="dist-table">
+    <caption class="visually-hidden">{caption}</caption>
     <thead>
       <tr>
         <th scope="col">Route</th>
         <th scope="col" class="num">Miles</th>
+        <th scope="col" class="dist-col"><span class="visually-hidden">Distance compared</span></th>
         <th scope="col" class="num">Kilometers</th>
         <th scope="col" class="num">Nautical miles</th>
-        <th scope="col">Heading at start</th>
+        <th scope="col">Heading</th>
         <th scope="col" class="num">At 550 mph</th>
       </tr>
     </thead>
@@ -33,10 +39,11 @@ const rows = routes.map(([a, b]) => {
       {rows.map((r) => (
         <tr>
           <th scope="row">{r.name}</th>
-          <td class="num">{r.mi}</td>
+          <td class="num strong">{r.mi}</td>
+          <td class="dist-col" aria-hidden="true"><span class="dist-bar"><span style={`width:${Math.max((r.miRaw / max) * 100, 1.5).toFixed(1)}%`} /></span></td>
           <td class="num">{r.km}</td>
           <td class="num">{r.nmi}</td>
-          <td>{r.heading}</td>
+          <td class="heading"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="1.5" /><path d="M12 3.6l3.6 9.6-3.6-2-3.6 2z" fill="#c4157a" transform={`rotate(${r.bearing.toFixed(0)} 12 12)`} /></svg>{r.heading}</td>
           <td class="num">{r.jet}</td>
         </tr>
       ))}

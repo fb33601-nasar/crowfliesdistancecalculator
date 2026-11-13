@@ -11,8 +11,9 @@ const rows = Astro.props.routes.map(([a, b]) => {
 const max = 0.5;
 ---
 <div class="table-scroll acc">
+  <p class="table-title" aria-hidden="true">How far the haversine result sits from the WGS 84 result</p>
   <table>
-    <caption>How far the haversine result sits from the WGS 84 result</caption>
+    <caption class="visually-hidden">How far the haversine result sits from the WGS 84 result</caption>
     <thead>
       <tr><th scope="col">Route</th><th scope="col" class="num">Distance</th><th scope="col" class="num">Gap</th><th scope="col">Gap as a share of the distance (scale ends at 0.5%)</th></tr>
     </thead>

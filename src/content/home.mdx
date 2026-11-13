@@ -13,15 +13,23 @@ import AccuracyBars from '../components/figures/AccuracyBars.astro';
 import DistanceTable from '../components/DistanceTable.astro';
 import UnitTable from '../components/UnitTable.astro';
 import Uses from '../components/Uses.astro';
+import KeyFacts from '../components/KeyFacts.astro';
+import Callout from '../components/Callout.astro';
+import CompassFigure from '../components/figures/CompassFigure.astro';
+import UnitsRuler from '../components/figures/UnitsRuler.astro';
 import { US_ROUTES, UK_ROUTES, WORLD_ROUTES, C } from '../data/routes';
 
 Road signs and sat navs tell you how far it is to drive. They do not tell you how far apart two places really are, and that is the number you need for a flight, a radio link, a drone, a delivery radius or any rule written in air miles. The crow flies distance is that number: the shortest path over the Earth's surface, with roads, rivers and borders ignored.
 
 New York to London, the route loaded above, is 3,471 miles (5,585 km) in a straight line. Change either box and the distance, the compass heading, the halfway point and the map all update at once.
 
+<KeyFacts />
+
 ## How to measure distance as the crow flies
 
 Measuring a straight line distance takes two places and no sign-up.
+
+<div class="steps">
 
 1. Type the start in the **From** box. A city, a street address, a landmark or coordinates such as `40.7128, -74.0060` all work. Pick the match you want from the list.
 2. Type the end in the **To** box. To start from where you are, choose **Use my location** in either list. To place a point by eye, choose **Pick point on the map**.
@@ -29,7 +37,11 @@ Measuring a straight line distance takes two places and no sign-up.
 4. Check the route. The **Globe** view shows the path over the Earth. The **Street map** view shows the same path with roads and place names, and you can drag either pin to move it.
 5. Press **Copy link** to share the result. The link opens the calculator with both places already filled in.
 
+</div>
+
+<Callout title="Your locations stay private" kind="note">
 The calculation runs in your browser. Only the text you type into a place box leaves your device, and it goes to the place search service so it can suggest matches.
+</Callout>
 
 ## What does "as the crow flies" mean?
 
@@ -64,22 +76,25 @@ Some pairs have no road distance at all. Honolulu and Anchorage are 2,781 miles 
 Which number you need depends on the job:
 
 <div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Straight line or road distance: which one to use</p>
   <table>
-    <caption>Straight line or road distance: which one to use</caption>
+    <caption class="visually-hidden">Straight line or road distance: which one to use</caption>
     <thead><tr><th scope="col">What you are working out</th><th scope="col">Use</th><th scope="col">Why</th></tr></thead>
     <tbody>
-      <tr><th scope="row">How far apart two cities are</th><td>Straight line</td><td>It does not change with the route you pick</td></tr>
-      <tr><th scope="row">Flight length</th><td>Straight line</td><td>Aircraft fly close to the great circle</td></tr>
-      <tr><th scope="row">Radio, drone or line-of-sight range</th><td>Straight line</td><td>Signals and aircraft ignore roads</td></tr>
-      <tr><th scope="row">A rule written as a radius or in air miles</th><td>Straight line</td><td>The rule is defined that way</td></tr>
-      <tr><th scope="row">Driving time, fuel or mileage claims</th><td>Road distance</td><td>You pay for the miles you drive</td></tr>
-      <tr><th scope="row">A walk, a run or a bike ride</th><td>Route distance</td><td>Paths rarely run straight</td></tr>
-      <tr><th scope="row">School or service catchment</th><td>Check the rule</td><td>Some use a straight line, others the shortest walking route</td></tr>
+      <tr><th scope="row">How far apart two cities are</th><td><span class="badge badge-line">Straight line</span></td><td>It does not change with the route you pick</td></tr>
+      <tr><th scope="row">Flight length</th><td><span class="badge badge-line">Straight line</span></td><td>Aircraft fly close to the great circle</td></tr>
+      <tr><th scope="row">Radio, drone or line-of-sight range</th><td><span class="badge badge-line">Straight line</span></td><td>Signals and aircraft ignore roads</td></tr>
+      <tr><th scope="row">A rule written as a radius or in air miles</th><td><span class="badge badge-line">Straight line</span></td><td>The rule is defined that way</td></tr>
+      <tr><th scope="row">Driving time, fuel or mileage claims</th><td><span class="badge badge-road">Road distance</span></td><td>You pay for the miles you drive</td></tr>
+      <tr><th scope="row">A walk, a run or a bike ride</th><td><span class="badge badge-road">Route distance</span></td><td>Paths rarely run straight</td></tr>
+      <tr><th scope="row">School or service catchment</th><td><span class="badge badge-check">Check the rule</span></td><td>Some use a straight line, others the shortest walking route</td></tr>
     </tbody>
   </table>
 </div>
 
+<Callout title="Need the driving distance too?">
 This tool measures the straight line only. For a driving distance, use a route planner, then compare its figure with the one here to see how big the detour is.
+</Callout>
 
 ## How is straight line distance calculated?
 
@@ -110,8 +125,9 @@ The Earth is not a perfect ball. In the WGS 84 model the radius is 6,378.137 km 
 Vincenty's formulae work on the flattened shape directly and are accurate to within half a millimeter on that model. For New York to London they give 5,585.2 km (3,470.5 miles), which is 9.3 miles more than the haversine figure. The table shows how three common methods compare on that one route.
 
 <div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Three ways to work out New York to London</p>
   <table>
-    <caption>Three ways to work out New York to London</caption>
+    <caption class="visually-hidden">Three ways to work out New York to London</caption>
     <thead><tr><th scope="col">Method</th><th scope="col">Shape assumed</th><th scope="col" class="num">Result</th><th scope="col" class="num">Off by</th><th scope="col">Good enough for</th></tr></thead>
     <tbody>
       <tr><th scope="row">Flat-map shortcut (Pythagoras on latitude and longitude)</th><td>Flat</td><td class="num">3,612 mi</td><td class="num">141 mi (4.1%)</td><td>Points a few miles apart</td></tr>
@@ -121,7 +137,7 @@ Vincenty's formulae work on the flattened shape directly and are accurate to wit
   </table>
 </div>
 
-We ran both methods on the 29 routes listed further down this page. The haversine result was off by between 0.01% and 0.36%, and by 0.18% on average. That is small, but on a long route it is real distance: about 21 miles on London to Cape Town.
+We ran both methods on the 29 routes listed further down this page. The haversine result was off by between 0.01% and 0.36%, and by 0.17% on average. That is small, but on a long route it is real distance: about 21 miles on London to Cape Town.
 
 <AccuracyBars routes={[[C.london, C.capeTown], [C.glasgow, C.edinburgh], [C.london, C.cardiff], [C.toronto, C.london], [C.newYork, C.london], [C.newYork, C.losAngeles], [C.losAngeles, C.tokyo], [C.dallas, C.houston], [C.london, C.edinburgh], [C.singapore, C.newYork], [C.london, C.sydney], [C.denver, C.phoenix]]} />
 
@@ -145,6 +161,8 @@ The heading is the compass direction of travel, in degrees clockwise from north.
 
 That is why the calculator shows two headings. Over a few miles they are almost the same number. Over an ocean they can differ by 50° or more.
 
+<CompassFigure />
+
 ### Halfway point
 
 The halfway point is the spot on the path that is the same distance from both ends. It is handy for picking a meeting place or a fuel stop, and it is rarely where a flat map suggests. The halfway point between New York and London sits at 52.370° N, 41.289° W, in the open Atlantic and farther north than either city.
@@ -159,13 +177,19 @@ They are still useful for scale. New York to London works out at 6 hours 19 minu
 
 The calculator reports every result in three units. A statute mile is exactly 1.609344 km. A nautical mile is exactly 1.852 km, or about 1.15078 statute miles, and it is the unit used at sea and in the air.
 
+<UnitsRuler />
+
 <UnitTable />
 
 ### Air miles and the 150 air-mile radius
 
 In United States trucking rules an air mile is a nautical mile measured in a straight line. The Federal Motor Carrier Safety Administration's short-haul exception in 49 CFR 395.1(e)(1) applies within a 150 air-mile radius, and the agency states that 150 air miles equal 172.6 statute miles.
 
-To check a location against that radius, enter the work reporting location in the From box and the destination in the To box, then switch the unit to nautical miles. A result of 150 or less is inside the radius, however many road miles the trip takes. Treat this as a quick check and read the regulation itself before relying on it.
+To check a location against that radius, enter the work reporting location in the From box and the destination in the To box, then switch the unit to nautical miles. A result of 150 or less is inside the radius, however many road miles the trip takes.
+
+<Callout title="A quick check, not a ruling" kind="note">
+Treat the calculator as a quick check for the 150 air-mile radius, and read the regulation itself before relying on it.
+</Callout>
 
 ## Popular distances as the crow flies
 

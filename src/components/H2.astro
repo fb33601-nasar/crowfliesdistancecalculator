@@ -1,0 +1,8 @@
+---
+import { sectionIcon } from '../lib/icons';
+const { id } = Astro.props as { id?: string };
+---
+<h2 id={id} class="sec">
+  <span class="sec-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={sectionIcon(id)} /></span>
+  <span class="sec-text"><slot /></span>
+</h2>

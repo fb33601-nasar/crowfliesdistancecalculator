@@ -1,0 +1,60 @@
+---
+// Compass rose with the start and arrival headings for New York to London.
+import { geodesic, compass } from '../../lib/geo';
+import { C } from '../../data/routes';
+const g = geodesic(C.newYork, C.london);
+const start = g.initialBearing;
+const end = g.finalBearing;
+const cx = 200, cy = 190, R = 132;
+const pt = (deg: number, r: number) => {
+  const t = ((deg - 90) * Math.PI) / 180;
+  return [cx + r * Math.cos(t), cy + r * Math.sin(t)] as const;
+};
+const ticks = Array.from({ length: 72 }, (_, i) => i * 5);
+const [s1x, s1y] = pt(start, R + 14);
+const [s2x, s2y] = pt(end, R + 14);
+const turn = Math.round(end - start);
+const needle = (deg: number, len: number) => {
+  const [tx, ty] = pt(deg, len);
+  const [lx, ly] = pt(deg - 90, 9);
+  const [rx, ry] = pt(deg + 90, 9);
+  return `M${tx.toFixed(1)} ${ty.toFixed(1)} L${lx.toFixed(1)} ${ly.toFixed(1)} L${cx} ${cy} L${rx.toFixed(1)} ${ry.toFixed(1)} Z`;
+};
+const label = (deg: number) => `${Math.round(deg)}°`;
+---
+<figure>
+  <svg viewBox="0 0 760 380" role="img" aria-labelledby="cf-t cf-d" class="fig-dark">
+    <title id="cf-t">Heading at the start and on arrival, New York to London</title>
+    <desc id="cf-d">A compass rose. The heading leaving New York is {label(start)}, {compass(start).name}. The heading arriving in London is {label(end)}, {compass(end).name}. The direction turns by {turn} degrees along the way without the route ever bending.</desc>
+    <rect width="760" height="380" fill="#131736" />
+    <circle cx={cx} cy={cy} r={R} fill="#1a2050" stroke="#3b4590" stroke-width="1.5" />
+    {ticks.map((t) => {
+      const major = t % 90 === 0;
+      const mid = t % 30 === 0;
+      const [x1, y1] = pt(t, R - (major ? 16 : mid ? 11 : 6));
+      const [x2, y2] = pt(t, R);
+      return <line x1={x1.toFixed(1)} y1={y1.toFixed(1)} x2={x2.toFixed(1)} y2={y2.toFixed(1)} stroke="#aab0dc" stroke-opacity={major ? 0.9 : 0.4} stroke-width={major ? 2 : 1} />;
+    })}
+    <path d={`M${pt(start, R + 14)[0].toFixed(1)} ${pt(start, R + 14)[1].toFixed(1)} A${R + 14} ${R + 14} 0 0 1 ${pt(end, R + 14)[0].toFixed(1)} ${pt(end, R + 14)[1].toFixed(1)}`} fill="none" stroke="#ff5fb4" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round" />
+    <path d={needle(end, R - 22)} fill="#ffffff" fill-opacity="0.9" />
+    <path d={needle(start, R - 22)} fill="#ff5fb4" />
+    <circle cx={cx} cy={cy} r="6" fill="#131736" stroke="#fff" stroke-width="2" />
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif" font-weight="800" fill="#fff" text-anchor="middle" font-size="16">
+      <text x={cx} y={cy - R + 34}>N</text>
+      <text x={cx + R - 30} y={cy + 6}>E</text>
+      <text x={cx} y={cy + R - 22}>S</text>
+      <text x={cx - R + 30} y={cy + 6}>W</text>
+    </g>
+    <circle cx={s1x} cy={s1y} r="5" fill="#ff5fb4" />
+    <circle cx={s2x} cy={s2y} r="5" fill="#fff" />
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+      <text x="400" y="104" font-size="15" fill="#aab0dc">Leaving New York</text>
+      <text x="400" y="140" font-size="34" font-weight="800" fill="#ff5fb4">{label(start)} {compass(start).abbr}</text>
+      <text x="400" y="196" font-size="15" fill="#aab0dc">Arriving in London</text>
+      <text x="400" y="232" font-size="34" font-weight="800" fill="#fff">{label(end)} {compass(end).abbr}</text>
+      <text x="400" y="290" font-size="15" fill="#aab0dc">The heading turns {turn}° on the way,</text>
+      <text x="400" y="313" font-size="15" fill="#aab0dc">yet the path never bends.</text>
+    </g>
+  </svg>
+  <figcaption>On a long route the compass heading drifts all the way. That is normal for the shortest path over a curved surface.</figcaption>
+</figure>

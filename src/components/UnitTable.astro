@@ -3,8 +3,9 @@ import { formatNumber } from '../lib/geo';
 const miles = [1, 5, 10, 25, 50, 100, 150, 500, 1000];
 ---
 <div class="table-scroll narrow">
+  <p class="table-title" aria-hidden="true">Miles to kilometers and nautical miles</p>
   <table>
-    <caption>Miles to kilometers and nautical miles</caption>
+    <caption class="visually-hidden">Miles to kilometers and nautical miles</caption>
     <thead><tr><th scope="col" class="num">Miles</th><th scope="col" class="num">Kilometers</th><th scope="col" class="num">Nautical miles</th></tr></thead>
     <tbody>
       {miles.map((m) => (
