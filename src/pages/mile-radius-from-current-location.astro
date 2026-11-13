@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import NearMeTool from '../components/calculator/NearMeTool';
+import Article, { frontmatter as fm } from '../content/mile-radius-from-current-location.mdx';
+import { nearMeFaqs } from '../content/nearme-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Mile radius from current location', href: fm.slug },
+];
+const toc = [
+  ['how-to-see-a-mile-radius-from-where-you-are', 'How to see a mile radius from where you are'],
+  ['what-x-miles-from-me-means-on-this-map', 'What “X miles from me” means'],
+  ['find-the-places-within-a-radius-of-you', 'Places within a radius of you'],
+  ['mile-radius-by-travel-time', 'Radius by travel time'],
+  ['how-long-does-it-take-to-reach-the-edge', 'Time to reach the edge'],
+  ['common-distances-from-your-location', 'Common distances from you'],
+  ['how-your-browser-finds-your-location', 'How your location is found'],
+  ['mile-radius-on-a-phone', 'On a phone'],
+  ['mile-radius-vs-kilometer-radius', 'Miles vs kilometers'],
+  ['limits-of-a-radius-from-your-location', 'Limits'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Mile Radius From Current Location',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Mile or kilometer radius from your current location',
+    'Radius by travel time on foot, by bike or by car',
+    'Towns inside the radius, counted on your device',
+    'Largest town near the edge in eight directions',
+    'Area covered and time to reach the edge',
+    'Start from any address, city or ZIP code',
+    'Download as an image, print or share by link',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base
+  title={fm.seo_title}
+  description={fm.description}
+  path={fm.slug}
+  breadcrumbs={crumbs}
+  faqs={nearMeFaqs}
+  schema={[appSchema]}
+  datePublished={fm.datePublished}
+  dateModified={fm.dateModified}
+>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <NearMeTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {nearMeFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Street map from OpenStreetMap via OpenFreeMap. Town list from GeoNames. Place search by Photon.</p>
+  </div>
+</Base>

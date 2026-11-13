@@ -157,3 +157,34 @@ export async function loadCityPoints(): Promise<CityPoint[]> {
 }
 
 export { countryName };
+
+export interface Town {
+  name: string;
+  /** "Evanston, IL" or "Lyon, France" */
+  label: string;
+  country: string;
+  lat: number;
+  lon: number;
+  population: number;
+}
+
+type TownRow = [name: string, admin: string, country: string, lat: number, lon: number, pop100: number];
+let townsPromise: Promise<Town[]> | null = null;
+
+/** About 24,000 towns for radius lookups, biggest first. Loaded once, on demand. */
+export function loadTowns(): Promise<Town[]> {
+  townsPromise ??= fetch('/data/towns.json')
+    .then((r) => (r.ok ? r.json() : []))
+    .then((rows: TownRow[]) =>
+      rows.map((t) => ({
+        name: t[0],
+        label: t[2] === 'US' ? `${t[0]}, ${t[1]}` : `${t[0]}, ${countryName(t[2])}`,
+        country: t[2],
+        lat: t[3],
+        lon: t[4],
+        population: t[5] * 100,
+      })),
+    )
+    .catch(() => []);
+  return townsPromise;
+}

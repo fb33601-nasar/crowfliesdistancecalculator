@@ -1051,3 +1051,8 @@ td.heading svg {
 .hero:not(.hero-page) .crumbs ol {
   justify-content: center;
 }
+.table-note {
+  font-size: var(--step--1);
+  color: var(--ink-faint);
+  margin-top: 0.5rem !important;
+}

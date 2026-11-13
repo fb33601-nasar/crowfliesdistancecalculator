@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "data": "node scripts/build-data.mjs",
+    "data": "node scripts/build-data.mjs && node scripts/build-towns.mjs",
     "icons": "node scripts/build-icons.mjs",
     "build": "astro build",
     "preview": "astro preview",

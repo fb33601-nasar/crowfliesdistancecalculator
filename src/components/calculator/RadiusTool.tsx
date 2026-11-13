@@ -12,8 +12,8 @@ import {
 import Globe from './Globe';
 import type { GlobeCircle } from './Globe';
 import PlaceInput from './PlaceInput';
-import type { CityPoint } from './places';
-import { loadCityPoints, nameForPoint } from './places';
+import type { Town } from './places';
+import { loadTowns, nameForPoint } from './places';
 import type { RadiusMapHandle } from './RadiusMapView';
 
 const RadiusMapView = lazy(() => import('./RadiusMapView'));
@@ -84,7 +84,7 @@ export default function RadiusTool() {
   const [mapWanted, setMapWanted] = useState(true);
   const [picking, setPicking] = useState<null | 'center' | 'add' | 'probe'>(null);
   const [probe, setProbe] = useState<Place | null>(null);
-  const [cities, setCities] = useState<CityPoint[]>([]);
+  const [cities, setCities] = useState<Town[]>([]);
   const [copied, setCopied] = useState('');
   const touched = useRef(false);
   const mapRef = useRef<RadiusMapHandle>(null);
@@ -103,7 +103,7 @@ export default function RadiusTool() {
       setSelectedId(restored[0].id);
       setRadiusText(trimNum(restored[0].radius / RADIUS_UNIT[useUnit].metres));
     }
-    loadCityPoints().then(setCities).catch(() => undefined);
+    loadTowns().then(setCities).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -393,20 +393,20 @@ export default function RadiusTool() {
               <div className="radius-places">
                 <p className="radius-places-head">
                   {inside.total === 0
-                    ? 'No large cities inside this circle'
-                    : `${inside.total} large ${inside.total === 1 ? 'city' : 'cities'} inside, nearest first`}
+                    ? 'No towns in our list inside this circle'
+                    : `${formatNumber(inside.total, 0)} ${inside.total === 1 ? 'town' : 'towns and cities'} inside, nearest first`}
                 </p>
                 {inside.list.length > 0 && (
                   <ol>
                     {inside.list.map(({ c, d }) => (
-                      <li key={`${c.name}-${c.lat}`}>
-                        <span>{c.admin ? `${c.name}, ${c.admin}` : c.name}</span>
+                      <li key={`${c.label}-${c.lat}`}>
+                        <span>{c.label}</span>
                         <span>{d < 1000 ? 'center' : fmtRadius(d, unit)}</span>
                       </li>
                     ))}
                   </ol>
                 )}
-                <p className="calc-note">From a list of about 1,800 of the world's larger cities.</p>
+                <p className="calc-note">Towns of 5,000+ people in the US, UK, Canada, Australia and NZ, and 25,000+ elsewhere.</p>
               </div>
             )}
 

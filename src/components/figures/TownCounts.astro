@@ -1,0 +1,47 @@
+---
+// How many listed towns fall inside circles around eight cities, counted from public/data/towns.json at build time.
+import { readFileSync } from 'node:fs';
+import { haversine, formatNumber } from '../../lib/geo';
+type Row = [string, string, string, number, number, number];
+const towns: Row[] = JSON.parse(readFileSync(new URL('../../../public/data/towns.json', import.meta.url), 'utf8'));
+const centers: [string, number, number][] = [
+  ['New York', 40.7128, -74.006],
+  ['London', 51.5085, -0.1257],
+  ['Manchester', 53.4809, -2.2374],
+  ['Chicago', 41.85, -87.65],
+  ['Los Angeles', 34.0522, -118.2437],
+  ['Dallas', 32.7831, -96.8067],
+  ['Denver', 39.7392, -104.9903],
+  ['Kansas City', 39.0997, -94.5786],
+];
+const radii = [10, 25, 50, 100];
+const rows = centers.map(([name, lat, lon]) => {
+  const near = towns.filter((t) => Math.abs(t[3] - lat) < 2.5).map((t) => haversine({ lat, lon }, { lat: t[3], lon: t[4] }));
+  return { name, counts: radii.map((r) => near.filter((d) => d <= r * 1609.344).length) };
+});
+const max = Math.max(...rows.map((r) => r.counts[3]));
+---
+<div class="table-scroll tc">
+  <p class="table-title" aria-hidden="true">Towns and cities inside a radius, by starting point</p>
+  <table>
+    <caption class="visually-hidden">Towns and cities inside a radius, by starting point</caption>
+    <thead>
+      <tr><th scope="col">From the center of</th>{radii.map((r) => <th scope="col" class="num">{r} miles</th>)}<th scope="col">100-mile count</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.name}</th>
+          {r.counts.map((c) => <td class="num">{formatNumber(c, 0)}</td>)}
+          <td><span class="bar"><span style={`width:${((r.counts[3] / max) * 100).toFixed(1)}%`}></span></span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">Places of 5,000+ people in the US and UK, from GeoNames, counted by the position of each town's center.</p>
+<style>
+  .tc td:last-child { min-width: 9rem; }
+  .bar { display: block; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+</style>

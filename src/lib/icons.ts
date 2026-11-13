@@ -18,6 +18,16 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-see-a-mile-radius-from-where-you-are': 'pin',
+  'what-x-miles-from-me-means-on-this-map': 'measure',
+  'find-the-places-within-a-radius-of-you': 'target',
+  'mile-radius-by-travel-time': 'compass',
+  'how-long-does-it-take-to-reach-the-edge': 'route',
+  'common-distances-from-your-location': 'table',
+  'how-your-browser-finds-your-location': 'globe',
+  'mile-radius-on-a-phone': 'info',
+  'mile-radius-vs-kilometer-radius': 'ruler',
+  'limits-of-a-radius-from-your-location': 'limits',
   'how-to-draw-a-radius-on-a-map': 'target',
   'what-the-circle-on-a-radius-map-measures': 'measure',
   'area-and-circumference-for-common-radii': 'table',

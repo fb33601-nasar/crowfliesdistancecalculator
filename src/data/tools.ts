@@ -24,7 +24,7 @@ export const TOOLS: Tool[] = [
     live: true,
   },
   { href: '/radius-map/', name: 'Radius map', blurb: 'Draw a circle of any radius around a place.', icon: 'target', live: true },
-  { href: '/mile-radius-from-me/', name: 'Mile radius from me', blurb: 'See everything within a set distance of where you are.', icon: 'pin', live: false },
+  { href: '/mile-radius-from-current-location/', name: 'Mile radius from me', blurb: 'See the towns within any distance of where you are.', icon: 'pin', live: true },
   { href: '/air-miles-calculator/', name: 'Air miles calculator', blurb: 'Flight distance between airports and cities.', icon: 'globe', live: false },
   { href: '/halfway-point/', name: 'Halfway point', blurb: 'The exact midpoint between two places.', icon: 'compass', live: false },
 ];

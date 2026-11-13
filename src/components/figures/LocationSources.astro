@@ -1,0 +1,32 @@
+---
+// Where a browser's location fix comes from, with rough accuracy for each source.
+const rows = [
+  { src: 'GPS and other satellite systems', where: 'Phones and tablets outdoors', acc: 'A few meters', w: 97 },
+  { src: 'Nearby Wi-Fi networks', where: 'Phones and laptops indoors or in towns', acc: 'Tens of meters', w: 80 },
+  { src: 'Mobile phone masts', where: 'Phones with weak GPS or Wi-Fi', acc: 'Hundreds of meters to a few km', w: 45 },
+  { src: 'Your internet address (IP)', where: 'Desktops on a wired connection', acc: 'Town or region level, often several km off', w: 15 },
+];
+---
+<figure class="locsrc">
+  <ul>
+    {rows.map((r) => (
+      <li>
+        <span class="locsrc-name">{r.src}</span>
+        <span class="locsrc-where">{r.where}</span>
+        <span class="locsrc-bar" aria-hidden="true"><span style={`width:${r.w}%`}></span></span>
+        <span class="locsrc-acc">{r.acc}</span>
+      </li>
+    ))}
+  </ul>
+  <figcaption>Typical accuracy of each source a browser can use. The bar shows relative precision, longest for the most exact. The browser picks the best source available and reports how accurate the result is.</figcaption>
+</figure>
+<style>
+  .locsrc ul { list-style: none; padding: 0 !important; margin: 0; display: grid; gap: 0.6rem; }
+  .locsrc li { margin: 0 !important; display: grid; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); gap: 0.2rem 1.2rem; align-items: center; background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.9rem 1.1rem; }
+  .locsrc-name { font-weight: 750; color: var(--ink); }
+  .locsrc-where { color: var(--ink-soft); font-size: var(--step--1); }
+  .locsrc-bar { height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .locsrc-bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+  .locsrc-acc { font-size: var(--step--1); font-weight: 650; color: var(--ink); }
+  @media (max-width: 640px) { .locsrc li { grid-template-columns: minmax(0, 1fr); } }
+</style>

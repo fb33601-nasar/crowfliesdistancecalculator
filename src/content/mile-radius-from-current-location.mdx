@@ -1,0 +1,184 @@
+---
+slug: /mile-radius-from-current-location/
+title: 'Mile Radius From Current Location Map'
+seo_title: 'Mile Radius From Current Location: Map Miles From Me'
+description: 'Draw a mile radius from your current location in one tap. See the towns within 5, 10, 25 or 50 miles of you, places on the edge, and how long they take to reach.'
+lede: 'Tap once to draw a circle of any size around where you are now, then see which towns fall inside it, what lies right on the edge in each direction and how long the trip takes.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import TownCounts from '../components/figures/TownCounts.astro';
+import LocationSources from '../components/figures/LocationSources.astro';
+import Callout from '../components/Callout.astro';
+
+A mile radius from your current location is a circle drawn around the spot where you are standing. Every point on its edge is the same straight line distance from you, so it shows at a glance what is within 5, 10 or 50 miles in every direction.
+
+Press **Use my current location** above and allow your browser to share it. Until you do, the tool shows an example 25-mile circle around Kansas City.
+
+## How to see a mile radius from where you are
+
+The whole job takes two taps.
+
+<div class="steps">
+
+1. Press **Use my current location**. Your browser asks whether this page may see your location. Choose **Allow**. A phone usually finds you within a few meters; a laptop may take a few seconds longer and be less exact.
+2. Set the distance. Type a number of miles or kilometers, or press a preset from 1 to 250 miles. To think in time instead, switch to **Travel time** and pick a trip length and a way of traveling.
+3. Read the results. The panel shows the radius, the area it covers and how many towns fall inside it. Below that, it names the biggest town close to the edge in each of eight directions, then the nearest towns inside the circle.
+4. Adjust on the map. Drag the white handle on the edge to make the circle bigger or smaller, or drag the center dot if the tool placed you slightly off.
+5. Press **Copy link**, **Download image** or **Print** to keep the map.
+
+</div>
+
+<Callout title="Not where you are right now?">
+Type any address, city, ZIP code or postcode in the **Or start from a place** box, or choose **Pick the starting point on the map**. Everything works the same way from any point, which helps when you are planning from home for a trip somewhere else.
+</Callout>
+
+## What "X miles from me" means on this map
+
+The circle measures distance as the crow flies: the shortest line over the Earth's surface, ignoring roads. A town inside a 20-mile circle is no more than 20 miles from you in a straight line.
+
+The trip there is almost always longer. Roads curve around rivers, hills, rail lines and private land. In a sample of 18 city pairs we measured for our [address distance calculator](/distance-between-two-addresses/), the road route was a median 1.19 times the straight line, and some pairs ran far higher where water or mountains blocked the direct path.
+
+So "20 miles from me" on this map means "within 20 miles if you could fly". If you need driving miles, use the circle to shortlist places and then check the road distance for the ones you care about.
+
+## Find the places within a radius of you
+
+The tool searches a built-in list of about 24,600 towns and cities and does the work on your device. It covers every town of 5,000 people or more in the United States, the United Kingdom, Canada and Australia, 3,000 or more in Ireland and New Zealand, and 25,000 or more everywhere else.
+
+It gives you three views of the result:
+
+- **Towns inside.** The count of listed places inside the circle.
+- **Places about X miles away.** For each of the eight compass directions, the largest town that sits between 75% of the radius and just past the edge. This answers the question "what is 50 miles from me?" directly: it names the towns you would reach at roughly that distance heading north, east, south or west.
+- **Nearest towns inside the circle.** The twelve closest places, with the distance and compass direction of each.
+
+How many towns a circle holds depends heavily on where you are. The table below counts the places in our list inside circles of four sizes around eight cities.
+
+<TownCounts />
+
+Big metropolitan areas fill up fast because GeoNames lists many suburbs and boroughs as separate places. A 50-mile circle around New York holds more than ten times as many as the same circle around Kansas City. In open country a circle of the same size can hold only a handful.
+
+## Mile radius by travel time
+
+Many people asking "what is within 2 hours of me" mean travel time, not miles. Switch the tool to **Travel time**, pick the length of the trip and how you will travel, and it draws an estimated circle for that trip.
+
+The estimate assumes steady average speeds of 3 mph on foot, 10 mph by bike and 40 mph by car, with the route 19% longer than the straight line.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Estimated straight line reach by travel time</p>
+  <table>
+    <caption class="visually-hidden">Estimated straight line reach by travel time</caption>
+    <thead><tr><th scope="col">Trip length</th><th scope="col" class="num">On foot, 3 mph</th><th scope="col" class="num">By bike, 10 mph</th><th scope="col" class="num">By car, 40 mph</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">15 minutes</th><td class="num">0.6 mi</td><td class="num">2.1 mi</td><td class="num">8.4 mi</td></tr>
+      <tr><th scope="row">30 minutes</th><td class="num">1.3 mi</td><td class="num">4.2 mi</td><td class="num">16.8 mi</td></tr>
+      <tr><th scope="row">1 hour</th><td class="num">2.5 mi</td><td class="num">8.4 mi</td><td class="num">33.6 mi</td></tr>
+      <tr><th scope="row">2 hours</th><td class="num">5.0 mi</td><td class="num">16.8 mi</td><td class="num">67.2 mi</td></tr>
+      <tr><th scope="row">3 hours</th><td class="num">7.6 mi</td><td class="num">25.2 mi</td><td class="num">100.8 mi</td></tr>
+      <tr><th scope="row">5 hours</th><td class="num">12.6 mi</td><td class="num">42.0 mi</td><td class="num">168.1 mi</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A time circle is a rough guide, not a drive time map. On an interstate you may cover 60 miles in an hour; in city traffic you may cover 15. A real drive time area is a blob that stretches along fast roads and shrinks around lakes, mountains and congested centers. The circle shows the average case, which is often enough to decide whether a day trip is realistic.
+
+## How long does it take to reach the edge?
+
+Going the other way, the tool shows how long the edge of a distance circle takes to reach on foot, by bike and by car, using the same speeds and the same 1.19 road factor.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Rough time to reach the edge of a radius from you</p>
+  <table>
+    <caption class="visually-hidden">Rough time to reach the edge of a radius from you</caption>
+    <thead><tr><th scope="col">Radius</th><th scope="col" class="num">Walking</th><th scope="col" class="num">Cycling</th><th scope="col" class="num">Driving</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 mile</th><td class="num">24 min</td><td class="num">7 min</td><td class="num">2 min</td></tr>
+      <tr><th scope="row">5 miles</th><td class="num">2 h</td><td class="num">36 min</td><td class="num">9 min</td></tr>
+      <tr><th scope="row">10 miles</th><td class="num">4 h</td><td class="num">1 h 11 min</td><td class="num">18 min</td></tr>
+      <tr><th scope="row">25 miles</th><td class="num">9 h 55 min</td><td class="num">2 h 58 min</td><td class="num">45 min</td></tr>
+      <tr><th scope="row">50 miles</th><td class="num">19 h 50 min</td><td class="num">5 h 57 min</td><td class="num">1 h 29 min</td></tr>
+      <tr><th scope="row">100 miles</th><td class="num">39 h 40 min</td><td class="num">11 h 54 min</td><td class="num">2 h 59 min</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Common distances from your location
+
+Some radii come up again and again. Here is what each one usually means in practice.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">What common radii are used for</p>
+  <table>
+    <caption class="visually-hidden">What common radii are used for</caption>
+    <thead><tr><th scope="col">Radius from you</th><th scope="col" class="num">Area covered</th><th scope="col">Typical question</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 mile</th><td class="num">3.1 sq mi</td><td>What is within walking distance of home?</td></tr>
+      <tr><th scope="row">3 miles</th><td class="num">28 sq mi</td><td>Which shops, gyms or schools are a short bike ride away?</td></tr>
+      <tr><th scope="row">5 miles</th><td class="num">79 sq mi</td><td>Does a business deliver to me? Which jobs are close?</td></tr>
+      <tr><th scope="row">10 miles</th><td class="num">314 sq mi</td><td>What is within an easy commute?</td></tr>
+      <tr><th scope="row">25 miles</th><td class="num">1,963 sq mi</td><td>Where can I search for jobs, homes or a vet?</td></tr>
+      <tr><th scope="row">50 miles</th><td class="num">7,854 sq mi</td><td>Which towns make a good half-day trip?</td></tr>
+      <tr><th scope="row">100 miles</th><td class="num">31,414 sq mi</td><td>What is within a day trip there and back?</td></tr>
+      <tr><th scope="row">250 miles</th><td class="num">196,284 sq mi</td><td>Where could I go for a weekend by car?</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Area grows with the square of the radius, so doubling the distance from 25 to 50 miles takes in four times the ground. That is why a 50-mile search on a job or property site can return so many more results than a 25-mile one.
+
+Many websites let you filter by "within X miles of me". They almost all mean the straight line distance from a point, often the middle of your ZIP code or postcode rather than your front door. Drawing the same circle here shows you exactly which towns that filter will and will not include.
+
+## How your browser finds your location
+
+When you press **Use my current location**, the tool asks the browser for your position through the standard Geolocation API. The browser decides how to work it out, and the source sets how exact the result is.
+
+<LocationSources />
+
+The tool shows the accuracy the browser reports, such as "located to within about 20 m". A figure of more than a kilometer usually means the browser fell back on your network address. In that case, type your address or drag the center dot to the right spot.
+
+### Your location stays on your device
+
+The tool names your position by finding the nearest town in its own list, which runs in your browser. Your coordinates are not sent to us or to a place search service when you use **Use my current location**.
+
+Two things do leave your device: the street map tiles for the area you are looking at, which any online map has to download, and any address you type in the search box, which goes to the place search service to be looked up. The page address updates as you change the distance, but your location only goes into a link when you press **Copy link**.
+
+<Callout title="If the location button does nothing" kind="note">
+Check that location access is allowed for this site in your browser settings, and on a phone that location services are on for the browser itself. Private or incognito windows and some privacy extensions block it. Pages must load over a secure connection to use location at all, which this site does.
+</Callout>
+
+## Mile radius on a phone
+
+The tool works the same way on a phone, and a phone usually gives the best location fix because it can use GPS.
+
+On an iPhone, Safari needs **Location Services** turned on under **Settings, Privacy & Security**, with Safari Websites set to **While Using the App**. On Android, Chrome needs the phone's location turned on and the site allowed under **Site settings, Location**.
+
+Pinch to zoom the map, drag the white handle to resize the circle, and press the **Fullscreen** button in the corner of the map for a bigger view.
+
+## Mile radius vs kilometer radius
+
+Switch the unit menu to **kilometers** to draw the circle in metric units. The two convert at 1 mile = 1.609344 km exactly.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Common radii in miles and kilometers</p>
+  <table>
+    <caption class="visually-hidden">Common radii in miles and kilometers</caption>
+    <thead><tr><th scope="col">Miles</th><th scope="col" class="num">Kilometers</th><th scope="col">Kilometers</th><th scope="col" class="num">Miles</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 mi</th><td class="num">1.61 km</td><th scope="row">1 km</th><td class="num">0.62 mi</td></tr>
+      <tr><th scope="row">5 mi</th><td class="num">8.05 km</td><th scope="row">5 km</th><td class="num">3.11 mi</td></tr>
+      <tr><th scope="row">10 mi</th><td class="num">16.09 km</td><th scope="row">10 km</th><td class="num">6.21 mi</td></tr>
+      <tr><th scope="row">25 mi</th><td class="num">40.23 km</td><th scope="row">25 km</th><td class="num">15.53 mi</td></tr>
+      <tr><th scope="row">50 mi</th><td class="num">80.47 km</td><th scope="row">50 km</th><td class="num">31.07 mi</td></tr>
+      <tr><th scope="row">100 mi</th><td class="num">160.93 km</td><th scope="row">100 km</th><td class="num">62.14 mi</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Limits of a radius from your location
+
+- **The center is only as good as the location fix.** Check the accuracy line under the button, and drag the dot if it is off.
+- **The circle ignores roads and borders.** A place 10 miles away across a bay or a mountain range may be a long trip. A circle near a state line or a national border will cross it.
+- **The town list has a size floor.** Small villages and hamlets are not counted. Zoom into the street map to see them.
+- **Town positions are their centers.** A large city counts as inside when its center point is, even if part of it lies beyond the edge.
+- **Travel time circles are averages.** Real speeds depend on roads, traffic and the time of day.
+
+For a circle around somewhere other than where you are, or several circles at once, use the [radius map tool](/radius-map/).
