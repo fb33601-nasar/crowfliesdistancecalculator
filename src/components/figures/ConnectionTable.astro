@@ -1,0 +1,47 @@
+---
+import { airMiles } from '../../lib/server/airports';
+import { formatNumber } from '../../lib/geo';
+const trips: [string, string, string][] = [
+  ['BOS', 'ORD', 'SFO'],
+  ['MIA', 'ATL', 'SEA'],
+  ['SFO', 'HNL', 'SYD'],
+  ['LHR', 'DXB', 'SIN'],
+  ['JFK', 'LHR', 'DEL'],
+  ['LAX', 'JFK', 'LHR'],
+  ['BOS', 'DFW', 'SFO'],
+  ['JFK', 'DXB', 'DEL'],
+];
+const rows = trips.map(([a, via, b]) => {
+  const direct = airMiles(a, b);
+  const viaMi = airMiles(a, via) + airMiles(via, b);
+  return { a, via, b, direct, viaMi, extra: viaMi - direct, pct: ((viaMi - direct) / direct) * 100 };
+});
+const max = Math.max(...rows.map((r) => r.pct));
+---
+<div class="table-scroll cxn">
+  <p class="table-title" aria-hidden="true">How much a connection adds to the distance</p>
+  <table>
+    <caption class="visually-hidden">How much a connection adds to the distance</caption>
+    <thead>
+      <tr><th scope="col">Trip</th><th scope="col">Connecting at</th><th scope="col" class="num">Nonstop</th><th scope="col" class="num">With the stop</th><th scope="col" class="num">Extra</th><th scope="col">Extra distance</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.a} → {r.b}</th>
+          <td>{r.via}</td>
+          <td class="num">{formatNumber(r.direct, 0)} mi</td>
+          <td class="num">{formatNumber(r.viaMi, 0)} mi</td>
+          <td class="num">+{formatNumber(r.extra, 0)} mi</td>
+          <td><span class="bar"><span style={`width:${Math.max((r.pct / max) * 100, 1.5).toFixed(1)}%`}></span></span><span class="pct">{r.pct.toFixed(1)}%</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .cxn td:last-child { min-width: 11rem; white-space: nowrap; }
+  .bar { display: inline-block; vertical-align: middle; width: calc(100% - 3.6rem); height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+  .pct { display: inline-block; width: 3.3rem; text-align: right; font-weight: 650; }
+</style>

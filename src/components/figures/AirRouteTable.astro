@@ -1,0 +1,38 @@
+---
+import { airMiles, airport, flightHours } from '../../lib/server/airports';
+import { formatDuration, formatNumber } from '../../lib/geo';
+interface Props { routes: [string, string][]; title: string }
+const { routes, title } = Astro.props;
+const rows = routes.map(([a, b]) => {
+  const mi = airMiles(a, b);
+  return { a, b, from: airport(a).city, to: airport(b).city, mi, km: mi * 1.609344, nm: (mi * 1609.344) / 1852, h: flightHours(mi) };
+});
+const max = Math.max(...rows.map((r) => r.mi));
+---
+<div class="table-scroll art">
+  <p class="table-title" aria-hidden="true">{title}</p>
+  <table>
+    <caption class="visually-hidden">{title}</caption>
+    <thead>
+      <tr><th scope="col">Route</th><th scope="col" class="num">Miles</th><th scope="col" class="num">Kilometers</th><th scope="col" class="num">Nautical miles</th><th scope="col" class="num">Est. flying time</th><th scope="col">Distance</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row"><a href={`/air-miles-calculator/?from=${r.a}&to=${r.b}`}>{r.a} → {r.b}</a> <span class="muted">{r.from} to {r.to}</span></th>
+          <td class="num">{formatNumber(r.mi, 0)}</td>
+          <td class="num">{formatNumber(r.km, 0)}</td>
+          <td class="num">{formatNumber(r.nm, 0)}</td>
+          <td class="num">{formatDuration(r.h)}</td>
+          <td><span class="bar"><span style={`width:${((r.mi / max) * 100).toFixed(1)}%`}></span></span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .art td:last-child { min-width: 8rem; }
+  .art th .muted { display: block; font-weight: 500; }
+  .bar { display: block; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+</style>

@@ -18,6 +18,17 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-calculate-air-miles-between-two-airports': 'measure',
+  'what-air-miles-means': 'meaning',
+  'air-miles-between-popular-airports': 'table',
+  'why-flight-paths-curve-on-a-map': 'globe',
+  'air-miles-vs-the-distance-a-plane-actually-flies': 'route',
+  'estimated-flying-time': 'compass',
+  'time-difference-between-airports': 'info',
+  'connections-how-much-a-stop-adds': 'pin',
+  'air-miles-in-kilometers-and-nautical-miles': 'ruler',
+  'how-the-distance-is-calculated': 'formula',
+  'who-uses-an-air-miles-calculator': 'target',
   'how-far-in-time': 'route',
   'how-big-is-the-area': 'target',
   'towns-in-range': 'pin',

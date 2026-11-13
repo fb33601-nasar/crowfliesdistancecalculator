@@ -1,0 +1,160 @@
+---
+slug: /air-miles-calculator/
+title: 'Air Miles Calculator: Flight Distance Between Airports'
+seo_title: 'Air Miles Calculator: Flight Distance Between Two Airports'
+description: 'Find the air miles between any two airports in miles, km and nautical miles. Free flight distance calculator with flying time, time difference, stops and round trips.'
+lede: 'Pick two airports to see the flight distance between them in miles, kilometers and nautical miles, with an estimated flying time, the time difference and the great circle route on a globe.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import AirRouteTable from '../components/figures/AirRouteTable.astro';
+import ConnectionTable from '../components/figures/ConnectionTable.astro';
+import GreatCircleWorld from '../components/figures/GreatCircleWorld.astro';
+import Callout from '../components/Callout.astro';
+
+Air miles are the distance between two airports measured in a straight line over the curve of the Earth, the shortest path a plane could fly. The calculator above works them out for about 4,000 airports with scheduled passenger flights.
+
+The route loaded first is New York JFK to London Heathrow: 3,452 miles (5,555 km, or 2,999 nautical miles), about 7 hours 25 minutes in the air by the calculator's estimate.
+
+## How to calculate air miles between two airports
+
+<div class="steps">
+
+1. Type the departure airport in the **From airport** box. You can search by city ("Chicago"), airport name ("O'Hare") or code ("ORD" or "KORD"), then pick the match from the list.
+2. Type the arrival airport in the **To airport** box the same way.
+3. Read the air miles. The large figure is the total distance. Switch between **mi**, **km** and **nm** with the buttons above it.
+4. To include a connection, press **Add a stop** and choose the connecting airport. The table then lists each leg and shows how much the stop adds to the nonstop distance. You can add up to three stops.
+5. Tick **Round trip** to double the distance and flying time for the journey there and back.
+6. Press **Copy link** to share the route or **Copy result** to paste the figures into an email, an expense claim or a travel log.
+
+</div>
+
+<Callout title="Picking an airport from the globe">
+Click anywhere on the globe and choose **Fly from nearest airport** or **Fly to nearest airport**. The calculator picks the closest airport with scheduled flights, favoring bigger airports when two are almost equally close.
+</Callout>
+
+## What "air miles" means
+
+The phrase gets used three ways, and it helps to know which one you need.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Three meanings of air miles</p>
+  <table>
+    <caption class="visually-hidden">Three meanings of air miles</caption>
+    <thead><tr><th scope="col">Meaning</th><th scope="col">What it measures</th><th scope="col">Where you see it</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Flight distance in ordinary miles</th><td>Straight line distance between two airports, in statute miles of 5,280 feet</td><td>Travel planning, flight logs, airline route maps, this calculator's default</td></tr>
+      <tr><th scope="row">Nautical miles</th><td>The same distance in units of 1,852 meters, about 1.15 ordinary miles</td><td>Pilots, air traffic control, flight plans, and US trucking rules that say "air miles"</td></tr>
+      <tr><th scope="row">Loyalty points</th><td>Points earned in a frequent flyer or rewards scheme, which may or may not follow distance</td><td>Airline and store rewards programs</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The first two are the same distance in different units. The calculator gives both. Loyalty points are a different thing: many schemes now award points by ticket price or fare class rather than distance, so the miles you fly and the points you earn can differ a lot. Distance still matters in many programs, though, for award charts priced by distance band and for lifetime status based on miles flown.
+
+## Air miles between popular airports
+
+The table gives the great circle distance and an estimated flying time for some of the most traveled routes. Select any route to open it in the calculator.
+
+<AirRouteTable title="Air miles on popular routes" routes={[['JFK','LHR'],['LAX','JFK'],['ATL','LAX'],['ORD','LGA'],['DFW','LAX'],['DEN','ORD'],['MIA','ORD'],['BOS','LAX'],['HNL','LAX'],['SEA','ANC'],['YYZ','YVR'],['JFK','CDG'],['LHR','EDI'],['LHR','DXB'],['DXB','KHI'],['SFO','NRT']]} />
+
+Some of the longest nonstop flights in service cover close to half the distance around the planet.
+
+<AirRouteTable title="Very long nonstop routes" routes={[['SIN','JFK'],['DOH','AKL'],['PER','LHR'],['LAX','SIN'],['JFK','HKG'],['SYD','LAX'],['LHR','SIN']]} />
+
+## Why flight paths curve on a map
+
+On a flat map the shortest route between two airports looks like a curve that bends toward the nearest pole. That curve is a great circle, the line you get by slicing the globe through its center and both airports. It is the shortest path over the surface of a sphere.
+
+<GreatCircleWorld />
+
+A flat map has to stretch the globe to lay it out, and the stretch grows toward the poles. A straight line drawn across the map follows a constant compass heading, which is easy to steer but longer. The great circle starts on one heading and turns steadily on the way. The calculator shows the heading the plane sets off on from the first airport, and the globe beside it draws the real shape of the route.
+
+## Air miles vs the distance a plane actually flies
+
+The calculator gives the great circle distance, the ideal minimum. The distance a flight actually covers is usually a little longer, for several reasons:
+
+- **Airways and air traffic control.** Planes follow published routes and instructions, which do not always run in a perfectly straight line.
+- **Winds.** Pilots and dispatchers often accept a longer track to ride a tailwind or avoid a headwind. Over the North Atlantic, the daily track system shifts with the jet stream.
+- **Departure and arrival procedures.** Climbing out and lining up to land add miles around both airports.
+- **Restricted airspace.** Closed or restricted areas force detours on some routes.
+
+For trip planning, logbooks and most mileage-based rewards, the great circle distance is the standard figure. Some airlines and the industry fare system use slightly different published route mileages for each city pair, so a figure from a particular airline may differ a little from the one here.
+
+## Estimated flying time
+
+Flying time comes from a simple model: 30 minutes for taxiing, take-off, climb, descent and landing, plus the remaining distance at about 500 mph. That roughly matches published schedules on most routes.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Estimated flying time by distance</p>
+  <table>
+    <caption class="visually-hidden">Estimated flying time by distance</caption>
+    <thead><tr><th scope="col">Air miles</th><th scope="col" class="num">Estimated flying time</th><th scope="col">Typical flight</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">250</th><td class="num">1 h</td><td>Short regional hop</td></tr>
+      <tr><th scope="row">500</th><td class="num">1 h 30 min</td><td>Short domestic flight</td></tr>
+      <tr><th scope="row">1,000</th><td class="num">2 h 30 min</td><td>Medium domestic flight</td></tr>
+      <tr><th scope="row">2,500</th><td class="num">5 h 30 min</td><td>US coast to coast</td></tr>
+      <tr><th scope="row">3,500</th><td class="num">7 h 30 min</td><td>Transatlantic</td></tr>
+      <tr><th scope="row">5,000</th><td class="num">10 h 30 min</td><td>Long-haul</td></tr>
+      <tr><th scope="row">7,500</th><td class="num">15 h 30 min</td><td>Ultra long-haul</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Real times vary with wind and aircraft. Flights heading east across the Atlantic or the United States usually run faster than the same route westbound, because the prevailing jet stream blows from west to east. On a coast to coast US flight or across the Atlantic, the difference between directions is often half an hour or more.
+
+The **Leave at** box under the result adds the flying time and the time difference to a departure time, so you can see roughly when you will land in local time. It does not include time on the ground at connecting airports.
+
+## Time difference between airports
+
+The calculator looks up the time zone of each airport and shows the current difference between departure and arrival, plus the local time at each end right now. It allows for daylight saving time as it applies today in each place.
+
+Time zones explain why a flight's scheduled times can look odd. A 7 hour 30 minute flight from New York to London that leaves at 9:00 p.m. lands around 9:30 a.m. London time, because London is five hours ahead for most of the year. Flying west, the clock can show you landing almost as soon as you took off.
+
+## Connections: how much a stop adds
+
+A connecting flight is almost always longer than flying nonstop, because the connecting airport rarely sits exactly on the great circle. How much longer depends on how far off the line it is.
+
+<ConnectionTable />
+
+A stop that sits close to the direct route, like Chicago for Boston to San Francisco, adds well under 1%. A hub far off the line can add thousands of miles: Los Angeles to London through New York adds 470 miles. When you compare itineraries with the same number of stops, the one through the better-placed hub usually means less time in the air.
+
+## Air miles in kilometers and nautical miles
+
+The three units convert at fixed rates, set by international agreement.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Distance unit conversions</p>
+  <table>
+    <caption class="visually-hidden">Distance unit conversions</caption>
+    <thead><tr><th scope="col">Unit</th><th scope="col" class="num">In miles</th><th scope="col" class="num">In kilometers</th><th scope="col" class="num">In nautical miles</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 statute mile</th><td class="num">1</td><td class="num">1.609344</td><td class="num">0.868976</td></tr>
+      <tr><th scope="row">1 kilometer</th><td class="num">0.621371</td><td class="num">1</td><td class="num">0.539957</td></tr>
+      <tr><th scope="row">1 nautical mile</th><td class="num">1.150779</td><td class="num">1.852</td><td class="num">1</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A nautical mile was originally the length of one minute of latitude, which is why it is used in navigation: 60 nautical miles is about one degree of latitude. Aviation uses nautical miles and knots, so a flight plan or a pilot's logbook will show a smaller number than a booking site that quotes ordinary miles for the same route.
+
+## How the distance is calculated
+
+The calculator uses Vincenty's formula on the WGS 84 ellipsoid, the model of the Earth that GPS uses. The Earth bulges slightly at the equator, and the ellipsoid allows for that.
+
+The simpler haversine formula treats the Earth as a perfect sphere. On the routes in the tables above it gives answers within about 0.3% of the ellipsoid figure: 3,442 miles instead of 3,452 for New York JFK to London Heathrow. That is close enough for most uses, but the ellipsoid result is the one to use for logbooks and mileage records.
+
+Each airport's position is its official reference point, usually near the middle of the runways, taken from the public domain OurAirports database. Large airports are a few miles across, so the gate-to-gate distance can differ slightly from the figure here.
+
+## Who uses an air miles calculator
+
+- **Travelers** comparing routes and connections, or working out how long a trip will take.
+- **Frequent flyers** tracking lifetime miles flown or checking distance bands for award tickets.
+- **Businesses** recording travel for expense and carbon reports, many of which ask for the distance flown.
+- **Pilots and students** checking great circle distances in nautical miles for flight planning practice.
+- **Logistics and trucking** teams that need distances in air miles for rules written that way.
+
+<Callout title="Need the distance between two cities, not airports?" kind="note">
+Use the [distance as the crow flies calculator](/) to measure between any two addresses or places, or the [address distance calculator](/distance-between-two-addresses/) for driving, walking and cycling routes.
+</Callout>

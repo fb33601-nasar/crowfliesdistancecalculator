@@ -17,6 +17,8 @@ interface Props {
   distanceLabel?: string;
   picking: 'a' | 'b' | null;
   onPick: (which: 'a' | 'b', point: LatLon, name?: string) => void;
+  /** connecting points between A and B, drawn as extra legs */
+  stops?: LatLon[];
   /** circles to draw, for the radius tool */
   circles?: GlobeCircle[];
   /** a circle to frame when there is no route */
@@ -109,6 +111,7 @@ export default function Globe({
   picking,
   onPick,
   circles = [],
+  stops = [],
   focus = null,
   cardActions,
 }: Props) {
@@ -286,15 +289,16 @@ export default function Globe({
       borders: world ? (path(world.borders) ?? '') : '',
       arc:
         a && b
-          ? (path({ type: 'LineString', coordinates: [[a.lon, a.lat], [b.lon, b.lat]] }) ?? '')
+          ? (path({ type: 'LineString', coordinates: [[a.lon, a.lat], ...stops.map((s) => [s.lon, s.lat]), [b.lon, b.lat]] }) ?? '')
           : '',
+      stopPins: stops.map((s) => pin(s)),
       pa: pin(a),
       pb: pin(b),
       mid,
       countryLabels,
       cityLabels,
     };
-  }, [view, world, cities, a?.lat, a?.lon, b?.lat, b?.lon, circles]);
+  }, [view, world, cities, a?.lat, a?.lon, b?.lat, b?.lon, circles, stops]);
 
   /** What lies under a point on the globe: the country, and a city if one is close by. */
   function lookup(lat: number, lon: number): Spot {
@@ -564,6 +568,14 @@ export default function Globe({
                     {c.label}
                   </text>
                 )}
+              </g>
+            ),
+        )}
+        {scene.stopPins.map(
+          (p, k) =>
+            p && (
+              <g key={`stop-${k}`} transform={`translate(${p[0].toFixed(1)} ${p[1].toFixed(1)})`} pointerEvents="none">
+                <circle r="6" fill="#fff" stroke="#c4157a" strokeWidth="3" />
               </g>
             ),
         )}

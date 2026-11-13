@@ -1,0 +1,39 @@
+---
+// Great circle routes drawn on a flat world map, built from the airport list.
+import { geoEquirectangular, geoPath, geoGraticule } from 'd3-geo';
+import { land } from '../calculator/land';
+import { airport, airMiles } from '../../lib/server/airports';
+import { formatNumber } from '../../lib/geo';
+const W = 760, H = 380;
+const projection = geoEquirectangular().scale(121).translate([W / 2, H / 2 + 22]).clipExtent([[0, 0], [W, H]]);
+const path = geoPath(projection).digits(1);
+const routes: [string, string][] = [['JFK', 'HKG'], ['LAX', 'SYD'], ['LHR', 'SIN'], ['JFK', 'LHR'], ['SEA', 'DXB'], ['GRU', 'JNB']];
+const drawn = routes.map(([a, b]) => {
+  const A = airport(a), B = airport(b);
+  const arc = path({ type: 'LineString', coordinates: [[A.lon, A.lat], [B.lon, B.lat]] }) ?? '';
+  // A dashed straight line on the flat map, skipped when the route wraps round the date line.
+  const straight = Math.abs(A.lon - B.lon) < 180 ? `M${projection([A.lon, A.lat])!.join(' ')}L${projection([B.lon, B.lat])!.join(' ')}` : '';
+  return { a, b, arc, straight, pa: projection([A.lon, A.lat])!, pb: projection([B.lon, B.lat])!, mi: airMiles(a, b) };
+});
+---
+<figure>
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="gcw-t gcw-d" class="fig-dark" style="background:#131736">
+    <title id="gcw-t">Great circle flight routes on a flat world map</title>
+    <desc id="gcw-d">Six long flights drawn as solid curved lines, with dashed straight lines between the same airports for comparison. New York to Hong Kong arcs far north over the Arctic, and London to Singapore bends up over Central Asia.</desc>
+    <path d={path(geoGraticule().step([30, 30])())} fill="none" stroke="#2a3170" stroke-width="0.8" />
+    <path d={path(land)} fill="#232a62" stroke="#3a4390" stroke-width="0.6" />
+    {drawn.filter((r) => r.straight).map((r) => <path d={r.straight} fill="none" stroke="#aab0dc" stroke-width="1.4" stroke-dasharray="5 5" opacity="0.7" />)}
+    {drawn.map((r) => <path d={r.arc} fill="none" stroke="#ff5fb4" stroke-width="2.6" stroke-linecap="round" />)}
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#fff">
+      {drawn.map((r) => (
+        <g>
+          <circle cx={r.pa[0]} cy={r.pa[1]} r="3.5" fill="#fff" />
+          <circle cx={r.pb[0]} cy={r.pb[1]} r="3.5" fill="#fff" />
+          <text x={r.pa[0] + 6} y={r.pa[1] - 6}>{r.a}</text>
+          <text x={r.pb[0] + 6} y={r.pb[1] - 6}>{r.b}</text>
+        </g>
+      ))}
+    </g>
+  </svg>
+  <figcaption>Solid magenta lines are great circle routes, the shortest paths over the globe. The dashed lines look shorter on a flat map but are longer in reality. New York to Hong Kong ({formatNumber(drawn[0].mi, 0)} mi) runs close to the North Pole.</figcaption>
+</figure>

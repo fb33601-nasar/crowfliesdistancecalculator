@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AirMilesTool from '../components/calculator/AirMilesTool';
+import Article, { frontmatter as fm } from '../content/air-miles-calculator.mdx';
+import { airFaqs } from '../content/air-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Air miles calculator', href: fm.slug },
+];
+const toc = [
+  ['how-to-calculate-air-miles-between-two-airports', 'How to calculate air miles'],
+  ['what-air-miles-means', 'What "air miles" means'],
+  ['air-miles-between-popular-airports', 'Air miles between popular airports'],
+  ['why-flight-paths-curve-on-a-map', 'Why flight paths curve'],
+  ['air-miles-vs-the-distance-a-plane-actually-flies', 'Air miles vs distance flown'],
+  ['estimated-flying-time', 'Estimated flying time'],
+  ['time-difference-between-airports', 'Time difference'],
+  ['connections-how-much-a-stop-adds', 'Connections'],
+  ['air-miles-in-kilometers-and-nautical-miles', 'Kilometers and nautical miles'],
+  ['how-the-distance-is-calculated', 'How the distance is calculated'],
+  ['who-uses-an-air-miles-calculator', 'Who uses it'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Air Miles Calculator',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'TravelApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Flight distance between about 4,000 airports',
+    'Miles, kilometers and nautical miles',
+    'Estimated flying time',
+    'Time difference and local times',
+    'Up to three connecting stops',
+    'Round trip distance',
+    'Great circle route on a 3D globe',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={airFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <AirMilesTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {airFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Airport data from OurAirports (public domain). Time zones from tz-lookup.</p>
+  </div>
+</Base>

@@ -1395,3 +1395,92 @@
 .calc-nearme .calc-details {
   padding-top: 0.6rem;
 }
+
+/* ---------- Air miles ---------- */
+.air-form {
+  gap: 0.9rem;
+}
+.airport-code {
+  display: inline-block;
+  min-width: 2.6rem;
+  font-weight: 800;
+  color: var(--course);
+  letter-spacing: 0.02em;
+}
+.air-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.8rem;
+}
+.air-row-actions button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  min-height: 2.3rem;
+  cursor: pointer;
+}
+.air-row-actions button:hover {
+  border-color: var(--ink);
+}
+.air-row-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.air-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.air-check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--course);
+}
+.air-legs {
+  width: 100%;
+  font-size: var(--step--1);
+  margin-top: 0.6rem;
+}
+.air-legs caption {
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: 0.35rem;
+}
+.air-legs th,
+.air-legs td {
+  padding: 0.4rem 0.3rem;
+}
+.air-legs .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.air-total th,
+.air-total td {
+  color: var(--ink-soft);
+}
+.air-facts .air-depart {
+  flex-wrap: wrap;
+}
+.air-depart input {
+  font: inherit;
+  font-weight: 700;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.4rem;
+  background: #fff;
+  color: var(--ink);
+}
+.air-depart span {
+  font-weight: 550;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
