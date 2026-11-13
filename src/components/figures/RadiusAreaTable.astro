@@ -1,0 +1,39 @@
+---
+// Area and circumference for common radii, from the spherical-cap formulas the tool uses.
+import { capArea, capCircumference, formatNumber, METRES_PER_SQ_MILE } from '../../lib/geo';
+const MI = 1609.344;
+const radii = [1, 3, 5, 10, 15, 20, 25, 30, 50, 75, 100, 150, 200, 250, 500];
+const rows = radii.map((r) => {
+  const m = r * MI;
+  const a = capArea(m);
+  return { r, km: m / 1000, sqmi: a / METRES_PER_SQ_MILE, sqkm: a / 1e6, edge: capCircumference(m) / MI };
+});
+const max = Math.log10(rows[rows.length - 1].sqmi);
+const fmt = (v: number) => formatNumber(v, v < 10 ? 2 : v < 100 ? 1 : 0);
+---
+<div class="table-scroll rat">
+  <p class="table-title" aria-hidden="true">Area and circumference by radius</p>
+  <table>
+    <caption class="visually-hidden">Area and circumference by radius</caption>
+    <thead>
+      <tr><th scope="col">Radius</th><th scope="col" class="num">In km</th><th scope="col" class="num">Area (sq mi)</th><th scope="col" class="num">Area (km²)</th><th scope="col" class="num">Circumference</th><th scope="col">Area, log scale</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((x) => (
+        <tr>
+          <th scope="row">{x.r} {x.r === 1 ? 'mile' : 'miles'}</th>
+          <td class="num">{fmt(x.km)}</td>
+          <td class="num">{fmt(x.sqmi)}</td>
+          <td class="num">{fmt(x.sqkm)}</td>
+          <td class="num">{fmt(x.edge)} mi</td>
+          <td><span class="bar"><span style={`width:${Math.max((Math.log10(x.sqmi) + 0.6) / (max + 0.6) * 100, 3).toFixed(1)}%`}></span></span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .rat td:last-child { min-width: 9rem; }
+  .bar { display: block; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+</style>

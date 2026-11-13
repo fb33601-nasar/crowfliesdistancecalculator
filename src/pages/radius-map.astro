@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import RadiusTool from '../components/calculator/RadiusTool';
+import Article, { frontmatter as fm } from '../content/radius-map.mdx';
+import { radiusFaqs } from '../content/radius-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Radius map', href: fm.slug },
+];
+const toc = [
+  ['how-to-draw-a-radius-on-a-map', 'How to draw a radius on a map'],
+  ['what-the-circle-on-a-radius-map-measures', 'What the circle measures'],
+  ['area-and-circumference-for-common-radii', 'Area and circumference by radius'],
+  ['draw-several-circles-on-one-map', 'Several circles on one map'],
+  ['check-whether-a-place-is-inside-the-radius', 'Is a place inside the radius?'],
+  ['common-uses-for-a-radius-map', 'Common uses'],
+  ['how-far-is-the-edge-in-travel-time', 'Travel time to the edge'],
+  ['why-a-radius-circle-can-look-oval-on-a-map', 'Why circles look oval'],
+  ['radius-from-a-zip-code-or-a-postcode', 'Radius from a ZIP code'],
+  ['how-to-print-or-save-a-radius-map', 'Print or save the map'],
+  ['can-you-draw-a-radius-in-google-maps', 'Radius in Google Maps'],
+  ['accuracy-and-limits', 'Accuracy and limits'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Radius Map Tool',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Draw a radius around an address, city, ZIP code or coordinates',
+    'Miles, kilometers, meters, feet and nautical miles',
+    'Up to five circles on one map',
+    'Drag to move and resize circles',
+    'Area, circumference and diameter of the circle',
+    'Larger cities inside the radius',
+    'Check whether a place is inside the radius',
+    'Download as an image, print or share by link',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base
+  title={fm.seo_title}
+  description={fm.description}
+  path={fm.slug}
+  breadcrumbs={crumbs}
+  faqs={radiusFaqs}
+  schema={[appSchema]}
+  datePublished={fm.datePublished}
+  dateModified={fm.dateModified}
+>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <RadiusTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {radiusFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Street map from OpenStreetMap via OpenFreeMap. Place search by Photon.</p>
+  </div>
+</Base>

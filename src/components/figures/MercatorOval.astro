@@ -1,0 +1,40 @@
+---
+// The same 500-mile circle at three latitudes, drawn on a Web Mercator map.
+import { circleRing } from '../../lib/geo';
+const R = 500 * 1609.344;
+const lats = [0, 40, 60];
+const merc = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+const K = 200; // px per radian, the same on both axes so the map is a true Mercator
+const W = 760, H = 430;
+const sx = (col: number, lon: number) => col + ((lon * Math.PI) / 180) * K;
+const sy = (lat: number) => H - 30 - (merc(lat) - merc(-10)) * K;
+const cols = [150, 380, 610];
+const shapes = lats.map((lat, i) => {
+  const ring = circleRing({ lat, lon: 0 }, R, 120);
+  const d = ring.map(([lon, la], j) => `${j ? 'L' : 'M'}${sx(cols[i], lon).toFixed(1)} ${sy(la).toFixed(1)}`).join(' ') + 'Z';
+  const bot = Math.max(...ring.map(([, la]) => sy(la)));
+  const scale = 1 / Math.cos((lat * Math.PI) / 180);
+  return { lat, d, cx: cols[i], cy: sy(lat), bot, scale };
+});
+const grid = [0, 20, 40, 60];
+---
+<figure>
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="mo-t mo-d" class="fig-light" style="background:#f4f7fb">
+    <title id="mo-t">The same 500-mile circle drawn at the equator, at 40 degrees north and at 60 degrees north</title>
+    <desc id="mo-d">Three circles of the same real size drawn on a Web Mercator map. The one on the equator looks round. The one at 40 degrees is about a third larger. The one at 60 degrees is roughly twice the size and stretched taller than it is wide.</desc>
+    {grid.map((g) => (
+      <g>
+        <path d={`M20 ${sy(g).toFixed(1)} H${W - 20}`} stroke="#c9d3e0" stroke-width="1" stroke-dasharray="4 5" />
+        <text x="24" y={(sy(g) - 5).toFixed(1)} font-size="12" fill="#5b6385" font-family="Archivo Variable, Archivo, system-ui, sans-serif">{g}°N</text>
+      </g>
+    ))}
+    {shapes.map((s) => (
+      <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+        <path d={s.d} fill="#c4157a" fill-opacity="0.16" stroke="#c4157a" stroke-width="2.5" />
+        <circle cx={s.cx} cy={s.cy.toFixed(1)} r="4" fill="#c4157a" />
+        <text x={s.cx} y={(s.bot + 18).toFixed(1)} text-anchor="middle" font-size="13" font-weight="700" fill="#161b3d">{s.lat === 0 ? 'Equator' : `${s.lat}° N`}, drawn ×{s.scale.toFixed(2)}</text>
+      </g>
+    ))}
+  </svg>
+  <figcaption>Each shape is a true 500-mile circle. Web Mercator, the projection most online maps use, stretches distances by about 1 ÷ cos(latitude), so the circle at 60° north is drawn around twice as large as the one on the equator and comes out slightly egg-shaped.</figcaption>
+</figure>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { geoOrthographic, geoPath, geoGraticule10, geoDistance, geoInterpolate, geoContains } from 'd3-geo';
+import { geoOrthographic, geoPath, geoGraticule10, geoDistance, geoInterpolate, geoContains, geoCircle } from 'd3-geo';
 import type { LatLon } from '../../lib/geo';
 import { formatCoord, haversine, midpoint, MEAN_EARTH_RADIUS_M } from '../../lib/geo';
 import { land } from './land';
@@ -17,6 +17,22 @@ interface Props {
   distanceLabel?: string;
   picking: 'a' | 'b' | null;
   onPick: (which: 'a' | 'b', point: LatLon, name?: string) => void;
+  /** circles to draw, for the radius tool */
+  circles?: GlobeCircle[];
+  /** a circle to frame when there is no route */
+  focus?: { center: LatLon; radius: number } | null;
+  /** buttons on the details card; defaults to Set as A / Set as B */
+  cardActions?: { label: string; run: (point: LatLon, name?: string) => void }[];
+}
+
+export interface GlobeCircle {
+  id: string;
+  center: LatLon;
+  /** metres */
+  radius: number;
+  color: string;
+  selected?: boolean;
+  label?: string;
 }
 
 interface View {
@@ -43,7 +59,15 @@ const graticule = geoGraticule10();
 const clampLat = (v: number) => Math.max(-89, Math.min(89, v));
 const wrap = (lon: number) => ((((lon + 180) % 360) + 360) % 360) - 180;
 
-function autoView(a: LatLon | null, b: LatLon | null): View {
+function autoView(a: LatLon | null, b: LatLon | null, focus?: { center: LatLon; radius: number } | null): View {
+  if (focus && !(a && b)) {
+    const angle = (2 * focus.radius) / MEAN_EARTH_RADIUS_M;
+    const wanted = 150 / Math.max(Math.sin(Math.min(angle, Math.PI) / 2), 0.002);
+    return {
+      rot: [-focus.center.lon, -focus.center.lat],
+      scale: Math.min(Math.max(BASE, wanted), MAX_SCALE),
+    };
+  }
   const both = a && b;
   const centre = both ? midpoint(a, b) : (a ?? b ?? { lat: 30, lon: -40 });
   const angle = both ? haversine(a, b) / MEAN_EARTH_RADIUS_M : Math.PI / 2;
@@ -76,8 +100,19 @@ function spotName(s: Spot): string | undefined {
  * An interactive globe: turn it, zoom it, read country and city names, hover
  * to see where the pointer is, click for details or to place a point.
  */
-export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, picking, onPick }: Props) {
-  const [view, setView] = useState<View>(() => autoView(a, b));
+export default function Globe({
+  a,
+  b,
+  labelA = '',
+  labelB = '',
+  distanceLabel,
+  picking,
+  onPick,
+  circles = [],
+  focus = null,
+  cardActions,
+}: Props) {
+  const [view, setView] = useState<View>(() => autoView(a, b, focus));
   const viewRef = useRef(view);
   viewRef.current = view;
   const svgRef = useRef<SVGSVGElement>(null);
@@ -135,8 +170,8 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
   // Turn to face each new route.
   useEffect(() => {
     setSelected(null);
-    animateTo(autoView(a, b));
-  }, [a?.lat, a?.lon, b?.lat, b?.lon]);
+    animateTo(autoView(a, b, focus));
+  }, [a?.lat, a?.lon, b?.lat, b?.lon, focus?.center.lat, focus?.center.lon, focus?.radius]);
 
   useEffect(() => stopAnim, []);
 
@@ -228,7 +263,20 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
       placeCities();
     }
 
+    const circlePaths = circles.map((c) => ({
+      ...c,
+      d:
+        path(
+          geoCircle()
+            .center([c.center.lon, c.center.lat])
+            .radius((c.radius / MEAN_EARTH_RADIUS_M) * (180 / Math.PI))
+            .precision(1.5)(),
+        ) ?? '',
+      dot: facing(c.center.lon, c.center.lat) ? inFrame(projection([c.center.lon, c.center.lat])) : null,
+    }));
+
     return {
+      circlePaths,
       projection,
       facing,
       sphere: path({ type: 'Sphere' }) ?? '',
@@ -246,7 +294,7 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
       countryLabels,
       cityLabels,
     };
-  }, [view, world, cities, a?.lat, a?.lon, b?.lat, b?.lon]);
+  }, [view, world, cities, a?.lat, a?.lon, b?.lat, b?.lon, circles]);
 
   /** What lies under a point on the globe: the country, and a city if one is close by. */
   function lookup(lat: number, lon: number): Spot {
@@ -459,6 +507,17 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
         ))}
         {scene.borders && <path d={scene.borders} className="globe-borders" />}
         <path d={scene.sphere} fill="url(#globe-shade)" pointerEvents="none" />
+        {scene.circlePaths.map((c) => (
+          <path
+            key={c.id}
+            d={c.d}
+            fill={c.color}
+            fillOpacity={c.selected ? 0.26 : 0.16}
+            stroke={c.color}
+            strokeWidth={c.selected ? 2.6 : 1.6}
+            pointerEvents="none"
+          />
+        ))}
 
         <g pointerEvents="none">
           {scene.countryLabels.map((l) => (
@@ -494,6 +553,19 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
             <circle r="10" className="globe-sel-ring" />
             <circle r="4" className="globe-sel-dot" />
           </g>
+        )}
+        {scene.circlePaths.map(
+          (c) =>
+            c.dot && (
+              <g key={`dot-${c.id}`} transform={`translate(${c.dot[0].toFixed(1)} ${c.dot[1].toFixed(1)})`} pointerEvents="none">
+                <circle r="7" fill="#fff" stroke={c.color} strokeWidth="3.5" />
+                {c.label && c.selected && (
+                  <text y="-14" textAnchor="middle" className="globe-city-label">
+                    {c.label}
+                  </text>
+                )}
+              </g>
+            ),
         )}
         {scene.pa && <Pin x={scene.pa[0]} y={scene.pa[1]} letter="A" />}
         {scene.pb && <Pin x={scene.pb[0]} y={scene.pb[1]} letter="B" />}
@@ -532,12 +604,32 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
           <strong>{selInfo.title}</strong>
           <span>{selInfo.sub}</span>
           <div className="globe-card-actions">
-            <button type="button" onClick={() => chooseSpot('a')}>
-              Set as A
-            </button>
-            <button type="button" onClick={() => chooseSpot('b')}>
-              Set as B
-            </button>
+            {cardActions ? (
+              cardActions.map((act) => (
+                <button
+                  key={act.label}
+                  type="button"
+                  onClick={() => {
+                    const at = selected.city
+                      ? { lat: selected.city.lat, lon: selected.city.lon }
+                      : { lat: selected.lat, lon: selected.lon };
+                    act.run(at, spotName(selected));
+                    setSelected(null);
+                  }}
+                >
+                  {act.label}
+                </button>
+              ))
+            ) : (
+              <>
+                <button type="button" onClick={() => chooseSpot('a')}>
+                  Set as A
+                </button>
+                <button type="button" onClick={() => chooseSpot('b')}>
+                  Set as B
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -553,7 +645,7 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
             <path d="M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
         </button>
-        <button type="button" onClick={() => animateTo(autoView(a, b))} aria-label="Fit the route in view">
+        <button type="button" onClick={() => animateTo(autoView(a, b, focus))} aria-label="Fit the route in view">
           <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
             <path
               d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"

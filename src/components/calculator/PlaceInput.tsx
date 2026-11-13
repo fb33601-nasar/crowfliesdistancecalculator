@@ -5,7 +5,9 @@ import type { Suggestion } from './places';
 import { coordsSuggestion, loadCities, searchCities, searchPlaces } from './places';
 
 interface Props {
-  letter: 'A' | 'B';
+  letter: string;
+  /** text for the pick-on-map row, e.g. "Pick point A on the map" */
+  pickLabel?: string;
   label: string;
   placeholder: string;
   value: Place | null;
@@ -18,7 +20,7 @@ type Row =
   | { kind: 'locate' }
   | { kind: 'map' };
 
-export default function PlaceInput({ letter, label, placeholder, value, onChange, onPickOnMap }: Props) {
+export default function PlaceInput({ letter, pickLabel, label, placeholder, value, onChange, onPickOnMap }: Props) {
   const id = useId();
   const listId = `${id}-list`;
   const [text, setText] = useState(value?.name ?? '');
@@ -233,7 +235,7 @@ export default function PlaceInput({ letter, label, placeholder, value, onChange
                     <path d="M10 18s5.5-5.2 5.5-9.5a5.5 5.5 0 10-11 0C4.5 12.8 10 18 10 18z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
                     <circle cx="10" cy="8.5" r="2" fill="currentColor" />
                   </svg>
-                  <span>Pick point {letter} on the map</span>
+                  <span>{pickLabel ?? `Pick point ${letter} on the map`}</span>
                 </>
               )}
             </li>

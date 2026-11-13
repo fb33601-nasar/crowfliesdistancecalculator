@@ -18,6 +18,18 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-draw-a-radius-on-a-map': 'target',
+  'what-the-circle-on-a-radius-map-measures': 'measure',
+  'area-and-circumference-for-common-radii': 'table',
+  'draw-several-circles-on-one-map': 'globe',
+  'check-whether-a-place-is-inside-the-radius': 'pin',
+  'common-uses-for-a-radius-map': 'route',
+  'how-far-is-the-edge-in-travel-time': 'compass',
+  'why-a-radius-circle-can-look-oval-on-a-map': 'formula',
+  'radius-from-a-zip-code-or-a-postcode': 'pin',
+  'how-to-print-or-save-a-radius-map': 'ruler',
+  'can-you-draw-a-radius-in-google-maps': 'question',
+  'accuracy-and-limits': 'limits',
   'how-to-find-the-distance-between-two-addresses': 'measure',
   'straight-line-driving-walking-or-cycling-which-distance-do-you-need': 'route',
   'why-the-road-is-longer-than-the-straight-line': 'formula',

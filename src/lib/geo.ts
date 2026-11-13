@@ -272,3 +272,52 @@ export function parseCoordinates(input: string): LatLon | null {
 export function wrapLon(lon: number): number {
   return ((((lon + 180) % 360) + 360) % 360) - 180;
 }
+
+/** Point reached by travelling `distance` metres from `p` on an initial `bearing`, on the sphere. */
+export function destination(p: LatLon, bearing: number, distance: number): LatLon {
+  const d = distance / MEAN_EARTH_RADIUS_M;
+  const t = rad(bearing);
+  const p1 = rad(p.lat);
+  const l1 = rad(p.lon);
+  const p2 = Math.asin(Math.sin(p1) * Math.cos(d) + Math.cos(p1) * Math.sin(d) * Math.cos(t));
+  const l2 = l1 + Math.atan2(Math.sin(t) * Math.sin(d) * Math.cos(p1), Math.cos(d) - Math.sin(p1) * Math.sin(p2));
+  return { lat: deg(p2), lon: wrapLon(deg(l2)) };
+}
+
+/**
+ * The ring of points exactly `radius` metres from `center` over the Earth's surface,
+ * as [lon, lat] pairs with longitudes kept continuous around the center.
+ */
+export function circleRing(center: LatLon, radius: number, steps = 128): [number, number][] {
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const q = destination(center, (i / steps) * 360, radius);
+    let lon = q.lon;
+    while (lon - center.lon > 180) lon -= 360;
+    while (lon - center.lon < -180) lon += 360;
+    ring.push([lon, q.lat]);
+  }
+  return ring;
+}
+
+/** Area inside a circle drawn on the Earth's surface (a spherical cap), in square metres. */
+export function capArea(radius: number): number {
+  const R = MEAN_EARTH_RADIUS_M;
+  return 2 * Math.PI * R * R * (1 - Math.cos(radius / R));
+}
+
+/** Length of the circle's edge measured on the Earth's surface, in metres. */
+export function capCircumference(radius: number): number {
+  return 2 * Math.PI * MEAN_EARTH_RADIUS_M * Math.sin(radius / MEAN_EARTH_RADIUS_M);
+}
+
+export const METRES_PER_SQ_MILE = METRES_PER_MILE * METRES_PER_MILE;
+
+export type RadiusUnit = 'mi' | 'km' | 'm' | 'ft' | 'nmi';
+export const RADIUS_UNIT: Record<RadiusUnit, { short: string; long: string; metres: number }> = {
+  mi: { short: 'mi', long: 'miles', metres: METRES_PER_MILE },
+  km: { short: 'km', long: 'kilometers', metres: 1000 },
+  m: { short: 'm', long: 'meters', metres: 1 },
+  ft: { short: 'ft', long: 'feet', metres: METRES_PER_FOOT },
+  nmi: { short: 'nmi', long: 'nautical miles', metres: METRES_PER_NAUTICAL_MILE },
+};

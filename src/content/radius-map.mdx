@@ -1,0 +1,220 @@
+---
+slug: /radius-map/
+title: 'Radius Map'
+seo_title: 'Radius Map Tool: Draw a Circle on a Map in Miles or Km'
+description: 'Draw a radius around any address, city or ZIP code. Free radius map tool with miles, km and feet, multiple circles, area, places inside and a printable map.'
+lede: 'Draw a circle of any size around an address, a city, a ZIP code or a point you pick, then see the area it covers, the cities inside it and whether a place falls within the edge.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import RadiusAnatomy from '../components/figures/RadiusAnatomy.astro';
+import RadiusAreaTable from '../components/figures/RadiusAreaTable.astro';
+import MercatorOval from '../components/figures/MercatorOval.astro';
+import Callout from '../components/Callout.astro';
+
+A radius map shows everything within a set straight line distance of one point. Every spot on the edge of the circle is exactly the radius away from the center, and every spot inside is closer.
+
+The tool above starts with a 25-mile circle around Chicago. It covers about 1,963 square miles, a little smaller than the state of Delaware, and stretches from the Lake Michigan shore out past the suburbs on every side.
+
+## How to draw a radius on a map
+
+Drawing a circle takes a center and a distance.
+
+<div class="steps">
+
+1. Type an address, a city, a ZIP code, a postcode or a pair of coordinates in the **Center** box and pick the right match. To use where you are, choose **Use my location**. To place the center by hand, choose **Pick the center on the map** and click the spot.
+2. Enter the radius in the **Radius** box, or press one of the preset buttons. Change the unit to kilometers, meters, feet or nautical miles with the menu next to it.
+3. Read the result. The panel shows the area inside the circle, the length of its edge and its diameter, plus the larger cities that fall inside it, nearest first.
+4. Fine-tune on the map. Drag the center dot to move the circle, or drag the white handle on the edge to make it bigger or smaller. The figures update as you drag.
+5. Press **Copy link** to share the circle, **Download image** to save the map as a PNG, or **Print** for a clean paper copy.
+
+</div>
+
+<Callout title="Moving the center by hand">
+Address search places the center on the building or the middle of the street it matches. If you need the circle to start from a particular gate, a car park or a corner, drag the center dot to that spot. The name updates to the nearest place the map knows.
+</Callout>
+
+## What the circle on a radius map measures
+
+The circle measures straight line distance, the kind people mean when they say "as the crow flies". It is the shortest path over the surface of the Earth from the center to the edge, ignoring roads, rivers, hills and buildings.
+
+<RadiusAnatomy />
+
+That makes a radius different from a travel distance. A shop 9 miles away inside a 10-mile circle may be a 14-mile drive, because roads bend around water, rail lines and private land. In a sample of 18 city pairs we measured for our [address distance calculator](/distance-between-two-addresses/), the road route was a median 1.19 times the straight line.
+
+So a radius map answers questions like these well:
+
+- Which towns are within 50 miles of the warehouse?
+- Does this address fall inside a 3-mile delivery zone?
+- Is the new job within the 25-mile limit in my contract?
+- How much ground does a 10 km search area cover?
+
+It answers "how long will it take to get there" badly. For that, you need a route or a drive time map, which follows the road network.
+
+## Area and circumference for common radii
+
+The area inside a circle grows with the square of the radius. Double the radius and the circle covers four times the ground. A 10-mile circle covers about 314 square miles, roughly the land area of New York City. A 50-mile circle covers about 7,854 square miles, a little less than New Jersey. A 100-mile circle covers about 31,400 square miles, close to the size of South Carolina.
+
+<RadiusAreaTable />
+
+The figures in the table use the same spherical formulas as the tool, so they allow for the curve of the Earth. For any radius you are likely to use on a local map, the curve makes no practical difference.
+
+### Radius conversions
+
+Radius rules come in many units: miles in the United States, kilometers in most other countries, feet and meters in planning and zoning, and nautical miles in aviation and shipping.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Radius unit conversions</p>
+  <table>
+    <caption class="visually-hidden">Radius unit conversions</caption>
+    <thead><tr><th scope="col">Radius</th><th scope="col" class="num">Miles</th><th scope="col" class="num">Kilometers</th><th scope="col" class="num">Feet</th><th scope="col" class="num">Meters</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">500 feet</th><td class="num">0.095</td><td class="num">0.152</td><td class="num">500</td><td class="num">152.4</td></tr>
+      <tr><th scope="row">1,000 feet</th><td class="num">0.189</td><td class="num">0.305</td><td class="num">1,000</td><td class="num">304.8</td></tr>
+      <tr><th scope="row">Quarter mile</th><td class="num">0.25</td><td class="num">0.402</td><td class="num">1,320</td><td class="num">402.3</td></tr>
+      <tr><th scope="row">Half mile</th><td class="num">0.5</td><td class="num">0.805</td><td class="num">2,640</td><td class="num">804.7</td></tr>
+      <tr><th scope="row">1 kilometer</th><td class="num">0.621</td><td class="num">1</td><td class="num">3,281</td><td class="num">1,000</td></tr>
+      <tr><th scope="row">1 mile</th><td class="num">1</td><td class="num">1.609</td><td class="num">5,280</td><td class="num">1,609.3</td></tr>
+      <tr><th scope="row">1 nautical mile</th><td class="num">1.151</td><td class="num">1.852</td><td class="num">6,076</td><td class="num">1,852</td></tr>
+      <tr><th scope="row">5 kilometers</th><td class="num">3.107</td><td class="num">5</td><td class="num">16,404</td><td class="num">5,000</td></tr>
+      <tr><th scope="row">10 kilometers</th><td class="num">6.214</td><td class="num">10</td><td class="num">32,808</td><td class="num">10,000</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Draw several circles on one map
+
+Press **Add a circle**, then click the map where the new circle should go. It starts at the same radius as the selected circle and takes the next color. You can draw up to five.
+
+Each circle keeps its own center and radius. Select a circle in the list or click its center dot on the map, and the Center and Radius boxes switch to that circle. The cross button beside a circle removes it.
+
+Several circles help when you want to:
+
+- **Compare locations.** Put a 10-mile circle around each of three possible store sites and see how much of the city each one reaches, and where they overlap.
+- **Show service tiers.** Draw 5, 10 and 25-mile circles on the same center for delivery charges that rise with distance.
+- **Find common ground.** The area where two circles overlap is every place within reach of both centers, which is a quick way to shortlist somewhere to meet or live.
+- **Plan coverage.** Space circles around a region to see where a team of field staff, drivers or technicians leaves gaps.
+
+<Callout title="Shared links keep every circle">
+The link you copy holds the center, radius, color and name of every circle on the map, plus the unit. Anyone who opens it sees the same map, and they can change it without touching your copy.
+</Callout>
+
+## Check whether a place is inside the radius
+
+The **Is this place inside the circle?** box tests one address against the selected circle. Type a place or pick it on the map, and the tool shows whether it is inside or outside, how far it is from the center, and how far it sits from the edge.
+
+A diamond marks the place on the map: green when it is inside, gray when it falls outside.
+
+This is the quickest way to settle a borderline case. If a rule says "within 5 miles" and the test address is 4.93 miles away, it is inside, even if it looks right on the line when the map is zoomed out.
+
+### Cities inside the circle
+
+Under the readout, the tool lists the larger cities that fall inside the selected circle, nearest first, with the distance of each from the center. The list comes from a built-in set of about 1,800 of the world's larger cities, so it shows the main towns rather than every village. A circle in open country or at sea may show none.
+
+## Common uses for a radius map
+
+People draw radius circles for jobs in sales, logistics, property, law and planning, and for everyday questions too.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Common radius map uses</p>
+  <table>
+    <caption class="visually-hidden">Common radius map uses</caption>
+    <thead><tr><th scope="col">Use</th><th scope="col">Typical radius</th><th scope="col">What the circle shows</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Local delivery zone</th><td>3 to 10 miles</td><td>Which addresses a shop or restaurant will deliver to</td></tr>
+      <tr><th scope="row">Sales or service territory</th><td>25 to 100 miles</td><td>The towns a rep or technician covers from one base</td></tr>
+      <tr><th scope="row">Non-compete or radius clause</th><td>10 to 50 miles</td><td>Where a former employee or a tenant may not trade</td></tr>
+      <tr><th scope="row">Home search</th><td>5 to 30 miles</td><td>Towns within reach of a workplace or a school</td></tr>
+      <tr><th scope="row">Short-haul trucking</th><td>150 air miles</td><td>The US short-haul area for drivers' hours of service</td></tr>
+      <tr><th scope="row">Search and rescue or a lost pet</th><td>0.5 to 5 miles</td><td>The area to cover from the last known point</td></tr>
+      <tr><th scope="row">Market research</th><td>1 to 25 miles</td><td>The catchment around a store or a planned site</td></tr>
+      <tr><th scope="row">Event or campaign targeting</th><td>5 to 50 miles</td><td>Where to send flyers or show local ads</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The short-haul row matters to truck drivers in the United States. The Federal Motor Carrier Safety Administration's short-haul exception applies to drivers who stay within a 150 air-mile radius of their normal work reporting location, and an air mile is a nautical mile, about 1.15 statute miles. Set the unit to **Nautical miles** and the radius to 150 to draw that area; it reaches about 173 ordinary miles from the center. One of the examples under the tool loads it around Atlanta.
+
+Radius clauses in contracts and leases are usually written as a straight line distance too, though the wording of the clause is what counts. If it says "by road" or "driving distance", a circle is the wrong tool and you need a route.
+
+## How far is the edge in travel time?
+
+A circle has a fixed size, but the time it takes to reach the edge depends on how you travel and how direct the roads are. The table below gives a rough guide, assuming the route is 1.19 times the straight line, the median from our road sample, and steady speeds with no stops.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Rough time to reach the edge of a radius</p>
+  <table>
+    <caption class="visually-hidden">Rough time to reach the edge of a radius</caption>
+    <thead><tr><th scope="col">Radius</th><th scope="col" class="num">Walking, 3 mph</th><th scope="col" class="num">Cycling, 10 mph</th><th scope="col" class="num">Town driving, 30 mph</th><th scope="col" class="num">Highway, 55 mph</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 mile</th><td class="num">24 min</td><td class="num">7 min</td><td class="num">2 min</td><td class="num">1 min</td></tr>
+      <tr><th scope="row">5 miles</th><td class="num">2 h</td><td class="num">36 min</td><td class="num">12 min</td><td class="num">6 min</td></tr>
+      <tr><th scope="row">10 miles</th><td class="num">4 h</td><td class="num">1 h 11 min</td><td class="num">24 min</td><td class="num">13 min</td></tr>
+      <tr><th scope="row">25 miles</th><td class="num">9 h 55 min</td><td class="num">2 h 58 min</td><td class="num">1 h</td><td class="num">32 min</td></tr>
+      <tr><th scope="row">50 miles</th><td class="num">19 h 50 min</td><td class="num">5 h 57 min</td><td class="num">1 h 59 min</td><td class="num">1 h 5 min</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Treat these as a starting point. A river with few bridges, a mountain range or a stretch of coast can make one side of a circle far slower to reach than the other. To see the real road distance to a point on the edge, use the [address distance calculator](/distance-between-two-addresses/).
+
+## Why a radius circle can look oval on a map
+
+Draw a big circle far from the equator and it looks taller than it is wide. That is the map, not the circle.
+
+Most online maps, including the street map in this tool, use the Web Mercator projection. It keeps shapes right over small areas but stretches everything away from the equator by about 1 ÷ cos(latitude). At 40° north, the latitude of Denver, Madrid and Beijing, the stretch is about 1.31 times. At 60° north, close to Oslo, Helsinki and Anchorage, it is 2 times.
+
+<MercatorOval />
+
+Over a local circle the stretch is almost the same at the top and the bottom, so a 10-mile circle still looks round, just drawn larger than the same circle near the equator. Across a radius of several hundred miles, the far edge sits at a different latitude from the near edge, so the top is stretched more than the bottom and the circle turns slightly egg-shaped.
+
+The tool draws each circle as a ring of points that are all the same distance from the center over the Earth's surface, so the shape you see is the correct shape for the map. Switch to **Globe** view to see big circles without the stretch.
+
+## Radius from a ZIP code or a postcode
+
+You can center a circle on a ZIP code or a UK postcode by typing it in the Center box. The tool places the center on the point the geocoder holds for that code, which is usually somewhere near its middle.
+
+Keep in mind what that center is. A ZIP code is a set of mail delivery routes, not a neat area, and a rural ZIP code can cover dozens of square miles. Its center may be miles from the address you care about. If the rule you are checking is "within 10 miles of the office", center the circle on the office address rather than its ZIP code.
+
+## How to print or save a radius map
+
+There are three ways to keep a copy of your circle:
+
+- **Download image** saves the street map exactly as you see it, circles and labels included, as a PNG file you can drop into a document, a slide or an email.
+- **Print** opens your browser's print dialog with the page cut down to the map and the figures. Choose landscape for a wider map, or **Save as PDF** to keep a file.
+- **Copy link** saves nothing to your device but rebuilds the full map whenever the link is opened, so it stays editable.
+
+Before you download or print, zoom and pan the map until it frames the area you want. The image matches the map view, not the whole circle.
+
+## Can you draw a radius in Google Maps?
+
+Google Maps does not have a built-in circle tool. Its **Measure distance** feature, found by right-clicking the map on a computer, draws straight lines from point to point, which helps check a single distance but cannot show a radius.
+
+The common workarounds are to draw a circle in a separate tool and import it into Google My Maps as a KML file, or to measure out from the center in several directions and join the points by eye. A radius map tool like the one above does the job in one step and works the same on a phone.
+
+## Accuracy and limits
+
+The tool measures distance on a sphere with the Earth's mean radius of 6,371 km. That is within about 0.5% of the more exact ellipsoid figure anywhere on the planet, and usually closer. The area and circumference use the matching formulas for a circle on a sphere.
+
+For radii up to 100 miles, a flat-map formula would give almost the same answer: the area differs by less than 0.01%. The gap grows with size.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Flat formula against the curved Earth</p>
+  <table>
+    <caption class="visually-hidden">Flat formula against the curved Earth</caption>
+    <thead><tr><th scope="col">Radius</th><th scope="col" class="num">Area on the Earth</th><th scope="col" class="num">Flat π r²</th><th scope="col" class="num">Flat formula overstates by</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">100 miles</th><td class="num">31,414 sq mi</td><td class="num">31,416 sq mi</td><td class="num">0.005%</td></tr>
+      <tr><th scope="row">500 miles</th><td class="num">784,355 sq mi</td><td class="num">785,398 sq mi</td><td class="num">0.13%</td></tr>
+      <tr><th scope="row">1,000 miles</th><td class="num">3,124,923 sq mi</td><td class="num">3,141,593 sq mi</td><td class="num">0.53%</td></tr>
+      <tr><th scope="row">2,500 miles</th><td class="num">18.99 million sq mi</td><td class="num">19.63 million sq mi</td><td class="num">3.4%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A few other limits are worth knowing:
+
+- **The center is only as good as the search.** Check the center dot before you rely on a borderline result, and drag it if it is off.
+- **A circle ignores borders and barriers.** A 20-mile radius can reach across a state line, a lake or a national border that changes the answer to your real question.
+- **The city list is not complete.** It holds larger cities only. Zoom into the street map to see smaller towns and villages inside the circle.
+- **Huge circles wrap around the planet.** Past about 6,200 miles, a quarter of the way around the Earth, the circle starts to curl back on itself on a flat map. The globe view shows it more clearly.

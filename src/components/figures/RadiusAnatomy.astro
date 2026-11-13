@@ -1,0 +1,29 @@
+---
+// Parts of a radius circle, with the formulas the tool uses.
+---
+<figure>
+  <svg viewBox="0 0 760 360" role="img" aria-labelledby="ra-t ra-d" class="fig-dark" style="background:#131736">
+    <title id="ra-t">The parts of a radius circle</title>
+    <desc id="ra-d">A shaded circle with a center point. A solid line from the center to the edge is the radius. A dashed line across the whole circle is the diameter, twice the radius. The outline is the circumference and the shaded inside is the area.</desc>
+    <circle cx="230" cy="180" r="140" fill="#c4157a" fill-opacity="0.22" stroke="#ff5fb4" stroke-width="4" />
+    <path d="M90 180 H370" stroke="#aab0dc" stroke-width="2" stroke-dasharray="7 7" />
+    <path d="M230 180 L329 81" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+    <circle cx="230" cy="180" r="9" fill="#fff" stroke="#c4157a" stroke-width="5" />
+    <circle cx="329" cy="81" r="8" fill="#fff" stroke="#161b3d" stroke-width="2" />
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+      <text x="296" y="142" font-size="18" font-weight="800" fill="#fff">r</text>
+      <text x="150" y="205" font-size="14" fill="#aab0dc">diameter = 2r</text>
+      <text x="196" y="262" font-size="14" fill="#fff">area</text>
+      <text x="300" y="320" font-size="14" fill="#ff5fb4">circumference</text>
+      <text x="200" y="160" font-size="13" fill="#aab0dc">center</text>
+      <text x="440" y="96" font-size="15" fill="#aab0dc">On a flat sheet:</text>
+      <text x="440" y="124" font-size="20" font-weight="800" fill="#fff">area = π r²</text>
+      <text x="440" y="152" font-size="20" font-weight="800" fill="#fff">edge = 2 π r</text>
+      <text x="440" y="210" font-size="15" fill="#aab0dc">On the Earth (R = 6,371 km):</text>
+      <text x="440" y="238" font-size="20" font-weight="800" fill="#fff">area = 2πR² (1 − cos r/R)</text>
+      <text x="440" y="266" font-size="20" font-weight="800" fill="#fff">edge = 2πR sin(r/R)</text>
+      <text x="440" y="304" font-size="14" fill="#aab0dc">The two agree to within 0.01% up to 100 miles.</text>
+    </g>
+  </svg>
+  <figcaption>The radius is measured from the center to the edge. Everything else follows from it. Past a few hundred miles the curve of the Earth makes the real circle slightly smaller than the flat formula says.</figcaption>
+</figure>
