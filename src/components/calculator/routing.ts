@@ -11,6 +11,8 @@ export interface Route {
   duration: number;
   /** [lon, lat] points */
   line: [number, number][];
+  /** seconds for each segment between consecutive line points, when the server sends them */
+  segDurations?: number[];
 }
 
 export type RouteState =
@@ -44,17 +46,23 @@ async function request(profile: Profile, a: LatLon, b: LatLon): Promise<Route | 
   await slot();
   const url =
     `${BASE}${profile}/route/v1/driving/${a.lon.toFixed(6)},${a.lat.toFixed(6)};${b.lon.toFixed(6)},${b.lat.toFixed(6)}` +
-    '?overview=full&geometries=geojson&alternatives=false&steps=false';
+    '?overview=full&geometries=geojson&alternatives=false&steps=false&annotations=duration';
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Routing failed (${res.status})`);
   const data = (await res.json()) as {
     code: string;
-    routes?: { distance: number; duration: number; geometry: { coordinates: [number, number][] } }[];
+    routes?: { distance: number; duration: number; geometry: { coordinates: [number, number][] }; legs?: { annotation?: { duration?: number[] } }[] }[];
   };
   if (data.code === 'NoRoute' || !data.routes?.length) return null;
   if (data.code !== 'Ok') throw new Error(data.code);
   const r = data.routes[0];
-  return { distance: r.distance, duration: r.duration, line: r.geometry.coordinates };
+  const seg = r.legs?.[0]?.annotation?.duration;
+  return {
+    distance: r.distance,
+    duration: r.duration,
+    line: r.geometry.coordinates,
+    segDurations: seg && seg.length === r.geometry.coordinates.length - 1 ? seg : undefined,
+  };
 }
 
 /** One route, cached for the session. Resolves to null when no route exists. */

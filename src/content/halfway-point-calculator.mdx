@@ -1,0 +1,127 @@
+---
+slug: /halfway-point-calculator/
+title: 'Halfway Point Calculator: Find the Midpoint Between Two Places'
+seo_title: 'Halfway Point Calculator: Meet in the Middle by Distance or Drive'
+description: 'Find the halfway point between two places by straight line, road distance or drive time, with the towns nearby. Free midpoint calculator for two or more locations.'
+lede: 'Enter two places to find the point halfway between them in a straight line, along the drive and by travel time, with the towns nearest the middle. Add more places to find the center of a group.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import HalfwayKinds from '../components/figures/HalfwayKinds.astro';
+import HalfwayTable from '../components/figures/HalfwayTable.astro';
+import NaiveMidpointTable from '../components/figures/NaiveMidpointTable.astro';
+import Callout from '../components/Callout.astro';
+
+The halfway point between two places is the spot that is the same distance, or the same travel time, from both. It is the fair place to meet a friend, the natural stop on a long drive and the quickest way to split a trip in two.
+
+The calculator above starts with New York and Boston. In a straight line, the midpoint is about 95 miles from each city, near Portland, Connecticut. Along the drive, the halfway point is wherever the route reaches half its length, which the map shows once the route loads.
+
+## How to find the halfway point between two places
+
+<div class="steps">
+
+1. Type the first place in the **First place** box: an address, a city, a ZIP code or postcode, or a pair of coordinates. Pick the right match from the list.
+2. Type the second place in the **Second place** box the same way.
+3. Choose how you will travel: **Driving**, **Cycling** or **Walking**. The calculator finds the route and marks its halfway points.
+4. Read the result. The large name is the town nearest the halfway point of the trip. Below it you get the time and distance each person travels, and the exact coordinates of each halfway point.
+5. Check the towns list for a good place to meet. Each town shows its straight line distance from both starting points so you can see which is fairest.
+6. Press **Copy link** to send the result to the person you are meeting. Select any coordinates to open them in Google Maps.
+
+</div>
+
+<Callout title="Meeting a group?">
+Press **Add another place** to add up to six places. The calculator then finds the geographic midpoint of the whole group and lists how far each person is from it.
+</Callout>
+
+## Three kinds of halfway point
+
+"Halfway" can mean three different things, and on a real trip they rarely land in the same place.
+
+<HalfwayKinds />
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Which halfway point to use</p>
+  <table>
+    <caption class="visually-hidden">Which halfway point to use</caption>
+    <thead><tr><th scope="col">Halfway point</th><th scope="col">What it is</th><th scope="col">Use it when</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Straight line midpoint</th><td>The point on the shortest path over the Earth that is equally far from both places</td><td>You want the geographic middle, or you are flying, sailing or comparing places on a map</td></tr>
+      <tr><th scope="row">Halfway by road distance</th><td>The point where the driving route reaches half its total length</td><td>You want to split the miles evenly, for fuel costs or a fair share of the driving</td></tr>
+      <tr><th scope="row">Halfway by drive time</th><td>The point both people reach after the same time on the road</td><td>You are meeting someone and want neither of you to wait</td></tr>
+    </tbody>
+  </table>
+</div>
+
+For meeting up, drive time is usually the fairest measure. A route that leaves a busy city on slow streets and finishes on an open highway can put the time halfway point many miles from the distance halfway point. The calculator marks the time point separately whenever the two are more than about a mile apart.
+
+## Halfway points between popular city pairs
+
+The table lists the straight line midpoint between some often-searched pairs of cities and the nearest town to it. Select a pair to open it in the calculator and see the road halfway points as well.
+
+<HalfwayTable />
+
+The nearest town is not always close or on the way. The midpoint between Dallas and Houston sits in open country more than 20 miles from the nearest town in the list, and the midpoint between Seattle and Portland is a similar distance from one. Roads also rarely follow the straight line, which is why the calculator looks for towns near the halfway point of the route, not just near the straight line midpoint.
+
+## Why you can't just average the coordinates
+
+A tempting shortcut is to add the two latitudes and divide by two, then do the same for the longitudes. Over short distances that lands close to the right answer. Over long distances it can be far off, because lines of longitude get closer together toward the poles and the shortest path between two places bends toward the nearest pole.
+
+<NaiveMidpointTable />
+
+Between New York and Boston the average is about a mile out, which hardly matters. Between Los Angeles and New York it misses by more than 150 miles. Between Los Angeles and Tokyo the average lands on the wrong side of the planet, because it goes the long way round instead of crossing the Pacific.
+
+The calculator avoids this by finding the point halfway along the great circle, the shortest path over the Earth's surface.
+
+## Finding the midpoint of three or more places
+
+With three or more places there is no single point that is the same distance from everyone, except in rare cases. The calculator instead finds the **geographic midpoint**, the center of gravity of all the places on the globe. It works by turning each place into a direction from the center of the Earth, averaging those directions and turning the result back into a latitude and longitude.
+
+Take New York, Chicago and Atlanta. Their geographic midpoint falls in southeastern Ohio, about 29 miles from Athens, Ohio. From there New York is about 445 miles away, Atlanta 379 miles and Chicago 357 miles. The midpoint keeps the total travel low, but it does not make every trip equal.
+
+When you add places, the result shows each person's straight line distance from the midpoint and the direction they would travel. If one person is much farther away than the rest, you can move the meeting point toward them by dragging their pin or choosing a town from the list that sits on their side.
+
+<Callout title="Choosing between a fair point and a central one" kind="note">
+The geographic midpoint keeps the total distance low for the group. If you would rather nobody travels much farther than anyone else, pick a town from the list that brings the largest distance down, even if it adds a little to the others.
+</Callout>
+
+## Choosing a fair place to meet halfway
+
+The exact halfway point is often a field, a lake or a highway junction. Turning it into a real meeting place takes a little judgment.
+
+- **Start from the drive time point.** It is the one that makes both trips the same length in practice.
+- **Look for a town with services.** The list shows the towns nearest the halfway point, with the straight line distance from each starting place. A town slightly off the exact middle with restaurants and parking usually beats a closer crossroads.
+- **Check both routes.** Open each starting point and the chosen town in a route planner to confirm both drive times, especially if there are tolls, ferries or mountain roads.
+- **Allow for the time of day.** Rush hour can slow one end of the trip much more than the other and move the fair meeting point.
+- **Think about the return trip.** If one person has a much longer journey home after dark, meeting a little nearer to them can be the fairer choice.
+
+## Halfway along a road trip
+
+On a long drive the halfway point is a natural place to stop overnight or swap drivers. Use the calculator with your start and end points and read the **Halfway by road distance** coordinates. Then look at the towns list for a place to stay.
+
+For a trip with several days of driving, split it in stages: find the halfway point, then run the calculator again from your start to that point, or from that point to your destination, to find the quarter points.
+
+## Finding the halfway point on Google Maps
+
+Google Maps does not have a halfway point tool, but you can get there in a few steps:
+
+1. Get directions between the two places to see the route and its total length.
+2. Right-click the starting point and choose **Measure distance**, then click along the route until the measured distance reaches half the total.
+3. Note the place where you stopped. That is roughly the halfway point by distance.
+
+This finds the distance halfway point only, and it takes some trial and error. The calculator above gives the distance and time halfway points in one step and links each set of coordinates straight to Google Maps.
+
+## How the halfway point is calculated
+
+- **Straight line midpoint.** The calculator finds the point halfway along the great circle between the two places, using spherical trigonometry on a sphere the size of the Earth. Over any trip on land this is within a few hundred meters of the ellipsoid result.
+- **Halfway by road distance.** The route comes from OpenStreetMap data through a public routing server. The calculator walks along the route line, adding up the length of each segment, until it reaches half the total, then places the point between the last two route points.
+- **Halfway by drive time.** The routing server also returns the expected time for each segment of the route in free-flowing traffic. The calculator adds those up the same way and stops at half the total time.
+- **Geographic midpoint of several places.** Each place becomes a point in three dimensions on a unit sphere. The calculator averages those points and projects the average back onto the surface.
+
+## Limits
+
+- **Drive times assume free-flowing traffic.** They do not include congestion, stops or road works.
+- **The route is one route.** If you plan to take a different road, the halfway point will move.
+- **The town list has a size floor.** It covers towns of 5,000 or more people in the United States, the United Kingdom, Canada and Australia, and 25,000 or more elsewhere, so small villages near the midpoint are not listed. Zoom into the street map to see them.
+- **Places across water may have no route.** If no road connects the two places, the calculator shows only the straight line midpoint.
+
+For the distance between two places rather than the middle, use the [address distance calculator](/distance-between-two-addresses/) or the [crow flies distance calculator](/).

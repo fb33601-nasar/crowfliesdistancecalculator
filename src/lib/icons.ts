@@ -18,6 +18,16 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-find-the-halfway-point-between-two-places': 'measure',
+  'three-kinds-of-halfway-point': 'route',
+  'halfway-points-between-popular-city-pairs': 'table',
+  'why-you-cant-just-average-the-coordinates': 'formula',
+  'finding-the-midpoint-of-three-or-more-places': 'target',
+  'choosing-a-fair-place-to-meet-halfway': 'pin',
+  'halfway-along-a-road-trip': 'compass',
+  'finding-the-halfway-point-on-google-maps': 'globe',
+  'how-the-halfway-point-is-calculated': 'formula',
+  'limits': 'limits',
   'how-to-calculate-air-miles-between-two-airports': 'measure',
   'what-air-miles-means': 'meaning',
   'air-miles-between-popular-airports': 'table',

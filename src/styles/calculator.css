@@ -1484,3 +1484,76 @@
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
+
+/* ---------- Halfway point ---------- */
+.halfway-place {
+  position: relative;
+}
+.halfway-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--ink-faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0.2rem 0.3rem;
+}
+.halfway-remove:hover {
+  color: var(--course);
+}
+.halfway-headline {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.6rem);
+  font-weight: 820;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.halfway-near {
+  font-weight: 650;
+  color: var(--course);
+  font-size: 0.55em;
+  letter-spacing: 0;
+  vertical-align: 0.2em;
+}
+.halfway-points dd a {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.halfway-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+.halfway-glyph {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 800 15px var(--font);
+  color: #fff;
+  background: var(--course);
+  border: 3px solid #fff;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.35);
+}
+.halfway-mark.is-road .halfway-glyph {
+  background: var(--ink);
+}
+.halfway-mark.is-time .halfway-glyph {
+  background: #0f8a6c;
+}
+.halfway-label {
+  background: #fff;
+  color: var(--ink);
+  font: 700 12px var(--font);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(22, 27, 61, 0.25);
+}
