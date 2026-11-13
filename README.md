@@ -12,6 +12,8 @@ As the crow flies distance calculator. Astro + React islands + TypeScript, built
 | `npm run data` | Rebuild `public/data/cities.json` (place suggestions) |
 | `npm run icons` | Rebuild favicons and the social sharing image |
 
+The sitemap (`/sitemap.xml`) is built from the `slug` and `dateModified` frontmatter of each file in `src/content/`.
+
 ## Deploying on Cloudflare Workers
 
 1. Cloudflare dashboard → Workers & Pages → Create → Import a repository → pick this repo.

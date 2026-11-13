@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://crowfliesdistancecalculator.com/sitemap-index.xml
+Sitemap: https://crowfliesdistancecalculator.com/sitemap.xml
