@@ -321,3 +321,61 @@ export const RADIUS_UNIT: Record<RadiusUnit, { short: string; long: string; metr
   ft: { short: 'ft', long: 'feet', metres: METRES_PER_FOOT },
   nmi: { short: 'nmi', long: 'nautical miles', metres: METRES_PER_NAUTICAL_MILE },
 };
+
+/** Constant compass heading (rhumb line, loxodrome) from a to b, in degrees. */
+export function rhumbBearing(a: LatLon, b: LatLon): number {
+  const p1 = rad(a.lat);
+  const p2 = rad(b.lat);
+  let dl = rad(b.lon - a.lon);
+  if (Math.abs(dl) > Math.PI) dl = dl > 0 ? -(2 * Math.PI - dl) : 2 * Math.PI + dl;
+  const dpsi = Math.log(Math.tan(Math.PI / 4 + p2 / 2) / Math.tan(Math.PI / 4 + p1 / 2));
+  return norm360(deg(Math.atan2(dl, dpsi)));
+}
+
+/** Points along the rhumb line from a to b as [lon, lat], longitudes kept continuous. */
+export function rhumbPath(a: LatLon, b: LatLon, steps = 64): [number, number][] {
+  let dl = b.lon - a.lon;
+  if (dl > 180) dl -= 360;
+  if (dl < -180) dl += 360;
+  const psi = (lat: number) => Math.log(Math.tan(Math.PI / 4 + rad(lat) / 2));
+  const p1 = psi(a.lat);
+  const p2 = psi(b.lat);
+  const out: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const f = i / steps;
+    const lat = Math.abs(p2 - p1) < 1e-12 ? a.lat : deg(2 * Math.atan(Math.exp(p1 + f * (p2 - p1))) - Math.PI / 2);
+    out.push([a.lon + f * dl, lat]);
+  }
+  return out;
+}
+
+/** 32-point compass name for a bearing, e.g. "NE by E". */
+const COMPASS_32 = ['N', 'N by E', 'NNE', 'NE by N', 'NE', 'NE by E', 'ENE', 'E by N', 'E', 'E by S', 'ESE', 'SE by E', 'SE', 'SE by S', 'SSE', 'S by E', 'S', 'S by W', 'SSW', 'SW by S', 'SW', 'SW by W', 'WSW', 'W by S', 'W', 'W by N', 'WNW', 'NW by W', 'NW', 'NW by N', 'NNW', 'N by W'];
+export function compass32(bearing: number): string {
+  return COMPASS_32[Math.round(norm360(bearing) / 11.25) % 32];
+}
+
+/** Degrees as 51° 24′ 07″. */
+export function toDMS(value: number, secDigits = 0): string {
+  const v = Math.abs(value);
+  let d = Math.floor(v);
+  let m = Math.floor((v - d) * 60);
+  let s = Number(((v - d - m / 60) * 3600).toFixed(secDigits));
+  if (s >= 60) { s = 0; m += 1; }
+  if (m >= 60) { m = 0; d += 1; }
+  return `${d}° ${String(m).padStart(2, '0')}′ ${s.toFixed(secDigits).padStart(2 + (secDigits ? secDigits + 1 : 0), '0')}″`;
+}
+
+/** Surveyor's quadrant bearing, e.g. N 51° 24′ E. */
+export function quadrantBearing(bearing: number): string {
+  const b = norm360(bearing);
+  if (b === 0) return 'Due north';
+  if (b === 90) return 'Due east';
+  if (b === 180) return 'Due south';
+  if (b === 270) return 'Due west';
+  const ns = b < 90 || b > 270 ? 'N' : 'S';
+  const ew = b < 180 ? 'E' : 'W';
+  const angle = b < 90 ? b : b < 180 ? 180 - b : b < 270 ? b - 180 : 360 - b;
+  const [d, m] = toDMS(angle).split(' ');
+  return `${ns} ${d} ${m} ${ew}`;
+}

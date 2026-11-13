@@ -18,6 +18,13 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-use-the-bearing-calculator': 'measure',
+  'how-a-bearing-is-measured': 'compass',
+  'initial-bearing-final-bearing-and-the-rhumb-line': 'globe',
+  'true-bearing-vs-magnetic-bearing': 'pin',
+  'bearing-formats-explained': 'table',
+  'the-bearing-formula': 'formula',
+  'who-needs-a-bearing-calculator': 'target',
   'how-to-find-the-halfway-point-between-two-places': 'measure',
   'three-kinds-of-halfway-point': 'route',
   'halfway-points-between-popular-city-pairs': 'table',

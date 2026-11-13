@@ -1,0 +1,147 @@
+---
+slug: /bearing-calculator/
+title: 'Bearing Calculator: Direction Between Two Points'
+seo_title: 'Bearing Calculator: Azimuth & Compass Direction Between Two Points'
+description: 'Find the bearing between two places or coordinates: initial and final bearing, back bearing, magnetic bearing, rhumb line and quadrant notation. Free azimuth calculator.'
+lede: 'Enter two places or sets of coordinates to get the compass bearing from one to the other, with the magnetic bearing, the back bearing, the rhumb line heading and the same angle in degrees-minutes-seconds, quadrant and mils.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import BearingDiagram from '../components/figures/BearingDiagram.astro';
+import BearingTable from '../components/figures/BearingTable.astro';
+import DeclinationTable from '../components/figures/DeclinationTable.astro';
+import Callout from '../components/Callout.astro';
+
+A bearing is the direction from one point to another, given as an angle measured clockwise from north. North is 0°, east 90°, south 180° and west 270°. Navigators, surveyors and mappers often call the same angle an azimuth.
+
+The calculator opens with Kansas City to St. Louis. The bearing is 96.5°, a little south of due east, over a straight line distance of 238 miles.
+
+## How to use the bearing calculator
+
+**To find the bearing between two places:**
+
+<div class="steps">
+
+1. Make sure **Bearing between two points** is selected.
+2. Type the start in the **Start** box. You can enter an address, a city, or coordinates such as `39.0997, -94.5786` or `39°05′59″N 94°34′43″W`.
+3. Type the destination in the **Destination** box the same way, or pick either point on the map.
+4. Read the bearing. The large figure is the initial true bearing, with its compass name and the compass needle beside it. Below are the final bearing, back bearing, magnetic bearing, local magnetic declination and rhumb line bearing, followed by the same angle in other formats.
+
+</div>
+
+**To find a point from a bearing and distance:**
+
+<div class="steps">
+
+1. Select **Point from a bearing**.
+2. Enter the start, then a bearing such as `45`, `45°30′` or `N45E`, and a distance in miles, kilometers or nautical miles.
+3. Read the coordinates of the point you would reach. Copy them into a GPS or a map app, or select the map to see the route.
+
+</div>
+
+<Callout title="Points can be dragged">
+Drag A or B on the street map to move them and watch the bearing and the compass needle update. It is a quick way to see how the bearing changes as a target moves.
+</Callout>
+
+## How a bearing is measured
+
+<BearingDiagram />
+
+A **bearing** or **azimuth** runs from 0° to 360°, measured clockwise from north. It always uses three digits in navigation, so east is written 090° and south-southwest 202.5°.
+
+A **quadrant bearing**, used in land surveying and on property deeds, gives the angle east or west of north or south, never more than 90°. 120° becomes S 60° E: start facing south and turn 60° toward east.
+
+A **back bearing** is the direction from the destination back to the start. Over short distances it is simply the forward bearing plus or minus 180°. Over long distances on a round Earth it is not, which the next section explains.
+
+## Initial bearing, final bearing and the rhumb line
+
+The shortest route between two places on the globe is a great circle, and on a great circle the bearing changes as you go. You leave New York heading 51° (northeast) for London and arrive heading 108° (east-southeast). That is why the calculator gives two bearings:
+
+- **Initial bearing** is the direction you set off in.
+- **Final bearing** is the direction you are traveling when you arrive.
+
+A **rhumb line** is the alternative: a route on one constant compass heading. It is easy to steer, which is why sailors used it for centuries, and it is a straight line on a Mercator map. But it is longer than the great circle, and the gap grows with distance and latitude.
+
+<BearingTable />
+
+On short trips the three bearings are almost the same and the rhumb line is no longer in any way that matters: the bearings from Kansas City to St. Louis are all within three degrees of each other. On long east–west trips at high latitude they differ a lot. New York to London has an initial great circle bearing of 51° but a rhumb line heading of 78°, and the rhumb line is 4% longer. The map shows both lines whenever they differ.
+
+## True bearing vs magnetic bearing
+
+A compass needle points to magnetic north, not true north. The angle between them is the **magnetic declination**, and it varies from place to place. A bearing from a map or this calculator is a **true** bearing; to follow it with a hand compass you need the **magnetic** bearing.
+
+The calculator works out the declination at your start point for today's date from the World Magnetic Model 2025, the model used by navigation systems and smartphones, and gives the magnetic bearing alongside the true one.
+
+<DeclinationTable date="2026-11-14" />
+
+The rule for converting is:
+
+- **Magnetic bearing = true bearing − east declination**
+- **Magnetic bearing = true bearing + west declination**
+
+In Seattle, with about 15° of east declination, a true bearing of 90° reads about 75° on a compass. In Boston, with about 14° of west declination, the same true bearing reads about 104°. Ignore a 15° difference and after a mile of walking you would be roughly a quarter of a mile off course.
+
+<Callout title="Declination changes over time" kind="note">
+Magnetic north drifts, so declination at any place changes slowly from year to year. Old maps often print the declination for the year they were made, which may now be out by a degree or more. The calculator always uses today's date.
+</Callout>
+
+## Bearing formats explained
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Ways of writing a bearing</p>
+  <table>
+    <caption class="visually-hidden">Ways of writing a bearing</caption>
+    <thead><tr><th scope="col">Format</th><th scope="col">Example</th><th scope="col">Who uses it</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Decimal degrees</th><td>96.48°</td><td>Mapping software, GIS, GPS units</td></tr>
+      <tr><th scope="row">Degrees, minutes, seconds</th><td>96° 28′ 58″</td><td>Surveying, astronomy, older charts</td></tr>
+      <tr><th scope="row">Three-figure bearing</th><td>097°</td><td>Aviation, marine navigation, orienteering</td></tr>
+      <tr><th scope="row">Quadrant bearing</th><td>S 83° 31′ E</td><td>Land surveying, property deeds, legal descriptions</td></tr>
+      <tr><th scope="row">Compass point</th><td>E by S</td><td>Sailing, weather, everyday directions</td></tr>
+      <tr><th scope="row">Mils</th><td>1,715 mils</td><td>Military and artillery, with 6,400 mils to a full circle</td></tr>
+      <tr><th scope="row">Radians</th><td>1.6839 rad</td><td>Programming and mathematics</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The calculator converts the bearing into every one of these, and the **Point from a bearing** box accepts decimal degrees, degrees and minutes, or quadrant notation such as `S45W`.
+
+## The bearing formula
+
+For two points with latitudes φ1, φ2 and longitudes λ1, λ2, the initial great circle bearing θ is:
+
+<div class="formula">
+
+θ = atan2( sin Δλ · cos φ2 , cos φ1 · sin φ2 − sin φ1 · cos φ2 · cos Δλ )
+
+</div>
+
+where Δλ is λ2 − λ1. The result of atan2 runs from −180° to +180°, so add 360° to negative answers to get a bearing from 0° to 360°. The final bearing is the initial bearing from B back to A, turned round by 180°.
+
+The calculator itself uses Vincenty's formulas on the WGS 84 ellipsoid for the great circle bearings and distance, which allow for the Earth being slightly flattened at the poles. The difference from the spherical formula above is small, usually a fraction of a degree.
+
+The rhumb line bearing uses the Mercator projection's stretched latitude:
+
+<div class="formula">
+
+θ = atan2( Δλ , ln( tan(π/4 + φ2/2) / tan(π/4 + φ1/2) ) )
+
+</div>
+
+## Who needs a bearing calculator
+
+- **Hikers and orienteers** taking a bearing to a summit, a hut or a trailhead before setting off, then converting it to a magnetic bearing for a hand compass.
+- **Pilots and sailors** planning a course, where the initial and final bearings and the rhumb line all matter.
+- **Surveyors and property owners** reading quadrant bearings in deeds and boundary descriptions.
+- **Radio and satellite users** pointing an antenna or dish toward a transmitter.
+- **Solar installers and architects** checking which way a roof, a wall or a window faces.
+- **Developers and students** checking the output of their own bearing code against a known answer.
+
+## Accuracy and limits
+
+- **Great circle bearings are computed on the WGS 84 ellipsoid.** Over short distances, the bearing is only as accurate as the two positions: a few meters of error in either point barely matters over 10 miles, but over 100 meters it can shift the bearing by several degrees.
+- **Magnetic declination is a model value.** Local iron deposits, buildings and vehicles can deflect a compass by several degrees more. The model does not include those local effects.
+- **The destination point uses a sphere.** In **Point from a bearing** mode the destination is worked out on a sphere of the Earth's mean radius, which is within about 0.5% of the ellipsoid result.
+- **Near the poles bearings break down.** At the North or South Pole every direction is south or north, and the calculator's bearings have no useful meaning there.
+
+For the distance between two places rather than the direction, use the [crow flies distance calculator](/), or the [address distance calculator](/distance-between-two-addresses/) for road distances.

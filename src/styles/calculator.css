@@ -1557,3 +1557,101 @@
   white-space: nowrap;
   box-shadow: 0 3px 10px rgba(22, 27, 61, 0.25);
 }
+
+/* ---------- Bearing ---------- */
+.bearing-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+}
+.bearing-rose {
+  width: clamp(7.5rem, 22vw, 9.5rem);
+  height: auto;
+}
+.rose-face {
+  fill: var(--paper);
+  stroke: var(--rule);
+  stroke-width: 2;
+}
+.rose-tick {
+  stroke: #b7bdd8;
+  stroke-width: 1;
+}
+.rose-tick.is-major {
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+}
+.rose-label {
+  font: 800 13px var(--font);
+  fill: var(--ink-soft);
+}
+.rose-label.is-north {
+  fill: var(--course);
+}
+.rose-mag {
+  fill: #0f8a6c;
+}
+.rose-rhumb {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-dasharray: 4 4;
+}
+.rose-needle-head {
+  fill: var(--course);
+}
+.rose-needle-tail {
+  fill: var(--ink-faint);
+}
+.rose-hub {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rose-needle {
+    transition: transform 0.5s cubic-bezier(0.3, 1.3, 0.5, 1);
+  }
+}
+.bearing-dest {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.4rem);
+  font-weight: 820;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.bearing-inputs {
+  display: grid;
+  gap: 0.9rem;
+}
+.bearing-inputs label {
+  display: block;
+  font-size: var(--step--1);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+.bearing-inputs > div > input {
+  width: 100%;
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  min-height: 3rem;
+}
+.bearing-inputs input[aria-invalid='true'] {
+  border-color: #a3123f;
+}
+.bearing-inputs small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--ink-faint);
+  font-size: 0.82rem;
+}
+.bearing-formats td {
+  white-space: nowrap;
+}

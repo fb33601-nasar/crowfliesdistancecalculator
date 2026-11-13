@@ -1,0 +1,48 @@
+---
+// Magnetic declination in US and world cities from WMM2025, for the page's build date.
+import { declination } from '../calculator/magnetic';
+import { formatNumber } from '../../lib/geo';
+interface Props { date: string }
+const at = new Date(`${Astro.props.date}T12:00:00Z`);
+const cities: [string, number, number][] = [
+  ['Seattle, WA', 47.6062, -122.3321],
+  ['San Francisco, CA', 37.7749, -122.4194],
+  ['Denver, CO', 39.7392, -104.9903],
+  ['Dallas, TX', 32.7831, -96.8067],
+  ['Chicago, IL', 41.85, -87.65],
+  ['Miami, FL', 25.7743, -80.1937],
+  ['New York, NY', 40.7128, -74.006],
+  ['Boston, MA', 42.3601, -71.0589],
+  ['Anchorage, AK', 61.2181, -149.9003],
+  ['London, UK', 51.5085, -0.1257],
+  ['Sydney, Australia', -33.8679, 151.2073],
+];
+const rows = cities.map(([n, lat, lon]) => ({ n, d: declination({ lat, lon }, at)! }));
+const max = Math.max(...rows.map((r) => Math.abs(r.d)));
+---
+<div class="table-scroll dct">
+  <p class="table-title" aria-hidden="true">Magnetic declination by city</p>
+  <table>
+    <caption class="visually-hidden">Magnetic declination by city</caption>
+    <thead><tr><th scope="col">City</th><th scope="col" class="num">Declination</th><th scope="col">West ← → East</th><th scope="col" class="num">True 90° reads on a compass as</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.n}</th>
+          <td class="num">{formatNumber(Math.abs(r.d), 1)}° {r.d >= 0 ? 'E' : 'W'}</td>
+          <td><span class="dbar"><span class={r.d >= 0 ? 'e' : 'w'} style={`width:${((Math.abs(r.d) / max) * 50).toFixed(1)}%`}></span></span></td>
+          <td class="num">{formatNumber((90 - r.d + 360) % 360, 1)}°</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">World Magnetic Model 2025, evaluated for {at.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}. Declination drifts by a fraction of a degree each year.</p>
+<style>
+  .dct td:nth-child(3) { min-width: 10rem; }
+  .dbar { display: block; position: relative; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; }
+  .dbar::after { content: ''; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--ink-soft); }
+  .dbar span { position: absolute; top: 0; bottom: 0; }
+  .dbar .e { left: 50%; background: var(--course); border-radius: 0 4px 4px 0; }
+  .dbar .w { right: 50%; background: #2f5bd3; border-radius: 4px 0 0 4px; }
+</style>

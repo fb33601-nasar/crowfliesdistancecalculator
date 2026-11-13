@@ -1,0 +1,42 @@
+---
+// Initial, final and rhumb line bearings for city pairs, computed at build time.
+import { geodesic, haversine, rhumbBearing, rhumbDistance, compass32, formatNumber } from '../../lib/geo';
+type P = [string, number, number];
+const pairs: [P, P][] = [
+  [['Kansas City', 39.0997, -94.5786], ['St. Louis', 38.627, -90.1994]],
+  [['London', 51.5085, -0.1257], ['Paris', 48.8534, 2.3488]],
+  [['Chicago', 41.85, -87.65], ['Denver', 39.7392, -104.9903]],
+  [['Seattle', 47.6062, -122.3321], ['Miami', 25.7743, -80.1937]],
+  [['New York', 40.7128, -74.006], ['Los Angeles', 34.0522, -118.2437]],
+  [['New York', 40.7128, -74.006], ['London', 51.5085, -0.1257]],
+  [['Los Angeles', 34.0522, -118.2437], ['Tokyo', 35.6895, 139.6917]],
+  [['London', 51.5085, -0.1257], ['Sydney', -33.8679, 151.2073]],
+];
+const MI = 1609.344;
+const rows = pairs.map(([a, b]) => {
+  const A = { lat: a[1], lon: a[2] }, B = { lat: b[1], lon: b[2] };
+  const g = geodesic(A, B);
+  const h = haversine(A, B);
+  const rd = rhumbDistance(A, B);
+  return { name: `${a[0]} to ${b[0]}`, link: `/bearing-calculator/?a=${A.lat},${A.lon},${a[0]}&b=${B.lat},${B.lon},${b[0]}`, i: g.initialBearing, f: g.finalBearing, r: rhumbBearing(A, B), dist: g.distance / MI, extra: ((rd - h) / h) * 100 };
+});
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Bearings between city pairs</p>
+  <table>
+    <caption class="visually-hidden">Bearings between city pairs</caption>
+    <thead><tr><th scope="col">Route</th><th scope="col" class="num">Distance</th><th scope="col" class="num">Initial bearing</th><th scope="col" class="num">Final bearing</th><th scope="col" class="num">Rhumb line bearing</th><th scope="col" class="num">Rhumb line is longer by</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row"><a href={r.link}>{r.name}</a></th>
+          <td class="num">{formatNumber(r.dist, 0)} mi</td>
+          <td class="num">{r.i.toFixed(1)}° <span class="muted">{compass32(r.i)}</span></td>
+          <td class="num">{r.f.toFixed(1)}°</td>
+          <td class="num">{r.r.toFixed(1)}°</td>
+          <td class="num">{r.extra.toFixed(r.extra < 0.1 ? 2 : 1)}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

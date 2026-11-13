@@ -27,6 +27,7 @@ export const TOOLS: Tool[] = [
   { href: '/mile-radius-from-current-location/', name: 'Mile radius from me', blurb: 'See the towns within any distance of where you are.', icon: 'pin', live: true },
   { href: '/air-miles-calculator/', name: 'Air miles calculator', blurb: 'Flight distance between airports and cities.', icon: 'globe', live: true },
   { href: '/halfway-point-calculator/', name: 'Halfway point', blurb: 'Find the middle between two or more places.', icon: 'pin', live: true },
+  { href: '/bearing-calculator/', name: 'Bearing calculator', blurb: 'Compass direction and azimuth between two points.', icon: 'compass', live: true },
 ];
 
 export const liveTools = () => TOOLS.filter((t) => t.live);
