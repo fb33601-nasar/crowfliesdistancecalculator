@@ -1,8 +1,9 @@
 ---
 import Logo from './Logo.astro';
 import { SITE } from '../lib/site';
-interface Props { nav?: { href: string; label: string }[] }
-const { nav = [] } = Astro.props;
+import { liveTools } from '../data/tools';
+const tools = liveTools();
+const here = Astro.url.pathname;
 ---
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
@@ -11,12 +12,41 @@ const { nav = [] } = Astro.props;
       <Logo />
       <span>{SITE.shortName}<small>Distance calculator</small></span>
     </a>
-    {nav.length > 0 && (
-      <nav class="site-nav" aria-label="On this page">
-        <ul>
-          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
-        </ul>
-      </nav>
-    )}
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li class="menu">
+          <details>
+            <summary>Tools</summary>
+            <ul class="menu-list">
+              {tools.map((t) => (
+                <li>
+                  <a href={t.href} aria-current={here === t.href ? 'page' : undefined}>
+                    <strong>{t.name}</strong>
+                    <span>{t.blurb}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+        <li><a href="/about/" aria-current={here === '/about/' ? 'page' : undefined}>About</a></li>
+        <li><a href="/contact/" aria-current={here === '/contact/' ? 'page' : undefined}>Contact</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
+<script>
+  // Close the Tools menu on outside click or Escape.
+  const menu = document.querySelector<HTMLDetailsElement>('.site-nav details');
+  if (menu) {
+    document.addEventListener('click', (e) => {
+      if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    });
+  }
+</script>

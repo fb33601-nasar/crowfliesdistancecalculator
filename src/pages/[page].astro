@@ -1,0 +1,42 @@
+---
+// Plain content pages: About, Contact, Privacy policy, Terms.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import H2 from '../components/H2.astro';
+
+export async function getStaticPaths() {
+  const files = import.meta.glob<{
+    frontmatter: { slug: string; title: string; seo_title: string; description: string; lede?: string; pageType?: string; datePublished: string; dateModified: string };
+    default: unknown;
+  }>('../content/pages/*.mdx', { eager: true });
+  return Object.values(files).map((f) => ({
+    params: { page: f.frontmatter.slug.replace(/\//g, '') },
+    props: { mod: f },
+  }));
+}
+const { mod } = Astro.props as any;
+const fm = mod.frontmatter;
+const Content = mod.default;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: fm.title, href: fm.slug },
+];
+---
+<Base
+  title={fm.seo_title}
+  description={fm.description}
+  path={fm.slug}
+  breadcrumbs={crumbs}
+  pageType={fm.pageType ?? 'WebPage'}
+  datePublished={fm.datePublished}
+  dateModified={fm.dateModified}
+>
+  <div class="wrap hero hero-page">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    {fm.lede && <p class="lede">{fm.lede}</p>}
+  </div>
+  <div class="wrap article article-page">
+    <Content components={{ h2: H2 }} />
+  </div>
+</Base>

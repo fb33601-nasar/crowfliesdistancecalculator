@@ -1,0 +1,48 @@
+---
+// Straight line vs drive vs walk vs cycle for well-known address pairs.
+import { geodesic, formatDuration } from '../../lib/geo';
+import { ADDRESS_SAMPLES } from '../../data/route-samples';
+const km = (m: number) => (m / 1000).toFixed(1);
+const mi = (m: number) => (m / 1609.344).toFixed(1);
+const rows = ADDRESS_SAMPLES.map((s) => ({
+  name: `${s.a.name} to ${s.b.name}`,
+  line: geodesic(s.a, s.b).distance,
+  car: s.car,
+  foot: s.foot,
+  bike: s.bike,
+  walkWins: s.foot[0] < s.car[0],
+}));
+---
+<div class="table-scroll modes">
+  <p class="table-title" aria-hidden="true">Six address pairs, measured four ways</p>
+  <table>
+    <caption class="visually-hidden">Six address pairs, measured four ways</caption>
+    <thead>
+      <tr>
+        <th scope="col">From and to</th>
+        <th scope="col" class="num">Straight line</th>
+        <th scope="col" class="num">Driving</th>
+        <th scope="col" class="num">Walking</th>
+        <th scope="col" class="num">Cycling</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.name}</th>
+          <td class="num">{km(r.line)} km<small>{mi(r.line)} mi</small></td>
+          <td class={`num${r.walkWins ? ' longer' : ''}`}>{km(r.car[0])} km<small>{formatDuration(r.car[1] / 3600)}</small></td>
+          <td class={`num${r.walkWins ? ' shorter' : ''}`}>{km(r.foot[0])} km<small>{formatDuration(r.foot[1] / 3600)}</small></td>
+          <td class="num">{km(r.bike[0])} km<small>{formatDuration(r.bike[1] / 3600)}</small></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="modes-key"><span class="badge badge-line">Shorter on foot</span> <span class="badge badge-road">Longer by car</span> marks pairs where the walking route beats the drive on distance.</p>
+</div>
+<style>
+  .modes td small { display: block; font-size: 0.78rem; color: var(--ink-faint); font-weight: 500; }
+  .modes td.longer { color: var(--ink); font-weight: 750; box-shadow: inset 3px 0 0 var(--ink); }
+  .modes td.shorter { color: var(--course); font-weight: 750; box-shadow: inset 3px 0 0 var(--course); }
+  .modes-key { margin: 0; padding: 0.75rem 1.2rem; font-size: var(--step--1); color: var(--ink-soft); border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+</style>

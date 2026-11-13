@@ -175,27 +175,162 @@ p {
   color: var(--ink-faint);
   margin-top: 0.22rem;
 }
-.site-nav ul {
+.site-nav > ul {
   display: flex;
-  gap: clamp(0.9rem, 2.2vw, 1.75rem);
+  align-items: center;
+  gap: clamp(0.4rem, 1.6vw, 1.25rem);
   list-style: none;
   margin: 0;
   padding: 0;
   font-size: var(--step--1);
-  font-weight: 600;
+  font-weight: 650;
 }
-.site-nav a {
+.site-nav a,
+.site-nav summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0 0.6rem;
+  border-radius: 999px;
   text-decoration: none;
-  padding-block: 0.4rem;
+  cursor: pointer;
 }
-.site-nav a:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--course);
+.site-nav > ul > li > a:hover,
+.site-nav summary:hover {
+  background: color-mix(in srgb, var(--sea) 55%, #fff);
+  color: var(--ink);
 }
-@media (max-width: 640px) {
-  .site-nav li:nth-child(n + 3) {
+.site-nav a[aria-current='page'] {
+  color: var(--course);
+}
+.site-nav summary {
+  list-style: none;
+}
+.site-nav summary::-webkit-details-marker {
+  display: none;
+}
+.site-nav summary::after {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: 45deg;
+  translate: 0 -0.12rem;
+  transition: rotate 0.15s;
+}
+.site-nav details[open] summary {
+  background: var(--ink);
+  color: #fff;
+}
+.site-nav details[open] summary::after {
+  rotate: 225deg;
+  translate: 0 0.12rem;
+}
+.menu {
+  position: relative;
+}
+.menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 40;
+  width: min(23rem, 90vw);
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 40px -16px rgba(22, 27, 61, 0.35);
+}
+.menu-list a {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-sm);
+  min-height: 0;
+}
+.menu-list a:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+.menu-list strong {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.menu-list span {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  line-height: 1.35;
+}
+@media (max-width: 520px) {
+  .site-nav > ul > li:nth-child(3) {
     display: none;
   }
+}
+
+/* Related calculators */
+.related {
+  margin-top: clamp(3rem, 6vw, 4.5rem) !important;
+}
+.related h2 {
+  font-size: var(--step-1);
+  margin-bottom: 1rem;
+}
+.related ul {
+  list-style: none;
+  padding: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.9rem;
+}
+.related li {
+  margin: 0 !important;
+}
+.related a {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  height: 100%;
+  padding: 1rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+.related a:hover {
+  border-color: var(--course);
+  color: var(--ink);
+}
+.related-icon {
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--course-bright);
+}
+.related-icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+.related strong {
+  display: block;
+  font-weight: 750;
+}
+.related a span span {
+  display: block;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  margin-top: 0.15rem;
 }
 
 /* Breadcrumbs */
@@ -879,4 +1014,40 @@ td.heading svg {
   left: 0;
   width: fit-content;
   max-width: 100%;
+}
+
+/* Inner pages */
+.hero-page {
+  text-align: left;
+  padding-bottom: 0;
+}
+.hero-page h1 {
+  margin-inline: 0;
+}
+.hero-page .lede {
+  max-width: 62ch;
+}
+.hero-page .crumbs {
+  margin-bottom: 1.25rem;
+}
+.article-page > h2:first-of-type {
+  margin-top: 2.5rem;
+}
+.contact-email {
+  font-size: var(--step-2);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.article table:not(.calc-modes) {
+  /* markdown tables need the same frame as component tables */
+}
+.article > table {
+  display: block;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+.hero:not(.hero-page) .crumbs ol {
+  justify-content: center;
 }

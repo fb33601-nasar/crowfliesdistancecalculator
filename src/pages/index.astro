@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import H2 from '../components/H2.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import Calculator from '../components/calculator/Calculator';
 import Article, { frontmatter } from '../content/home.mdx';
 import { homeFaqs } from '../content/home-faq';
@@ -92,6 +93,8 @@ const appSchema = {
         </details>
       ))}
     </div>
+
+    <RelatedTools current="/" />
 
     <div class="cta">
       <p><strong>Measure your own route</strong></p>

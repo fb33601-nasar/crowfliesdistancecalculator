@@ -1,0 +1,25 @@
+---
+import { icon } from '../lib/icons';
+import { liveTools } from '../data/tools';
+interface Props { current: string; title?: string }
+const { current, title = 'Related calculators' } = Astro.props;
+const tools = liveTools().filter((t) => t.href !== current);
+---
+{tools.length > 0 && (
+  <section class="related" aria-labelledby="related-title">
+    <h2 id="related-title">{title}</h2>
+    <ul>
+      {tools.map((t) => (
+        <li>
+          <a href={t.href}>
+            <span class="related-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={icon(t.icon)} /></span>
+            <span>
+              <strong>{t.name}</strong>
+              <span>{t.blurb}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

@@ -828,3 +828,112 @@
   border-color: var(--course);
   color: var(--course);
 }
+
+/* Travel variant: every way to measure it */
+.calc-modes {
+  margin-top: 1.1rem;
+  font-size: var(--step--1);
+}
+.calc-modes caption {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-faint);
+  padding: 0 0 0.5rem;
+}
+.calc-modes caption::before {
+  display: none;
+}
+.calc-modes thead th {
+  background: none;
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.calc-modes th,
+.calc-modes td {
+  padding: 0.35rem 0.5rem;
+  border-top: 0;
+}
+.calc-modes tbody tr {
+  background: none;
+}
+.calc-modes tbody tr + tr th,
+.calc-modes tbody tr + tr td {
+  border-top: 1px dashed var(--rule);
+}
+.calc-modes tbody tr:hover {
+  background: color-mix(in srgb, var(--sea) 30%, #fff);
+}
+.calc-modes tbody tr.is-selected {
+  background: color-mix(in srgb, var(--course) 8%, #fff);
+}
+.calc-modes td {
+  font-weight: 650;
+  color: var(--ink);
+}
+.calc-modes td:last-child {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.calc-modes tbody th button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-weight: 650;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+.calc-modes tbody th button::before {
+  content: '';
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 2px solid var(--rule);
+  flex: none;
+}
+.calc-modes tbody th button[aria-checked='true']::before {
+  border-color: var(--course);
+  background: radial-gradient(var(--course) 45%, transparent 50%);
+}
+.calc-modes tbody th button:disabled {
+  cursor: default;
+  color: var(--ink-faint);
+}
+.calc-modes tbody th button svg {
+  color: var(--course);
+}
+.calc-mileage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  align-items: baseline;
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-size: 0.85rem;
+}
+.calc-mileage span {
+  flex-basis: 100%;
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+}
+.calc-mileage strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.calc-note {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+.calc-also strong {
+  color: var(--ink);
+  font-weight: 700;
+}

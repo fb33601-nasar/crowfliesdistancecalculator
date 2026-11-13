@@ -1,0 +1,62 @@
+---
+// Road distance divided by straight line distance for sampled city pairs.
+import { geodesic, formatNumber, formatDuration, METRES_PER_MILE } from '../../lib/geo';
+import { CITY_SAMPLES } from '../../data/route-samples';
+const rows = CITY_SAMPLES.map((s) => {
+  const line = geodesic(s.a, s.b).distance;
+  return {
+    name: `${s.a.name} to ${s.b.name}`,
+    line: line / METRES_PER_MILE,
+    road: s.car[0] / METRES_PER_MILE,
+    ratio: s.car[0] / line,
+    time: formatDuration(s.car[1] / 3600),
+  };
+}).sort((x, y) => y.ratio - x.ratio);
+const sorted = rows.map((r) => r.ratio).sort((x, y) => x - y);
+const median = (sorted[Math.floor((sorted.length - 1) / 2)] + sorted[Math.ceil((sorted.length - 1) / 2)]) / 2;
+const lo = 1;
+const hi = 1.8;
+const pct = (v: number) => (((v - lo) / (hi - lo)) * 100).toFixed(1);
+---
+<div class="table-scroll detour">
+  <p class="table-title" aria-hidden="true">Road distance compared with the straight line, 18 city pairs</p>
+  <table>
+    <caption class="visually-hidden">Road distance compared with the straight line, 18 city pairs</caption>
+    <thead>
+      <tr>
+        <th scope="col">Route</th>
+        <th scope="col" class="num">Straight line</th>
+        <th scope="col" class="num">By road</th>
+        <th scope="col">Detour index (bar starts at 1.0, the straight line)</th>
+        <th scope="col" class="num">Drive time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.name}</th>
+          <td class="num">{formatNumber(r.line, 0)} mi</td>
+          <td class="num strong">{formatNumber(r.road, 0)} mi</td>
+          <td class="detour-cell">
+            <span class="detour-track" aria-hidden="true">
+              <span class="detour-bar" style={`width:${pct(r.ratio)}%`} />
+              <span class="detour-median" style={`left:${pct(median)}%`} />
+            </span>
+            <span class="detour-value">{r.ratio.toFixed(2)}×</span>
+          </td>
+          <td class="num">{r.time}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="detour-key"><span class="detour-key-line" aria-hidden="true"></span>Median of all 18 pairs: {median.toFixed(2)}×</p>
+</div>
+<style>
+  .detour .detour-cell { min-width: 15rem; white-space: nowrap; }
+  .detour-track { position: relative; display: inline-block; vertical-align: middle; width: calc(100% - 3.6rem); height: 0.7rem; background: color-mix(in srgb, var(--sea) 50%, #fff); border-radius: 4px; }
+  .detour-bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; background: linear-gradient(90deg, var(--ink), var(--course)); }
+  .detour-median { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); }
+  .detour-value { display: inline-block; width: 3.3rem; text-align: right; font-weight: 700; }
+  .detour-key { display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0.75rem 1.2rem; font-size: var(--step--1); color: var(--ink-soft); border-top: 1px solid var(--rule); }
+  .detour-key-line { width: 2px; height: 1rem; background: var(--ink); }
+</style>

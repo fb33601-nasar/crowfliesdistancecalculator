@@ -1,0 +1,168 @@
+---
+slug: /distance-between-two-addresses/
+title: 'Distance Between Two Addresses'
+seo_title: 'Distance Between Two Addresses: Drive, Walk & Straight Line'
+description: 'Find the distance between two addresses by car, on foot, by bike and in a straight line. Free calculator with travel times, mileage value and a map.'
+lede: 'Enter two street addresses to see how far apart they are by road, on foot, by bike and in a straight line, with a travel time for each route and the mileage value of the drive.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import DetourTable from '../components/figures/DetourTable.astro';
+import ModeSamples from '../components/figures/ModeSamples.astro';
+import OneWayDiagram from '../components/figures/OneWayDiagram.astro';
+import CrowVsRoad from '../components/figures/CrowVsRoad.astro';
+import Callout from '../components/Callout.astro';
+
+The distance between two addresses depends on how you travel. The straight line is fixed, but the drive, the walk and the bike ride each follow a different network of roads and paths, and each gives a different answer.
+
+The calculator above works all four out at once. The example loaded is the Empire State Building to One World Trade Center: 4.6 km (2.9 miles) in a straight line, 6.3 km by car and 4.9 km on foot.
+
+## How to find the distance between two addresses
+
+Finding the distance takes two addresses and a few seconds.
+
+<div class="steps">
+
+1. Type the starting address in the **From** box and pick the right match from the list. A full street address gives the most exact result, but a place name, a ZIP code, a postcode or coordinates also work.
+2. Type the destination in the **To** box. To start from where you are, choose **Use my location**. To place a point by hand, choose **Pick point on the map**.
+3. Read the result. The large figure is the driving distance once the route is ready. The table under it adds the straight line, walking and cycling distances, with a time for each.
+4. Pick any row in the table to draw that route on the street map. The straight line stays on the map as a dashed reference.
+5. Press **Copy link** to share the result, or **Copy result** to paste the figures into an email or an expense claim.
+
+</div>
+
+<Callout title="Check the pins before you trust the number" kind="note">
+An address search can match the wrong street with the same name, or a building's center rather than its entrance. Glance at the two pins on the street map. If one is off, drag it to the right spot and every distance updates.
+</Callout>
+
+## Straight line, driving, walking or cycling: which distance do you need?
+
+Each distance answers a different question, so the right one depends on what you are working out.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Which distance to use</p>
+  <table>
+    <caption class="visually-hidden">Which distance to use</caption>
+    <thead><tr><th scope="col">If you are working out</th><th scope="col">Use</th><th scope="col">Why</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">A commute, a delivery run or a road trip</th><td><span class="badge badge-road">Driving</span></td><td>You pay in time, fuel and miles for the road route</td></tr>
+      <tr><th scope="row">Mileage for an expense claim or a tax return</th><td><span class="badge badge-road">Driving</span></td><td>Reimbursement rates are paid per road mile driven</td></tr>
+      <tr><th scope="row">Whether a school, shop or station is walkable</th><td><span class="badge badge-check">Walking</span></td><td>Footpaths and crossings decide how far you really walk</td></tr>
+      <tr><th scope="row">A bike commute</th><td><span class="badge badge-check">Cycling</span></td><td>Bike routes avoid motorways and use cycle paths</td></tr>
+      <tr><th scope="row">How close two properties are</th><td><span class="badge badge-line">Straight line</span></td><td>It does not change with the route anyone picks</td></tr>
+      <tr><th scope="row">A rule written as a radius</th><td><span class="badge badge-line">Straight line</span></td><td>Radius limits are measured as the crow flies</td></tr>
+      <tr><th scope="row">A catchment or eligibility rule</th><td><span class="badge badge-check">Check the rule</span></td><td>Some use the straight line, others the shortest walking route</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Why the road is longer than the straight line
+
+A road can match the straight line between two addresses but never beat it. Roads bend around hills, water, private land and buildings, and they join through junctions rather than meeting head on.
+
+<CrowVsRoad />
+
+Transport researchers call the ratio of road distance to straight line distance the **detour index**, or circuity. An index of 1.00 means the road is perfectly straight; 1.25 means you drive 25% further than the crow flies.
+
+To see how big the gap is in practice, we routed 18 pairs of cities in the United States, the United Kingdom and Ireland with the same routing service the calculator uses. The road was a median **1.19 times** the straight line.
+
+<DetourTable />
+
+The pairs at the top of the chart share one cause: something in the way. Cardiff and Bristol are 25 miles apart across the Severn estuary, but the drive has to reach a bridge first, which makes the road 1.72 times the straight line. Denver to Salt Lake City (1.40) and Edinburgh to Inverness (1.39) both thread through mountains.
+
+The pairs at the bottom run across flat land on a highway that follows the direct line, like Dallas to Houston at 1.07.
+
+<Callout title="A quick rule of thumb">
+If all you have is a straight line distance between two towns, multiplying it by 1.2 gives a fair first estimate of the drive. Use the calculator for the real figure, because water, mountains and border crossings can push the ratio far higher.
+</Callout>
+
+## When walking is shorter than driving
+
+Over short distances in a city, the drive is often the **longest** route between two addresses, even though it is the quickest.
+
+<ModeSamples />
+
+Five of the six pairs above are shorter on foot than by car. The White House to the Lincoln Memorial is the sharpest case: 2.1 km on foot across the National Mall, but 4.3 km by car, almost three times the straight line.
+
+<OneWayDiagram />
+
+Three things cause this:
+
+- **One-way streets** send drivers around the block to reach a door that is a few steps away on foot.
+- **Car-free space** such as parks, plazas, pedestrian streets and footbridges is open to walkers and cyclists only.
+- **Turn bans** at busy junctions force a car to go past its turning and come back.
+
+So the driving distance is the right figure for a mileage claim, and the walking distance is the right figure for deciding whether to walk.
+
+## How travel time is estimated
+
+Each travel time comes from the route itself. The routing service adds up the time to cover every road or path along the way at a typical speed for that kind of road, plus time for turns.
+
+Walking routes assume a steady pace of 4.5 km/h (2.8 mph). Cycling times in our samples worked out between 9 and 14 km/h (6 to 9 mph), slower in central London and faster on Chicago's long, straight streets.
+
+Driving times assume **free-flowing traffic and no stops**. They are the best case. The real drive is usually longer, because the estimate leaves out:
+
+- traffic, rush hour and roadworks,
+- waits at traffic lights and junctions,
+- finding a parking space and walking from it,
+- stops for fuel, charging or a break on a long trip.
+
+For a time-critical trip, check the route in a navigation app close to departure. It can use live traffic, which this calculator does not.
+
+## Mileage between two addresses for expenses and tax
+
+The calculator turns the driving distance into a mileage value at the two most common official rates, so you can check an expense claim at a glance.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Official mileage rates for cars in 2026</p>
+  <table>
+    <caption class="visually-hidden">Official mileage rates for cars in 2026</caption>
+    <thead><tr><th scope="col">Country</th><th scope="col">Rate</th><th scope="col">Applies to</th><th scope="col">Set by</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">United States</th><td class="strong">76¢ a mile</td><td>Business driving from July 1, 2026 (72.5¢ from January 1 to June 30)</td><td>IRS</td></tr>
+      <tr><th scope="row">United Kingdom</th><td class="strong">55p a mile</td><td>First 10,000 business miles in the 2026/27 tax year, then 25p</td><td>HMRC</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The IRS announced the higher [76-cent business rate for the second half of 2026](https://www.irs.gov/irb/2026-29_irb) because of rising fuel prices. In the UK, the government [raised the approved rate for cars and vans from 45p to 55p](https://www.gov.uk/government/publications/increase-to-approved-mileage-allowance-payments-amaps-and-self-employed-simplified-mileage-rates/increasing-mileage-rates) for the first 10,000 miles of the 2026/27 tax year, the first change since 2011.
+
+As a worked example, a client visit from Manchester Piccadilly to Old Trafford is 6.9 km by road, or 4.3 miles. A round trip is 8.5 miles, worth $6.50 at the IRS rate or £4.70 at the HMRC rate.
+
+<Callout title="Use the road miles, not the straight line" kind="note">
+Mileage rates are paid per mile actually driven, so claim the driving distance. These are official maximums for tax purposes; your employer's own policy decides what it pays, so check it before you submit a claim.
+</Callout>
+
+## Getting an accurate result from an address
+
+The routing is precise. Most errors come from where an address lands on the map, so a few habits make a big difference.
+
+- **Type the full address,** including the street number, town and state or postcode. "Main Street" alone matches thousands of places.
+- **Pick from the list** rather than pressing Enter on a half-typed address, and read the second line of each match to check the town.
+- **Look at the pins.** New buildings, large sites such as hospitals and campuses, and rural addresses may land on the street center or on a building's middle rather than its entrance.
+- **Drag a pin** to the exact door, gate or parking lot when the last few hundred meters matter.
+- **Use coordinates** copied from a GPS or a phone for remote places with no street address.
+- **Treat ZIP codes and postcodes as approximate.** They are measured from a single point in the postal area, which is close in a city and can be miles out in the countryside.
+
+## How to find the distance between two addresses on Google Maps
+
+Google Maps gives driving, walking and cycling distances through its directions:
+
+1. Open Google Maps and select **Directions**.
+2. Enter the starting address and the destination.
+3. Pick the travel mode: car, public transport, walking or cycling.
+4. Read the distance and time shown with each suggested route.
+
+For the straight line, right-click the start point, choose **Measure distance**, then click the destination.
+
+The calculator on this page puts all four distances side by side in one table, adds the detour index and the mileage value, and keeps a shareable link to the result.
+
+## Limits of an address-to-address distance
+
+A distance between two addresses is only as good as the data under it.
+
+- **Map data** comes from OpenStreetMap. Very new roads, private estates and some rural tracks may be missing or out of date.
+- **Routes are suggestions.** They pick the fastest legal route, not necessarily the one you would choose, and do not include tolls or ferries' timetables.
+- **No live traffic.** Times are free-flow estimates.
+- **Walking and cycling** routes are only calculated for addresses within about 155 miles (250 km) of each other.
+- **Not for navigation or legal measurement.** Use official sources for boundaries, catchment appeals or anything with a legal deadline.

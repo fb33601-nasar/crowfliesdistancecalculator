@@ -6,7 +6,7 @@ import { SITE } from '../lib/site';
  * the date its content last changed. Add new pages to this list as they ship.
  */
 const pages = import.meta.glob<{ frontmatter: { slug: string; dateModified: string } }>(
-  '../content/*.mdx',
+  '../content/**/*.mdx',
   { eager: true },
 );
 

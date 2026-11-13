@@ -1,31 +1,40 @@
 ---
 import Logo from './Logo.astro';
 import { SITE } from '../lib/site';
+import { liveTools } from '../data/tools';
 const year = new Date().getFullYear();
+const tools = liveTools();
 ---
 <footer class="site-footer">
   <div class="wrap">
     <div class="cols">
       <div>
         <a class="brand" href="/"><Logo /><span>{SITE.shortName}</span></a>
-        <p style="margin-top:.9rem;max-width:34ch">A free calculator for the straight line distance between two places, measured on the WGS 84 model of the Earth.</p>
+        <p style="margin-top:.9rem;max-width:34ch">Free calculators for straight line and travel distance between any two places, measured on the WGS 84 model of the Earth.</p>
       </div>
       <div>
-        <h2>On this page</h2>
+        <h2>Tools</h2>
         <ul>
-          <li><a href="/#calculator">Distance calculator</a></li>
-          <li><a href="/#how-is-straight-line-distance-calculated">How the distance is calculated</a></li>
-          <li><a href="/#popular-distances-as-the-crow-flies">Popular distances</a></li>
-          <li><a href="/#frequently-asked-questions">Questions and answers</a></li>
+          {tools.map((t) => <li><a href={t.href}>{t.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>Site</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/privacy-policy/">Privacy policy</a></li>
+          <li><a href="/terms/">Terms of use</a></li>
         </ul>
       </div>
       <div>
         <h2>Map and place data</h2>
         <ul>
-          <li>Map data from <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors</li>
-          <li>Map tiles by <a href="https://openfreemap.org/" rel="noopener">OpenFreeMap</a></li>
-          <li>Place search by <a href="https://photon.komoot.io/" rel="noopener">Photon</a></li>
-          <li>City list from <a href="https://www.geonames.org/" rel="noopener">GeoNames</a>, coastlines from <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a></li>
+          <li>Map data © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors</li>
+          <li>Tiles by <a href="https://openfreemap.org/" rel="noopener">OpenFreeMap</a>, search by <a href="https://photon.komoot.io/" rel="noopener">Photon</a></li>
+          <li>Routes by <a href="https://routing.openstreetmap.de/" rel="noopener">FOSSGIS OSRM</a></li>
+          <li>Cities from <a href="https://www.geonames.org/" rel="noopener">GeoNames</a>, borders from <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a></li>
+          <li><a href="https://www.openstreetmap.org/fixthemap" rel="noopener">Report a map error</a></li>
         </ul>
       </div>
     </div>

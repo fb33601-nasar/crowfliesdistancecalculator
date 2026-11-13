@@ -29,6 +29,8 @@ interface Props {
   unit: Unit;
   /** great-circle points as [lon, lat], longitudes unwrapped */
   line: [number, number][];
+  /** a road, cycling or walking route to draw as well, [lon, lat] points */
+  roadLine?: [number, number][] | null;
   picking: 'a' | 'b' | null;
   visible: boolean;
   onPick: (which: 'a' | 'b', point: LatLon) => void;
@@ -81,6 +83,7 @@ export default function MapView({
   distanceLabel,
   unit,
   line,
+  roadLine = null,
   picking,
   visible,
   onPick,
@@ -124,6 +127,24 @@ export default function MapView({
           type: 'geojson',
           data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } },
         });
+        instance.addSource('road', {
+          type: 'geojson',
+          data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [] } },
+        });
+        instance.addLayer({
+          id: 'road-casing',
+          type: 'line',
+          source: 'road',
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: { 'line-color': '#ffffff', 'line-width': 9 },
+        });
+        instance.addLayer({
+          id: 'road',
+          type: 'line',
+          source: 'road',
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: { 'line-color': '#161b3d', 'line-width': 5 },
+        });
         instance.addLayer({
           id: 'route-casing',
           type: 'line',
@@ -161,6 +182,18 @@ export default function MapView({
       properties: {},
       geometry: { type: 'LineString', coordinates: line },
     });
+    const road = roadLine && roadLine.length > 1 ? roadLine : null;
+    (m.getSource('road') as GeoJSONSource | undefined)?.setData({
+      type: 'Feature',
+      properties: {},
+      geometry: { type: 'LineString', coordinates: road ?? [] },
+    });
+    // With a route on show, the straight line becomes a dashed reference.
+    if (m.getLayer('route')) {
+      m.setPaintProperty('route', 'line-dasharray', road ? [1.2, 1.6] : [1, 0]);
+      m.setPaintProperty('route', 'line-width', road ? 3 : 4);
+      m.setPaintProperty('route-casing', 'line-opacity', road ? 0 : 0.95);
+    }
 
     const place = (key: 'a' | 'b', point: LatLon | null, lon: number | undefined, name: string) => {
       const existing = markers.current[key];
@@ -187,7 +220,8 @@ export default function MapView({
     place('a', a, line[0]?.[0], labelA);
     place('b', b, line[line.length - 1]?.[0], labelB);
 
-    const midPoint = line.length > 2 ? line[Math.floor(line.length / 2)] : null;
+    const tagLine = road ?? line;
+    const midPoint = tagLine.length > 2 ? tagLine[Math.floor(tagLine.length / 2)] : null;
     if (midPoint) {
       if (!markers.current.mid) {
         const el = document.createElement('div');
@@ -206,6 +240,7 @@ export default function MapView({
       if (line.length > 1) {
         const bounds = new LngLatBounds(line[0], line[0]);
         for (const p of line) bounds.extend(p);
+        if (road) for (const p of road) bounds.extend(p);
         m.fitBounds(bounds, { padding: { top: 70, bottom: 50, left: 70, right: 70 }, maxZoom: 13, duration: reduce ? 0 : 800 });
       } else if (a ?? b) {
         const only = (a ?? b)!;
@@ -213,7 +248,7 @@ export default function MapView({
       }
     };
     fit.current();
-  }, [ready, a?.lat, a?.lon, b?.lat, b?.lon]);
+  }, [ready, a?.lat, a?.lon, b?.lat, b?.lon, roadLine]);
 
   // Names and units can change without the points moving.
   useEffect(() => {
