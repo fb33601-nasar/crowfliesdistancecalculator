@@ -491,6 +491,139 @@
   font: 800 12px var(--font);
   fill: var(--ink);
 }
+.globe-country {
+  fill: var(--night-land);
+  stroke: none;
+  transition: fill 0.15s;
+}
+.globe-country.is-hot {
+  fill: #47529e;
+}
+.globe-borders {
+  fill: none;
+  stroke: #7c86cc;
+  stroke-opacity: 0.7;
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+.globe-country-label {
+  font: 600 10.5px var(--font);
+  fill: #c3c8f0;
+  fill-opacity: 0.85;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: #1a2050;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.globe-country-label.is-big {
+  font-size: 12px;
+  font-weight: 650;
+  fill-opacity: 0.95;
+}
+.globe-city-dot {
+  fill: #fff;
+  stroke: #1a2050;
+  stroke-width: 1.2;
+}
+.globe-city-label {
+  font: 650 11px var(--font);
+  fill: #fff;
+  paint-order: stroke;
+  stroke: #1a2050;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.globe-sel-ring {
+  fill: var(--course-bright);
+  fill-opacity: 0.25;
+  stroke: var(--course-bright);
+  stroke-width: 1.5;
+}
+.globe-sel-dot {
+  fill: #fff;
+  stroke: var(--course);
+  stroke-width: 2;
+}
+.globe-tip,
+.globe-card {
+  position: absolute;
+  z-index: 6;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+.globe-tip {
+  pointer-events: none;
+  padding: 0.5rem 0.75rem;
+  translate: 14px -50%;
+  white-space: nowrap;
+}
+.globe-tip[data-flip='left'] {
+  translate: calc(-100% - 14px) -50%;
+}
+.globe-tip strong,
+.globe-card strong {
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+.globe-tip span,
+.globe-card span {
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.globe-card {
+  padding: 0.8rem 0.9rem 0.85rem;
+  min-width: 13.5rem;
+  translate: -50% calc(-100% - 16px);
+}
+.globe-card[data-flip='down'] {
+  translate: -50% 16px;
+}
+.globe-card strong {
+  padding-right: 1.6rem;
+  font-size: 1rem;
+}
+.globe-card-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.globe-card-actions {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+}
+.globe-card-actions button {
+  flex: 1;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0.38rem 0.6rem;
+  cursor: pointer;
+}
+.globe-card-actions button:hover {
+  background: var(--ink);
+  color: #fff;
+}
 .globe-tag {
   fill: #fff;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));

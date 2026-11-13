@@ -228,9 +228,6 @@ p {
 .hero {
   padding-block: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3vw, 2rem);
 }
-.hero h1 {
-  max-width: 19ch;
-}
 .hero .lede {
   max-width: 62ch;
   margin-top: 1rem;
@@ -793,8 +790,15 @@ td.heading svg {
 }
 
 /* Page heading with a long title */
+.hero {
+  text-align: center;
+}
 .hero h1 {
-  max-width: 22ch;
+  max-width: 24ch;
+  margin-inline: auto;
+}
+.hero .lede {
+  max-width: none;
 }
 
 .article > .toc {

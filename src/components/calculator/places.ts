@@ -134,3 +134,26 @@ export function coordsSuggestion(query: string): Suggestion | null {
   if (!p) return null;
   return { ...p, name: formatCoord(p), detail: 'Coordinates', source: 'coords' };
 }
+
+export interface CityPoint {
+  name: string;
+  /** state code for US cities, else '' */
+  admin: string;
+  country: string;
+  lat: number;
+  lon: number;
+}
+
+/** The built-in city list as points, biggest first, for labelling the globe. */
+export async function loadCityPoints(): Promise<CityPoint[]> {
+  const rows = await loadCities();
+  return rows.map((c) => ({
+    name: c[0],
+    admin: c[1],
+    country: countryName(c[2]),
+    lat: c[3],
+    lon: c[4],
+  }));
+}
+
+export { countryName };

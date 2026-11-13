@@ -118,8 +118,12 @@ export default function Calculator() {
     if (place && other && geodesic(place, other).distance < 400_000) showMap();
   }
 
-  function pickFromMap(which: 'a' | 'b', point: LatLon) {
+  function pickFromMap(which: 'a' | 'b', point: LatLon, knownName?: string) {
     setPicking(null);
+    if (knownName) {
+      setPlace(which, { ...point, name: knownName });
+      return;
+    }
     setPlace(which, { ...point, name: formatCoord(point) });
     void nameForPoint(point.lat, point.lon).then((name) => {
       if (!name) return;
@@ -344,7 +348,7 @@ export default function Calculator() {
         </div>
         <p className="calc-hint">
           {view === 'globe'
-            ? 'Drag to turn the globe. The magenta arc is the shortest path over the Earth.'
+            ? 'Drag to turn, scroll or pinch to zoom, hover to see where you are, click a place for details.'
             : 'Drag a pin to move it. The line bends on a flat map because the map is stretched, not the route.'}
         </p>
       </div>

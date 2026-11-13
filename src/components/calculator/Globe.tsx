@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { geoOrthographic, geoPath, geoGraticule10, geoDistance, geoInterpolate } from 'd3-geo';
+import { geoOrthographic, geoPath, geoGraticule10, geoDistance, geoInterpolate, geoContains } from 'd3-geo';
 import type { LatLon } from '../../lib/geo';
-import { haversine, midpoint, MEAN_EARTH_RADIUS_M } from '../../lib/geo';
+import { formatCoord, haversine, midpoint, MEAN_EARTH_RADIUS_M } from '../../lib/geo';
 import { land } from './land';
+import type { Country } from './countries';
+import type { CityPoint } from './places';
+import { loadCityPoints } from './places';
+import type { MultiLineString } from 'geojson';
 
 interface Props {
   a: LatLon | null;
@@ -12,7 +16,7 @@ interface Props {
   /** e.g. "3,471 mi", shown on the route */
   distanceLabel?: string;
   picking: 'a' | 'b' | null;
-  onPick: (which: 'a' | 'b', point: LatLon) => void;
+  onPick: (which: 'a' | 'b', point: LatLon, name?: string) => void;
 }
 
 interface View {
@@ -20,12 +24,24 @@ interface View {
   scale: number;
 }
 
+interface World {
+  countries: Country[];
+  borders: MultiLineString;
+}
+
+interface Spot extends LatLon {
+  /** nearest named city, if one is close */
+  city?: CityPoint;
+  country?: string;
+}
+
 const SIZE = 500;
 const BASE = 214;
 const MIN_SCALE = BASE * 0.85;
-const MAX_SCALE = BASE * 40;
+const MAX_SCALE = BASE * 60;
 const graticule = geoGraticule10();
 const clampLat = (v: number) => Math.max(-89, Math.min(89, v));
+const wrap = (lon: number) => ((((lon + 180) % 360) + 360) % 360) - 180;
 
 function autoView(a: LatLon | null, b: LatLon | null): View {
   const both = a && b;
@@ -41,9 +57,24 @@ function autoView(a: LatLon | null, b: LatLon | null): View {
 /** Rough pixel width of a label in the SVG's own units. */
 const textWidth = (s: string) => s.length * 7.4 + 22;
 
+function spotTitle(s: Spot): { title: string; sub: string } {
+  const coords = formatCoord(s, 3);
+  if (s.city) {
+    const place = s.city.admin ? `${s.city.name}, ${s.city.admin}` : s.city.name;
+    return { title: place, sub: `${s.city.country} · ${coords}` };
+  }
+  if (s.country) return { title: s.country, sub: coords };
+  return { title: 'Open water', sub: coords };
+}
+
+function spotName(s: Spot): string | undefined {
+  if (s.city) return s.city.admin ? `${s.city.name}, ${s.city.admin}` : `${s.city.name}, ${s.city.country}`;
+  return undefined;
+}
+
 /**
- * An interactive globe. It turns to face each new route, can be dragged and
- * zoomed, and accepts a click to place a point while picking.
+ * An interactive globe: turn it, zoom it, read country and city names, hover
+ * to see where the pointer is, click for details or to place a point.
  */
 export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, picking, onPick }: Props) {
   const [view, setView] = useState<View>(() => autoView(a, b));
@@ -51,44 +82,80 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
   viewRef.current = view;
   const svgRef = useRef<SVGSVGElement>(null);
   const anim = useRef<number | null>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
   const drag = useRef<{ x: number; y: number; rot: [number, number]; moved: boolean } | null>(null);
+  const pinch = useRef<{ dist: number; scale: number } | null>(null);
+  const hoverFrame = useRef<number | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [world, setWorld] = useState<World | null>(null);
+  const [cities, setCities] = useState<CityPoint[]>([]);
+  const [hover, setHover] = useState<(Spot & { x: number; y: number }) | null>(null);
+  const [selected, setSelected] = useState<Spot | null>(null);
+
+  // Country outlines and the city list load after the first paint.
+  useEffect(() => {
+    let live = true;
+    import('./countries').then((m) => live && setWorld({ countries: m.countries, borders: m.borders }));
+    loadCityPoints().then((c) => live && setCities(c));
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  function stopAnim() {
+    if (anim.current) cancelAnimationFrame(anim.current);
+    anim.current = null;
+  }
 
   function animateTo(target: View) {
-    if (anim.current) cancelAnimationFrame(anim.current);
+    stopAnim();
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const from = viewRef.current;
     if (reduce) {
       setView(target);
       return;
     }
-    // take the short way round in longitude
-    let dLon = ((target.rot[0] - from.rot[0] + 540) % 360) - 180;
+    const dLon = ((target.rot[0] - from.rot[0] + 540) % 360) - 180;
     const dLat = target.rot[1] - from.rot[1];
     const logFrom = Math.log(from.scale);
     const logTo = Math.log(target.scale);
     const start = performance.now();
-    const duration = 900;
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
+      const t = Math.min(1, (now - start) / 900);
       const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setView({
         rot: [from.rot[0] + dLon * e, from.rot[1] + dLat * e],
         scale: Math.exp(logFrom + (logTo - logFrom) * e),
       });
-      if (t < 1) anim.current = requestAnimationFrame(step);
-      else anim.current = null;
+      anim.current = t < 1 ? requestAnimationFrame(step) : null;
     };
     anim.current = requestAnimationFrame(step);
   }
 
   // Turn to face each new route.
   useEffect(() => {
+    setSelected(null);
     animateTo(autoView(a, b));
   }, [a?.lat, a?.lon, b?.lat, b?.lon]);
 
-  useEffect(() => () => {
-    if (anim.current) cancelAnimationFrame(anim.current);
+  useEffect(() => stopAnim, []);
+
+  function zoom(f: number) {
+    stopAnim();
+    setView((v) => ({ ...v, scale: Math.min(MAX_SCALE, Math.max(MIN_SCALE, v.scale * f)) }));
+  }
+
+  // Wheel and trackpad zoom. Needs a non-passive listener to keep the page still.
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+      zoom(Math.exp(-delta * 0.0018));
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
   }, []);
 
   const scene = useMemo(() => {
@@ -96,21 +163,79 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
       .rotate(view.rot)
       .scale(view.scale)
       .translate([SIZE / 2, SIZE / 2])
-      .clipAngle(90);
+      .clipAngle(90)
+      .precision(0.3);
     const path = geoPath(projection).digits(1);
     const centre: [number, number] = [-view.rot[0], -view.rot[1]];
-    const facing = (p: LatLon) => geoDistance([p.lon, p.lat], centre) < Math.PI / 2 - 0.015;
-    const pin = (p: LatLon | null) => (p && facing(p) ? projection([p.lon, p.lat]) : null);
+    const facing = (lon: number, lat: number, margin = 0.015) =>
+      geoDistance([lon, lat], centre) < Math.PI / 2 - margin;
+    const inFrame = (q: [number, number] | null) =>
+      q && q[0] > -4 && q[0] < SIZE + 4 && q[1] > -4 && q[1] < SIZE + 4 ? q : null;
+    const pin = (p: LatLon | null) => (p && facing(p.lon, p.lat) ? inFrame(projection([p.lon, p.lat])) : null);
     let mid: [number, number] | null = null;
     if (a && b) {
       const m = geoInterpolate([a.lon, a.lat], [b.lon, b.lat])(0.5);
-      if (geoDistance(m, centre) < Math.PI / 2 - 0.05) mid = projection(m);
+      if (geoDistance(m, centre) < Math.PI / 2 - 0.05) mid = inFrame(projection(m));
     }
+
+    // Labels: biggest countries first, then cities as you zoom in, never overlapping.
+    const boxes: [number, number, number, number][] = [];
+    const reserve = (x: number, y: number, w: number, h: number) => {
+      if (x < 4 || y < 4 || x + w > SIZE - 4 || y + h > SIZE - 4) return false;
+      for (const [bx, by, bw, bh] of boxes) {
+        if (x < bx + bw && x + w > bx && y < by + bh && y + h > by) return false;
+      }
+      boxes.push([x, y, w, h]);
+      return true;
+    };
+    // keep labels clear of the route pins
+    for (const p of [pin(a), pin(b)]) if (p) boxes.push([p[0] - 22, p[1] - 22, 44, 44]);
+
+    const countryLabels: { x: number; y: number; name: string; big: boolean }[] = [];
+    const cityLabels: { x: number; y: number; name: string; capital: boolean }[] = [];
+    const zoomLevel = view.scale / BASE;
+
+    const placeCountries = () => {
+      if (!world) return;
+      for (const c of world.countries) {
+        const px = c.area * view.scale * view.scale;
+        if (px < 1100 || !facing(c.at[0], c.at[1], 0.12)) continue;
+        const p = projection(c.at);
+        if (!p) continue;
+        const big = px > 9000;
+        const w = c.name.length * (big ? 6.6 : 5.9) + 4;
+        const h = big ? 14 : 12;
+        if (reserve(p[0] - w / 2, p[1] - h / 2, w, h)) countryLabels.push({ x: p[0], y: p[1], name: c.name, big });
+      }
+    };
+    const placeCities = () => {
+      if (zoomLevel < 1.5 || cities.length === 0) return;
+      const limit = Math.min(70, Math.round(4 * Math.pow(zoomLevel, 1.25)));
+      for (let i = 0; i < cities.length && cityLabels.length < limit; i++) {
+        const c = cities[i];
+        if (!facing(c.lon, c.lat, 0.05)) continue;
+        const p = projection([c.lon, c.lat]);
+        if (!p) continue;
+        const w = c.name.length * 6.3 + 12;
+        if (reserve(p[0] - 4, p[1] - 8, w, 16)) cityLabels.push({ x: p[0], y: p[1], name: c.name, capital: i < 40 });
+      }
+    };
+    if (zoomLevel > 3) {
+      placeCities();
+      placeCountries();
+    } else {
+      placeCountries();
+      placeCities();
+    }
+
     return {
       projection,
+      facing,
       sphere: path({ type: 'Sphere' }) ?? '',
       grid: path(graticule) ?? '',
-      land: path(land) ?? '',
+      land: world ? '' : (path(land) ?? ''),
+      countries: world ? world.countries.map((c) => ({ name: c.name, d: path(c.feature) ?? '' })) : [],
+      borders: world ? (path(world.borders) ?? '') : '',
       arc:
         a && b
           ? (path({ type: 'LineString', coordinates: [[a.lon, a.lat], [b.lon, b.lat]] }) ?? '')
@@ -118,8 +243,38 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
       pa: pin(a),
       pb: pin(b),
       mid,
+      countryLabels,
+      cityLabels,
     };
-  }, [view, a?.lat, a?.lon, b?.lat, b?.lon]);
+  }, [view, world, cities, a?.lat, a?.lon, b?.lat, b?.lon]);
+
+  /** What lies under a point on the globe: the country, and a city if one is close by. */
+  function lookup(lat: number, lon: number): Spot {
+    const spot: Spot = { lat, lon };
+    if (world) {
+      for (const c of world.countries) {
+        const [[w, s], [e, n]] = c.bounds;
+        if (lat < s - 0.5 || lat > n + 0.5) continue;
+        if (w <= e && (lon < w - 0.5 || lon > e + 0.5)) continue;
+        if (geoContains(c.feature, [lon, lat])) {
+          spot.country = c.name;
+          break;
+        }
+      }
+    }
+    const reach = 26 / viewRef.current.scale; // radians, about 26 pixels on screen
+    let best = reach;
+    for (const c of cities) {
+      if (Math.abs(c.lat - lat) > (best * 180) / Math.PI + 0.01) continue;
+      const d = geoDistance([lon, lat], [c.lon, c.lat]);
+      if (d < best) {
+        best = d;
+        spot.city = c;
+      }
+    }
+    if (spot.city && !spot.country) spot.country = spot.city.country;
+    return spot;
+  }
 
   function toSvg(e: { clientX: number; clientY: number }) {
     const rect = svgRef.current!.getBoundingClientRect();
@@ -130,44 +285,90 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
     };
   }
 
+  function pointAt(x: number, y: number): LatLon | null {
+    if (Math.hypot(x - SIZE / 2, y - SIZE / 2) > viewRef.current.scale) return null;
+    const ll = scene.projection.invert?.([x, y]);
+    return ll ? { lat: ll[1], lon: wrap(ll[0]) } : null;
+  }
+
   function onPointerDown(e: React.PointerEvent<SVGSVGElement>) {
-    if (e.button !== 0) return;
-    if (anim.current) cancelAnimationFrame(anim.current);
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    stopAnim();
     e.currentTarget.setPointerCapture(e.pointerId);
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.current.size === 2) {
+      const [p1, p2] = [...pointers.current.values()];
+      pinch.current = { dist: Math.hypot(p1.x - p2.x, p1.y - p2.y), scale: viewRef.current.scale };
+      drag.current = null;
+      return;
+    }
     drag.current = { x: e.clientX, y: e.clientY, rot: viewRef.current.rot, moved: false };
   }
 
   function onPointerMove(e: React.PointerEvent<SVGSVGElement>) {
+    if (pointers.current.has(e.pointerId)) pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pinch.current && pointers.current.size >= 2) {
+      const [p1, p2] = [...pointers.current.values()];
+      const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+      const s = Math.min(MAX_SCALE, Math.max(MIN_SCALE, (pinch.current.scale * dist) / pinch.current.dist));
+      setView((v) => ({ ...v, scale: s }));
+      return;
+    }
+
     const d = drag.current;
-    if (!d) return;
-    const dx = e.clientX - d.x;
-    const dy = e.clientY - d.y;
-    if (!d.moved && Math.hypot(dx, dy) < 4) return;
-    if (!d.moved) setDragging(true);
-    d.moved = true;
-    const { k } = toSvg(e);
-    const degPerUnit = 180 / (Math.PI * viewRef.current.scale);
-    setView((v) => ({
-      ...v,
-      rot: [d.rot[0] + dx * k * degPerUnit, clampLat(d.rot[1] - dy * k * degPerUnit)],
-    }));
+    if (d) {
+      const dx = e.clientX - d.x;
+      const dy = e.clientY - d.y;
+      if (!d.moved && Math.hypot(dx, dy) < 4) return;
+      if (!d.moved) {
+        setDragging(true);
+        setHover(null);
+      }
+      d.moved = true;
+      const { k } = toSvg(e);
+      const degPerUnit = 180 / (Math.PI * viewRef.current.scale);
+      setView((v) => ({
+        ...v,
+        rot: [d.rot[0] + dx * k * degPerUnit, clampLat(d.rot[1] - dy * k * degPerUnit)],
+      }));
+      return;
+    }
+
+    // Plain hover with a mouse: show what is under the pointer.
+    if (e.pointerType !== 'mouse') return;
+    const { x, y } = toSvg(e);
+    if (hoverFrame.current) cancelAnimationFrame(hoverFrame.current);
+    hoverFrame.current = requestAnimationFrame(() => {
+      const ll = pointAt(x, y);
+      setHover(ll ? { ...lookup(ll.lat, ll.lon), x, y } : null);
+    });
   }
 
   function onPointerUp(e: React.PointerEvent<SVGSVGElement>) {
+    pointers.current.delete(e.pointerId);
+    if (pinch.current) {
+      if (pointers.current.size < 2) pinch.current = null;
+      drag.current = null;
+      return;
+    }
     const d = drag.current;
     drag.current = null;
     setDragging(false);
-    if (!d || d.moved || !picking) return;
+    if (!d || d.moved) return;
     const { x, y } = toSvg(e);
-    const r = Math.hypot(x - SIZE / 2, y - SIZE / 2);
-    if (r > viewRef.current.scale) return;
-    const ll = scene.projection.invert?.([x, y]);
-    if (ll) onPick(picking, { lat: ll[1], lon: ((((ll[0] + 180) % 360) + 360) % 360) - 180 });
-  }
-
-  function zoom(f: number) {
-    if (anim.current) cancelAnimationFrame(anim.current);
-    setView((v) => ({ ...v, scale: Math.min(MAX_SCALE, Math.max(MIN_SCALE, v.scale * f)) }));
+    const ll = pointAt(x, y);
+    if (!ll) {
+      setSelected(null);
+      return;
+    }
+    const spot = lookup(ll.lat, ll.lon);
+    if (picking) {
+      const at = spot.city ? { lat: spot.city.lat, lon: spot.city.lon } : ll;
+      onPick(picking, at, spotName(spot));
+    } else {
+      setSelected(spot);
+    }
   }
 
   function onKeyDown(e: React.KeyboardEvent<SVGSVGElement>) {
@@ -184,16 +385,30 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
       setView((v) => ({ ...v, rot: [v.rot[0] + x, clampLat(v.rot[1] + y)] }));
     } else if (e.key === '+' || e.key === '=') zoom(1.4);
     else if (e.key === '-') zoom(1 / 1.4);
+    else if (e.key === 'Escape') setSelected(null);
+  }
+
+  function chooseSpot(which: 'a' | 'b') {
+    if (!selected) return;
+    const at = selected.city
+      ? { lat: selected.city.lat, lon: selected.city.lon }
+      : { lat: selected.lat, lon: selected.lon };
+    onPick(which, at, spotName(selected));
+    setSelected(null);
   }
 
   const description =
     a && b
-      ? `Globe showing the straight line path from ${labelA} to ${labelB}${distanceLabel ? `, ${distanceLabel}` : ''}. Drag or use the arrow keys to turn it.`
+      ? `Globe showing the straight line path from ${labelA} to ${labelB}${distanceLabel ? `, ${distanceLabel}` : ''}. Drag to turn it, scroll or pinch to zoom, click a place for details.`
       : 'Globe. Enter two places to draw the straight line path between them.';
   const arcKey = `${a?.lat},${a?.lon},${b?.lat},${b?.lon}`;
-
-  // Keep the two name tags from colliding: the left-most pin's tag goes left.
   const leftFirst = scene.pa && scene.pb ? scene.pa[0] <= scene.pb[0] : true;
+
+  const selPoint =
+    selected && scene.facing(selected.lon, selected.lat) ? scene.projection([selected.lon, selected.lat]) : null;
+  const pct = (v: number) => `${((v / SIZE) * 100).toFixed(2)}%`;
+  const hoverInfo = hover && !dragging ? spotTitle(hover) : null;
+  const selInfo = selected ? spotTitle(selected) : null;
 
   return (
     <div className="globe-box">
@@ -207,10 +422,14 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={() => {
+        onPointerCancel={(e) => {
+          pointers.current.delete(e.pointerId);
+          pinch.current = null;
           drag.current = null;
           setDragging(false);
         }}
+        onPointerLeave={() => setHover(null)}
+        onDoubleClick={() => zoom(1.8)}
         onKeyDown={onKeyDown}
       >
         <defs>
@@ -225,31 +444,103 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
             <stop offset="1" stopColor="#7f86ff" stopOpacity="0" />
           </radialGradient>
         </defs>
-        {view.scale < SIZE && (
-          <circle cx={SIZE / 2} cy={SIZE / 2} r={view.scale * 1.12} fill="url(#globe-halo)" />
-        )}
+        {view.scale < SIZE && <circle cx={SIZE / 2} cy={SIZE / 2} r={view.scale * 1.12} fill="url(#globe-halo)" />}
         <path d={scene.sphere} className="globe-sea" />
         <path d={scene.grid} className="globe-grid" />
-        <path d={scene.land} className="globe-land" />
+        {scene.land && <path d={scene.land} className="globe-land" />}
+        {scene.countries.map((c, i) => (
+          <path
+            key={`${c.name}-${i}`}
+            d={c.d}
+            className={
+              hover?.country === c.name || selected?.country === c.name ? 'globe-country is-hot' : 'globe-country'
+            }
+          />
+        ))}
+        {scene.borders && <path d={scene.borders} className="globe-borders" />}
         <path d={scene.sphere} fill="url(#globe-shade)" pointerEvents="none" />
+
+        <g pointerEvents="none">
+          {scene.countryLabels.map((l) => (
+            <text
+              key={l.name}
+              x={l.x}
+              y={l.y}
+              dy="0.35em"
+              textAnchor="middle"
+              className={l.big ? 'globe-country-label is-big' : 'globe-country-label'}
+            >
+              {l.name}
+            </text>
+          ))}
+          {scene.cityLabels.map((l) => (
+            <g key={`${l.name}-${l.x.toFixed(0)}`} transform={`translate(${l.x.toFixed(1)} ${l.y.toFixed(1)})`}>
+              <circle r={l.capital ? 2.8 : 2.2} className="globe-city-dot" />
+              <text x="6" dy="0.35em" className="globe-city-label">
+                {l.name}
+              </text>
+            </g>
+          ))}
+        </g>
+
         {scene.arc && (
           <g pointerEvents="none">
             <path d={scene.arc} className="globe-arc-glow" />
             <path key={arcKey} d={scene.arc} className="globe-arc" pathLength={1} />
           </g>
         )}
+        {selPoint && (
+          <g transform={`translate(${selPoint[0].toFixed(1)} ${selPoint[1].toFixed(1)})`} pointerEvents="none">
+            <circle r="10" className="globe-sel-ring" />
+            <circle r="4" className="globe-sel-dot" />
+          </g>
+        )}
         {scene.pa && <Pin x={scene.pa[0]} y={scene.pa[1]} letter="A" />}
         {scene.pb && <Pin x={scene.pb[0]} y={scene.pb[1]} letter="B" />}
-        {scene.pa && labelA && (
-          <Tag x={scene.pa[0]} y={scene.pa[1]} text={labelA} align={leftFirst ? 'left' : 'right'} />
-        )}
-        {scene.pb && labelB && (
-          <Tag x={scene.pb[0]} y={scene.pb[1]} text={labelB} align={leftFirst ? 'right' : 'left'} />
-        )}
+        {scene.pa && labelA && <Tag x={scene.pa[0]} y={scene.pa[1]} text={labelA} align={leftFirst ? 'left' : 'right'} />}
+        {scene.pb && labelB && <Tag x={scene.pb[0]} y={scene.pb[1]} text={labelB} align={leftFirst ? 'right' : 'left'} />}
         {scene.mid && distanceLabel && (
           <Tag x={scene.mid[0]} y={scene.mid[1] - 18} text={distanceLabel} tone="course" align="center" />
         )}
       </svg>
+
+      {hoverInfo && hover && !selected && (
+        <div
+          className="globe-tip"
+          style={{ left: pct(hover.x), top: pct(hover.y) }}
+          data-flip={hover.x > SIZE * 0.62 ? 'left' : 'right'}
+          aria-hidden="true"
+        >
+          <strong>{hoverInfo.title}</strong>
+          <span>{hoverInfo.sub}</span>
+        </div>
+      )}
+
+      {selected && selInfo && selPoint && (
+        <div
+          className="globe-card"
+          style={{ left: pct(selPoint[0]), top: pct(selPoint[1]) }}
+          data-flip={selPoint[1] < SIZE * 0.38 ? 'down' : 'up'}
+          role="dialog"
+          aria-label={`${selInfo.title} details`}
+        >
+          <button type="button" className="globe-card-close" onClick={() => setSelected(null)} aria-label="Close">
+            <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+              <path d="M3.5 3.5l9 9m0-9l-9 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          </button>
+          <strong>{selInfo.title}</strong>
+          <span>{selInfo.sub}</span>
+          <div className="globe-card-actions">
+            <button type="button" onClick={() => chooseSpot('a')}>
+              Set as A
+            </button>
+            <button type="button" onClick={() => chooseSpot('b')}>
+              Set as B
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="globe-tools">
         <button type="button" onClick={() => zoom(1.5)} aria-label="Zoom in">
@@ -264,7 +555,14 @@ export default function Globe({ a, b, labelA = '', labelB = '', distanceLabel, p
         </button>
         <button type="button" onClick={() => animateTo(autoView(a, b))} aria-label="Fit the route in view">
           <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-            <path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -304,7 +602,6 @@ function Tag({
   if (align === 'center') left = x - w / 2;
   else if (align === 'right') left = x + 20;
   else left = x - 20 - w;
-  // keep the tag inside the frame
   if (left < 6) left = align === 'left' ? x + 20 : 6;
   if (left + w > SIZE - 6) left = align === 'right' ? x - 20 - w : SIZE - 6 - w;
   left = Math.max(6, Math.min(SIZE - 6 - w, left));
@@ -312,7 +609,12 @@ function Tag({
   return (
     <g transform={`translate(${left.toFixed(1)} ${top.toFixed(1)})`} pointerEvents="none">
       <rect width={w} height={h} rx={h / 2} className={tone === 'course' ? 'globe-tag-course' : 'globe-tag'} />
-      <text x={w / 2} y={17.5} textAnchor="middle" className={tone === 'course' ? 'globe-tag-text-course' : 'globe-tag-text'}>
+      <text
+        x={w / 2}
+        y={17.5}
+        textAnchor="middle"
+        className={tone === 'course' ? 'globe-tag-text-course' : 'globe-tag-text'}
+      >
         {label}
       </text>
     </g>
