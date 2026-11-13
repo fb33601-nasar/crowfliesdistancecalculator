@@ -1,0 +1,14 @@
+---
+// Visible trail for inner pages. The matching BreadcrumbList schema is built in the layout.
+interface Props { items: { name: string; href: string }[] }
+const { items } = Astro.props;
+---
+{items.length > 1 && (
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <ol>
+      {items.map((it, i) => (
+        <li>{i < items.length - 1 ? <a href={it.href}>{it.name}</a> : <span aria-current="page">{it.name}</span>}</li>
+      ))}
+    </ol>
+  </nav>
+)}

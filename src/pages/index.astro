@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/calculator/Calculator';
+import Article, { frontmatter } from '../content/home.mdx';
+import { homeFaqs } from '../content/home-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const nav = [
+  { href: '#calculator', label: 'Calculator' },
+  { href: '#how-is-straight-line-distance-calculated', label: 'How it works' },
+  { href: '#popular-distances-as-the-crow-flies', label: 'Distance tables' },
+  { href: '#frequently-asked-questions', label: 'FAQ' },
+];
+const toc = [
+  ['how-to-measure-distance-as-the-crow-flies', 'How to measure distance as the crow flies'],
+  ['what-does-as-the-crow-flies-mean', 'What "as the crow flies" means'],
+  ['crow-flies-distance-vs-driving-distance', 'Crow flies distance vs driving distance'],
+  ['how-is-straight-line-distance-calculated', 'How the distance is calculated'],
+  ['why-the-straight-line-looks-curved-on-a-map', 'Why the line looks curved on a map'],
+  ['reading-the-results-heading-halfway-point-and-travel-time', 'Heading, halfway point and travel time'],
+  ['miles-kilometers-and-nautical-miles', 'Miles, kilometers and nautical miles'],
+  ['popular-distances-as-the-crow-flies', 'Popular distances as the crow flies'],
+  ['what-people-use-straight-line-distance-for', 'What people use it for'],
+  ['how-to-measure-as-the-crow-flies-on-google-maps', 'Measuring on Google Maps'],
+  ['limits-of-a-straight-line-measurement', 'Limits of the measurement'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs('/#calculator'),
+  name: 'As the Crow Flies Distance Calculator',
+  url: abs('/'),
+  description: frontmatter.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Straight line distance in miles, kilometers and nautical miles',
+    'Compass heading at the start and on arrival',
+    'Halfway point coordinates',
+    'Globe and street map views',
+    'Shareable result link',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base
+  title={frontmatter.seo_title}
+  description={frontmatter.description}
+  path="/"
+  nav={nav}
+  faqs={homeFaqs}
+  schema={[appSchema]}
+  datePublished={frontmatter.datePublished}
+  dateModified={frontmatter.dateModified}
+>
+  <div class="wrap hero">
+    <h1>{frontmatter.title}</h1>
+    <p class="lede">
+      This free as the crow flies distance calculator measures the straight line distance between
+      any two places on Earth. Enter two cities, addresses or sets of coordinates to get the
+      distance in miles, kilometers and nautical miles, with the compass heading, the halfway point
+      and a map of the route.
+    </p>
+  </div>
+
+  <div class="wrap">
+    <Calculator client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>
+        {toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}
+      </ol>
+    </nav>
+
+    <Article />
+
+    <h2 id="frequently-asked-questions">Frequently asked questions</h2>
+    <div class="faq">
+      {homeFaqs.map((f) => (
+        <>
+          <h3>{f.q}</h3>
+          <p>{f.a}</p>
+        </>
+      ))}
+    </div>
+
+    <div class="cta">
+      <p><strong>Measure your own route</strong></p>
+      <ul>
+        <li>Any two places in the world, by name, address or coordinates</li>
+        <li>Miles, kilometers and nautical miles, with heading and halfway point</li>
+        <li>Free, with no account</li>
+      </ul>
+      <a class="button" href="#calculator">Open the as the crow flies distance calculator</a>
+    </div>
+
+    <p class="updated">Last updated <time datetime={frontmatter.dateModified}>November 13, 2026</time>. Distances are computed on the WGS 84 ellipsoid from GeoNames city-center coordinates.</p>
+  </div>
+</Base>

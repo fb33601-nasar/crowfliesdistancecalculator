@@ -1,0 +1,22 @@
+---
+import Logo from './Logo.astro';
+import { SITE } from '../lib/site';
+interface Props { nav?: { href: string; label: string }[] }
+const { nav = [] } = Astro.props;
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      <Logo />
+      <span>{SITE.shortName}<small>Distance calculator</small></span>
+    </a>
+    {nav.length > 0 && (
+      <nav class="site-nav" aria-label="On this page">
+        <ul>
+          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+    )}
+  </div>
+</header>

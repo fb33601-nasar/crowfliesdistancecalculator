@@ -1,0 +1,36 @@
+---
+// Bar list: how far the sphere-based haversine result sits from the ellipsoid result.
+import { geodesic, haversine, formatNumber, METRES_PER_MILE } from '../../lib/geo';
+import type { Route } from '../../data/routes';
+interface Props { routes: Route[] }
+const rows = Astro.props.routes.map(([a, b]) => {
+  const g = geodesic(a, b).distance;
+  const h = haversine(a, b);
+  return { name: `${a.name} to ${b.name}`, miles: g / METRES_PER_MILE, gap: Math.abs(h - g) / METRES_PER_MILE, pct: (Math.abs(h - g) / g) * 100 };
+});
+const max = 0.5;
+---
+<div class="table-scroll acc">
+  <table>
+    <caption>How far the haversine result sits from the WGS 84 result</caption>
+    <thead>
+      <tr><th scope="col">Route</th><th scope="col" class="num">Distance</th><th scope="col" class="num">Gap</th><th scope="col">Gap as a share of the distance (scale ends at 0.5%)</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.name}</th>
+          <td class="num">{formatNumber(r.miles, 0)} mi</td>
+          <td class="num">{formatNumber(r.gap, r.gap < 10 ? 1 : 0)} mi</td>
+          <td><span class="bar"><span style={`width:${Math.max((r.pct / max) * 100, 0.8).toFixed(1)}%`}></span></span><span class="pct">{r.pct.toFixed(2)}%</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .acc td:last-child { min-width: 13rem; white-space: nowrap; }
+  .bar { display: inline-block; vertical-align: middle; width: calc(100% - 4rem); height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+  .pct { display: inline-block; width: 3.6rem; text-align: right; font-weight: 650; }
+</style>

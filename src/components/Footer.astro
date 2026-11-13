@@ -1,0 +1,34 @@
+---
+import Logo from './Logo.astro';
+import { SITE } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><Logo /><span>{SITE.shortName}</span></a>
+        <p style="margin-top:.9rem;max-width:34ch">A free calculator for the straight line distance between two places, measured on the WGS 84 model of the Earth.</p>
+      </div>
+      <div>
+        <h2>On this page</h2>
+        <ul>
+          <li><a href="/#calculator">Distance calculator</a></li>
+          <li><a href="/#how-is-straight-line-distance-calculated">How the distance is calculated</a></li>
+          <li><a href="/#popular-distances-as-the-crow-flies">Popular distances</a></li>
+          <li><a href="/#frequently-asked-questions">Questions and answers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Map and place data</h2>
+        <ul>
+          <li>Map data from <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> contributors</li>
+          <li>Map tiles by <a href="https://openfreemap.org/" rel="noopener">OpenFreeMap</a></li>
+          <li>Place search by <a href="https://photon.komoot.io/" rel="noopener">Photon</a></li>
+          <li>City list from <a href="https://www.geonames.org/" rel="noopener">GeoNames</a>, coastlines from <a href="https://www.naturalearthdata.com/" rel="noopener">Natural Earth</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">© {year} {SITE.name}. Distances are for planning and curiosity, not for navigation or legal measurement.</p>
+  </div>
+</footer>

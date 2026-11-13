@@ -1,0 +1,15 @@
+---
+import { formatNumber } from '../lib/geo';
+const miles = [1, 5, 10, 25, 50, 100, 150, 500, 1000];
+---
+<div class="table-scroll narrow">
+  <table>
+    <caption>Miles to kilometers and nautical miles</caption>
+    <thead><tr><th scope="col" class="num">Miles</th><th scope="col" class="num">Kilometers</th><th scope="col" class="num">Nautical miles</th></tr></thead>
+    <tbody>
+      {miles.map((m) => (
+        <tr><th scope="row" class="num">{formatNumber(m, 0)}</th><td class="num">{formatNumber(m * 1.609344, 2)}</td><td class="num">{formatNumber((m * 1.609344) / 1.852, 2)}</td></tr>
+      ))}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,40 @@
+{
+  "name": "crowfliesdistancecalculator",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "data": "node scripts/build-data.mjs",
+    "icons": "node scripts/build-icons.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.5",
+    "@astrojs/react": "^7.1.8",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "astro": "^7.4.11",
+    "d3-geo": "^3.1.2",
+    "maplibre-gl": "^6.18.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/d3-geo": "^3.1.1",
+    "@types/geojson": "^7946.0.16",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/topojson-client": "^3.1.5",
+    "all-the-cities": "^3.1.0",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "world-atlas": "^2.0.2",
+    "wrangler": "^4.161.0"
+  }
+}

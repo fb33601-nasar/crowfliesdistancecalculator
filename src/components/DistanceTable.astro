@@ -1,0 +1,45 @@
+---
+import { geodesic, compass, formatNumber, formatDuration, METRES_PER_MILE, METRES_PER_NAUTICAL_MILE } from '../lib/geo';
+import type { Route } from '../data/routes';
+interface Props { routes: Route[]; caption: string }
+const { routes, caption } = Astro.props;
+const rows = routes.map(([a, b]) => {
+  const g = geodesic(a, b);
+  const mi = g.distance / METRES_PER_MILE;
+  return {
+    name: `${a.name} to ${b.name}`,
+    mi: formatNumber(mi, mi < 100 ? 1 : 0),
+    km: formatNumber(g.distance / 1000, mi < 100 ? 1 : 0),
+    nmi: formatNumber(g.distance / METRES_PER_NAUTICAL_MILE, mi < 100 ? 1 : 0),
+    heading: `${Math.round(g.initialBearing)}° ${compass(g.initialBearing).abbr}`,
+    jet: formatDuration(mi / 550),
+  };
+});
+---
+<div class="table-scroll">
+  <table>
+    <caption>{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Route</th>
+        <th scope="col" class="num">Miles</th>
+        <th scope="col" class="num">Kilometers</th>
+        <th scope="col" class="num">Nautical miles</th>
+        <th scope="col">Heading at start</th>
+        <th scope="col" class="num">At 550 mph</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.name}</th>
+          <td class="num">{r.mi}</td>
+          <td class="num">{r.km}</td>
+          <td class="num">{r.nmi}</td>
+          <td>{r.heading}</td>
+          <td class="num">{r.jet}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

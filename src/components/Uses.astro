@@ -1,0 +1,25 @@
+---
+const uses = [
+  { t: 'Flights and air travel', d: 'Compare routes, estimate flying time and see why a long-haul flight arcs toward the pole.',
+    i: '<path d="M3 13l7.5-2L16 4.5c.9-1 2.4-.4 2.2.9L17 12l3.5 1.5-.5 2-4.5-.6L13 20l-2 .5.5-6L6 15l-1.2 2.2L3 17z" />' },
+  { t: 'Radio and line of sight', d: 'Check the gap between two antennas, a repeater and a handset, or two hilltops.',
+    i: '<path d="M12 21V11m0 0l-4 10m4-10l4 10M8.5 8a5 5 0 017 0M6 5.5a8.5 8.5 0 0112 0" /><circle cx="12" cy="10.5" r="1" />' },
+  { t: 'Drones', d: 'Measure how far a waypoint or a landing spot is from the launch point before you fly.',
+    i: '<circle cx="5.5" cy="6.5" r="2.5" /><circle cx="18.5" cy="6.5" r="2.5" /><circle cx="5.5" cy="17.5" r="2.5" /><circle cx="18.5" cy="17.5" r="2.5" /><path d="M7.5 8.5l2 2m7-2l-2 2m-7 5l2-2m7 2l-2-2" /><rect x="9.5" y="9.5" width="5" height="5" rx="1" />' },
+  { t: 'Radius and air-mile rules', d: 'Test a location against a limit written as a radius, such as the 150 air-mile short-haul exception.',
+    i: '<circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="1.3" /><path d="M12 12l6.4-6.4" />' },
+  { t: 'Property and catchments', d: 'See how far a home is from a school, a station or the coast when the rule or the listing uses a straight line.',
+    i: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" />' },
+  { t: 'Hiking, sailing and paddling', d: 'Get the true gap across a valley, a lake or a strait before you plan the route around it.',
+    i: '<path d="M3 19l6-11 4 7 2.5-4L21 19z" /><circle cx="17.5" cy="5.5" r="1.8" />' },
+];
+---
+<ul class="uses">
+  {uses.map((u) => (
+    <li>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={u.i} />
+      <h3>{u.t}</h3>
+      <p>{u.d}</p>
+    </li>
+  ))}
+</ul>

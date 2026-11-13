@@ -1,0 +1,213 @@
+---
+slug: /
+title: 'As the Crow Flies Distance Calculator: Straight Line Map'
+seo_title: 'As the Crow Flies Distance Calculator: Straight Line Map'
+description: 'Free as the crow flies distance calculator. Measure the straight line distance between two places in miles, km and nautical miles on a map. Try a route.'
+datePublished: '2026-11-13'
+dateModified: '2026-11-13'
+---
+import CrowVsRoad from '../components/figures/CrowVsRoad.astro';
+import CentralAngle from '../components/figures/CentralAngle.astro';
+import CourseMap from '../components/figures/CourseMap.astro';
+import AccuracyBars from '../components/figures/AccuracyBars.astro';
+import DistanceTable from '../components/DistanceTable.astro';
+import UnitTable from '../components/UnitTable.astro';
+import Uses from '../components/Uses.astro';
+import { US_ROUTES, UK_ROUTES, WORLD_ROUTES, C } from '../data/routes';
+
+Road signs and sat navs tell you how far it is to drive. They do not tell you how far apart two places really are, and that is the number you need for a flight, a radio link, a drone, a delivery radius or any rule written in air miles. The crow flies distance is that number: the shortest path over the Earth's surface, with roads, rivers and borders ignored.
+
+New York to London, the route loaded above, is 3,471 miles (5,585 km) in a straight line. Change either box and the distance, the compass heading, the halfway point and the map all update at once.
+
+## How to measure distance as the crow flies
+
+Measuring a straight line distance takes two places and no sign-up.
+
+1. Type the start in the **From** box. A city, a street address, a landmark or coordinates such as `40.7128, -74.0060` all work. Pick the match you want from the list.
+2. Type the end in the **To** box. To start from where you are, choose **Use my location** in either list. To place a point by eye, choose **Pick point on the map**.
+3. Read the distance. The switch beside it changes the unit between miles, kilometers and nautical miles.
+4. Check the route. The **Globe** view shows the path over the Earth. The **Street map** view shows the same path with roads and place names, and you can drag either pin to move it.
+5. Press **Copy link** to share the result. The link opens the calculator with both places already filled in.
+
+The calculation runs in your browser. Only the text you type into a place box leaves your device, and it goes to the place search service so it can suggest matches.
+
+## What does "as the crow flies" mean?
+
+"As the crow flies" means the distance between two places measured in a straight line, ignoring the route you would actually travel. A town that is 10 miles away as the crow flies might be 14 miles by road, because the road bends around hills, water and private land while the straight line goes over all of them.
+
+### Where the phrase comes from
+
+The phrase has been in print since the middle of the 1700s. One of the earliest known uses, in The Gentleman's and London Magazine in 1761, gives the size of a territory in miles, "each as the crow flies". A 1767 review used it the same way, for a traveler on foot who cut directly across dry, open country.
+
+A popular story says sailors released caged crows and followed them toward land. Word historians treat that as a later invention, because the earliest uses all describe journeys inland, not at sea. The plain reading is the likely one: a bird in the air is not tied to the road.
+
+Real crows are not fast. The Pennsylvania Game Commission puts their cruising speed at [25 to 30 mph](https://www.pa.gov/agencies/pgc/wildlife/discover-pa-wildlife/crows), which is why the calculator also tells you how long an actual crow would need.
+
+### Other names for the same distance
+
+You will see the same measurement under several names, and they all describe the path this tool draws:
+
+- **Straight line distance**, the everyday term.
+- **As the bird flies** and **beeline**, two more idioms for it.
+- **Great-circle distance**, the name used in navigation for the shortest path on a sphere.
+- **Geodesic distance**, the surveyor's term for the shortest path on the true, slightly flattened shape of the Earth.
+- **Air distance** or **air miles**, common in aviation and in United States trucking rules.
+
+## Crow flies distance vs driving distance
+
+The straight line is the shortest distance there can be between two points, so a road distance is always the same or longer. How much longer depends on what lies in between. Across flat farmland with a grid of roads the two numbers are close. Across a bay, a mountain range or a national border with few crossings, the road can be several times the straight line.
+
+<CrowVsRoad />
+
+Some pairs have no road distance at all. Honolulu and Anchorage are 2,781 miles apart as the crow flies, and no amount of driving will connect them. That is the case where a straight line distance is the only honest answer.
+
+Which number you need depends on the job:
+
+<div class="table-scroll">
+  <table>
+    <caption>Straight line or road distance: which one to use</caption>
+    <thead><tr><th scope="col">What you are working out</th><th scope="col">Use</th><th scope="col">Why</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">How far apart two cities are</th><td>Straight line</td><td>It does not change with the route you pick</td></tr>
+      <tr><th scope="row">Flight length</th><td>Straight line</td><td>Aircraft fly close to the great circle</td></tr>
+      <tr><th scope="row">Radio, drone or line-of-sight range</th><td>Straight line</td><td>Signals and aircraft ignore roads</td></tr>
+      <tr><th scope="row">A rule written as a radius or in air miles</th><td>Straight line</td><td>The rule is defined that way</td></tr>
+      <tr><th scope="row">Driving time, fuel or mileage claims</th><td>Road distance</td><td>You pay for the miles you drive</td></tr>
+      <tr><th scope="row">A walk, a run or a bike ride</th><td>Route distance</td><td>Paths rarely run straight</td></tr>
+      <tr><th scope="row">School or service catchment</th><td>Check the rule</td><td>Some use a straight line, others the shortest walking route</td></tr>
+    </tbody>
+  </table>
+</div>
+
+This tool measures the straight line only. For a driving distance, use a route planner, then compare its figure with the one here to see how big the detour is.
+
+## How is straight line distance calculated?
+
+The **as the crow flies distance calculator** turns each place into a latitude and a longitude, then finds the length of the shortest path between those two points over the Earth's surface. It uses Vincenty's formulae on the WGS 84 ellipsoid, the same model of the Earth that GPS uses. The result is the geodesic distance, and it is what "as the crow flies" means on a planet that is not flat.
+
+### The great-circle idea
+
+Picture the Earth as a ball. Slice it through its center so the cut passes through both of your points. The edge of that cut is a great circle, and the shorter piece of it between the two points is the shortest path on the surface.
+
+<CentralAngle />
+
+The length of that piece depends on one thing: the angle between the two points as seen from the center of the Earth. Multiply the angle, in radians, by the Earth's radius and you have the distance.
+
+### The haversine formula, with a worked example
+
+The haversine formula gets that angle from two pairs of coordinates. It is the method most distance tools use, and you can run it on a pocket calculator.
+
+<pre class="formula">a = sin²(Δlat / 2) + cos(lat1) × cos(lat2) × sin²(Δlon / 2)
+c = 2 × asin(√a)
+distance = R × c</pre>
+
+Take New York (40.7143° N, 74.0060° W) and London (51.5085° N, 0.1257° W). The difference in latitude is 10.7942° and the difference in longitude is 73.8803°. Working through the first line gives a = 0.17924, and the second gives c = 0.87431 radians. With R set to the mean Earth radius of 6,371.0088 km, the distance is 5,570.2 km, or 3,461.2 miles.
+
+### Why this calculator goes one step further
+
+The Earth is not a perfect ball. In the WGS 84 model the radius is 6,378.137 km at the equator and 6,356.752 km at the poles, a difference of about 21 km. The haversine formula ignores that bulge, so it drifts from the true figure by a small amount that changes with latitude and direction.
+
+Vincenty's formulae work on the flattened shape directly and are accurate to within half a millimeter on that model. For New York to London they give 5,585.2 km (3,470.5 miles), which is 9.3 miles more than the haversine figure. The table shows how three common methods compare on that one route.
+
+<div class="table-scroll">
+  <table>
+    <caption>Three ways to work out New York to London</caption>
+    <thead><tr><th scope="col">Method</th><th scope="col">Shape assumed</th><th scope="col" class="num">Result</th><th scope="col" class="num">Off by</th><th scope="col">Good enough for</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Flat-map shortcut (Pythagoras on latitude and longitude)</th><td>Flat</td><td class="num">3,612 mi</td><td class="num">141 mi (4.1%)</td><td>Points a few miles apart</td></tr>
+      <tr><th scope="row">Haversine</th><td>Sphere</td><td class="num">3,461 mi</td><td class="num">9.3 mi (0.27%)</td><td>Everyday estimates</td></tr>
+      <tr><th scope="row">Vincenty on WGS 84</th><td>Flattened sphere</td><td class="num">3,471 mi</td><td class="num">Reference</td><td>This calculator</td></tr>
+    </tbody>
+  </table>
+</div>
+
+We ran both methods on the 29 routes listed further down this page. The haversine result was off by between 0.01% and 0.36%, and by 0.18% on average. That is small, but on a long route it is real distance: about 21 miles on London to Cape Town.
+
+<AccuracyBars routes={[[C.london, C.capeTown], [C.glasgow, C.edinburgh], [C.london, C.cardiff], [C.toronto, C.london], [C.newYork, C.london], [C.newYork, C.losAngeles], [C.losAngeles, C.tokyo], [C.dallas, C.houston], [C.london, C.edinburgh], [C.singapore, C.newYork], [C.london, C.sydney], [C.denver, C.phoenix]]} />
+
+## Why the straight line looks curved on a map
+
+Most web maps use the Mercator projection, which stretches the Earth more and more toward the poles. A path that is direct on the globe gets bent by that stretching, so it shows up as a curve that bows toward the nearest pole. The route has not changed. The map has.
+
+<CourseMap />
+
+The line that looks straight on a Mercator map is a different path, called a rhumb line. It holds one compass heading the whole way, which made it useful to sailors, but it is longer. From New York to London it adds about 139 miles.
+
+The gap grows with distance and latitude. Singapore to New York is the clearest case on this page: the shortest path leaves Singapore heading almost due north, at 358°, and crosses the Arctic. Holding a constant heading between the same two cities would add about 1,969 miles.
+
+## Reading the results: heading, halfway point and travel time
+
+The distance is the headline, but the smaller figures under it answer the follow-up questions.
+
+### Heading at the start and on arrival
+
+The heading is the compass direction of travel, in degrees clockwise from north. On a long straight line it changes as you go, which surprises most people. New York to London starts at 51°, roughly northeast, and arrives at 108°, east-southeast, without ever turning off the shortest path.
+
+That is why the calculator shows two headings. Over a few miles they are almost the same number. Over an ocean they can differ by 50° or more.
+
+### Halfway point
+
+The halfway point is the spot on the path that is the same distance from both ends. It is handy for picking a meeting place or a fuel stop, and it is rarely where a flat map suggests. The halfway point between New York and London sits at 52.370° N, 41.289° W, in the open Atlantic and farther north than either city.
+
+### Travel time
+
+The time table shows how long the straight line would take at five steady speeds: a crow at 30 mph, a walk at 3 mph, a bike at 12 mph, a car at 60 mph and an airliner at 550 mph. These are round figures chosen for comparison, not forecasts. A real trip is slower because of roads, stops, wind and the time an aircraft spends climbing and landing.
+
+They are still useful for scale. New York to London works out at 6 hours 19 minutes at airliner speed, and 4 days 19 hours for a crow that never rests.
+
+## Miles, kilometers and nautical miles
+
+The calculator reports every result in three units. A statute mile is exactly 1.609344 km. A nautical mile is exactly 1.852 km, or about 1.15078 statute miles, and it is the unit used at sea and in the air.
+
+<UnitTable />
+
+### Air miles and the 150 air-mile radius
+
+In United States trucking rules an air mile is a nautical mile measured in a straight line. The Federal Motor Carrier Safety Administration's short-haul exception in 49 CFR 395.1(e)(1) applies within a 150 air-mile radius, and the agency states that 150 air miles equal 172.6 statute miles.
+
+To check a location against that radius, enter the work reporting location in the From box and the destination in the To box, then switch the unit to nautical miles. A result of 150 or less is inside the radius, however many road miles the trip takes. Treat this as a quick check and read the regulation itself before relying on it.
+
+## Popular distances as the crow flies
+
+Every figure below was produced by the same code that runs the calculator, measured between city centers on the WGS 84 ellipsoid. The last column is the time the distance would take at a steady 550 mph.
+
+### United States
+
+<DistanceTable routes={US_ROUTES} caption="Straight line distances between United States cities" />
+
+### United Kingdom and Ireland
+
+<DistanceTable routes={UK_ROUTES} caption="Straight line distances between cities in the United Kingdom and Ireland" />
+
+### Long-haul routes
+
+<DistanceTable routes={WORLD_ROUTES} caption="Long-haul distances from the as the crow flies distance calculator" />
+
+London to Sydney, at 10,556 miles, is close to the limit. No two places on Earth are more than about 12,430 miles apart, because past that point it is shorter to go around the other way.
+
+## What people use straight line distance for
+
+<Uses />
+
+## How to measure as the crow flies on Google Maps
+
+Google Maps can measure a straight line with its Measure distance tool. Google's [help page](https://support.google.com/maps/answer/1628031) gives these steps for a computer:
+
+1. Open Google Maps.
+2. Right-click the starting point.
+3. Select **Measure distance**.
+4. Click the destination. The length of the line appears at the bottom of the screen.
+
+Click again to add more points, and click a point to remove it. The tool does not work when Google Maps is in Lite mode.
+
+Google Maps reports the length of the line you draw. The as the crow flies map above adds the heading, the halfway point, nautical miles and a link you can share, and it finds both places by name so you do not have to hunt for them on the map.
+
+## Limits of a straight line measurement
+
+A straight line distance is a clean number, and it helps to know what it leaves out.
+
+- **Height.** The path is measured at the surface of the Earth model, close to sea level. Climbing a mountain or flying at altitude adds a little, though far less than most people expect.
+- **Where a place "is".** A city name is measured from a single point near the center. Two large cities can be many miles closer or farther apart depending on which neighborhoods you mean, so use addresses or coordinates when it matters.
+- **Obstacles.** Nothing on the ground is taken into account. The line will cross water, mountains, private land and borders.
+- **Opposite sides of the planet.** For two points almost exactly opposite each other, Vincenty's method cannot settle on an answer, so the calculator falls back to the sphere-based result for that pair.
+- **Navigation and law.** Use the figure for planning and curiosity. For flying, sailing or a legal boundary, use the charts and surveys made for that purpose.
