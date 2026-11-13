@@ -243,12 +243,13 @@ const RadiusMapView = forwardRef<RadiusMapHandle, Props>(function RadiusMapView(
     const key = sel ? `${sel.id}:${sel.center.lat.toFixed(4)},${sel.center.lon.toFixed(4)}:${Math.round(sel.radius / 1000)}` : '';
     if (sel && resizing.current) fittedFor.current = key;
     if (sel && key !== fittedFor.current) {
+      const firstFit = fittedFor.current === '';
       fittedFor.current = key;
       const ring = circleRing(sel.center, sel.radius, 64);
       const bounds = new LngLatBounds(ring[0], ring[0]);
       for (const p of ring) bounds.extend(p);
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      m.fitBounds(bounds, { padding: 48, maxZoom: 16, duration: reduce ? 0 : 600 });
+      m.fitBounds(bounds, { padding: 48, maxZoom: 16, duration: reduce || firstFit ? 0 : 600 });
     }
   }, [ready, circles]);
 
