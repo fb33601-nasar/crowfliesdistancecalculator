@@ -1,1 +1,614 @@
-{}
+{
+ "johannesburg-to-cape-town": {
+  "distance": 1396283,
+  "duration": 54636,
+  "via": "N1; N12, N1",
+  "fetched": "2026-11-14"
+ },
+ "cape-town-to-durban": {
+  "distance": 1636041,
+  "duration": 65341,
+  "via": "N1, N3",
+  "fetched": "2026-11-14"
+ },
+ "philadelphia-to-new-york": {
+  "distance": 151084,
+  "duration": 7476,
+  "via": "Delaware Expressway, New Jersey Turnpike",
+  "fetched": "2026-11-14"
+ },
+ "bloemfontein-to-johannesburg": {
+  "distance": 396556,
+  "duration": 15579,
+  "via": "Raymond Mhlaba Street, N1",
+  "fetched": "2026-11-14"
+ },
+ "lakeland-to-orlando": {
+  "distance": 88094,
+  "duration": 4079,
+  "via": "I 4, I-4 Express",
+  "fetched": "2026-11-14"
+ },
+ "johannesburg-to-durban": {
+  "distance": 569866,
+  "duration": 23430,
+  "via": "M2, N3",
+  "fetched": "2026-11-14"
+ },
+ "knysna-to-cape-town": {
+  "distance": 489274,
+  "duration": 21238,
+  "via": "N2, N2",
+  "fetched": "2026-11-14"
+ },
+ "orlando-to-tampa": {
+  "distance": 135935,
+  "duration": 5913,
+  "via": "I 4, Lee Roy Selmon Expressway",
+  "fetched": "2026-11-14"
+ },
+ "cape-town-to-hermanus": {
+  "distance": 118522,
+  "duration": 5740,
+  "via": "N2, R43",
+  "fetched": "2026-11-14"
+ },
+ "knysna-to-plettenberg-bay": {
+  "distance": 33547,
+  "duration": 2005,
+  "via": "N2, Marine Way",
+  "fetched": "2026-11-14"
+ },
+ "mossel-bay-to-cape-town": {
+  "distance": 390669,
+  "duration": 16570,
+  "via": "Louis Fourie Road, N2",
+  "fetched": "2026-11-14"
+ },
+ "bloemfontein-to-cape-town": {
+  "distance": 999866,
+  "duration": 39664,
+  "via": "N1, N1; N12",
+  "fetched": "2026-11-14"
+ },
+ "langebaan-to-cape-town": {
+  "distance": 137452,
+  "duration": 5818,
+  "via": "R27, West Coast Road",
+  "fetched": "2026-11-14"
+ },
+ "colesberg-to-bloemfontein": {
+  "distance": 222937,
+  "duration": 8740,
+  "via": "N1, Western Bypass",
+  "fetched": "2026-11-14"
+ },
+ "stellenbosch-to-cape-town": {
+  "distance": 54521,
+  "duration": 2677,
+  "via": "Koelenhof Road, N1",
+  "fetched": "2026-11-14"
+ },
+ "george-to-cape-town": {
+  "distance": 433632,
+  "duration": 18247,
+  "via": "N2, Settlers Way",
+  "fetched": "2026-11-14"
+ },
+ "george-to-knysna": {
+  "distance": 60861,
+  "duration": 3636,
+  "via": "Knysna Street, N2",
+  "fetched": "2026-11-14"
+ },
+ "beaufort-west-to-cape-town": {
+  "distance": 462270,
+  "duration": 18866,
+  "via": "N1, Hex River Pass",
+  "fetched": "2026-11-14"
+ },
+ "pretoria-to-cape-town": {
+  "distance": 1452522,
+  "duration": 57002,
+  "via": "N1; N12, N1",
+  "fetched": "2026-11-14"
+ },
+ "east-london-to-mthatha": {
+  "distance": 224482,
+  "duration": 9672,
+  "via": "N2, Nelson Mandela Drive",
+  "fetched": "2026-11-14"
+ },
+ "worcester-to-cape-town": {
+  "distance": 110434,
+  "duration": 4827,
+  "via": "N1, N1 Freeway",
+  "fetched": "2026-11-14"
+ },
+ "franschhoek-to-cape-town": {
+  "distance": 75544,
+  "duration": 3520,
+  "via": "Huguenot Road, N1",
+  "fetched": "2026-11-14"
+ },
+ "durban-to-newcastle": {
+  "distance": 347186,
+  "duration": 14389,
+  "via": "N3, N11",
+  "fetched": "2026-11-14"
+ },
+ "bloemfontein-to-durban": {
+  "distance": 635723,
+  "duration": 26392,
+  "via": "N5, N3",
+  "fetched": "2026-11-14"
+ },
+ "pretoria-to-durban": {
+  "distance": 615687,
+  "duration": 25242,
+  "via": "Ben Schoeman Highway, N3",
+  "fetched": "2026-11-14"
+ },
+ "jeffreys-bay-to-gqeberha": {
+  "distance": 78398,
+  "duration": 3564,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "bloemfontein-to-pretoria": {
+  "distance": 451924,
+  "duration": 17944,
+  "via": "N1, M1",
+  "fetched": "2026-11-14"
+ },
+ "plettenberg-bay-to-cape-town": {
+  "distance": 522071,
+  "duration": 23073,
+  "via": "N2, N2",
+  "fetched": "2026-11-14"
+ },
+ "harrismith-to-durban": {
+  "distance": 299226,
+  "duration": 12405,
+  "via": "Boys Street, N3",
+  "fetched": "2026-11-14"
+ },
+ "east-london-to-johannesburg": {
+  "distance": 953469,
+  "duration": 38600,
+  "via": "N6, N1",
+  "fetched": "2026-11-14"
+ },
+ "colesberg-to-cape-town": {
+  "distance": 778656,
+  "duration": 31125,
+  "via": "N1, N1; N12",
+  "fetched": "2026-11-14"
+ },
+ "klerksdorp-to-johannesburg": {
+  "distance": 167604,
+  "duration": 7673,
+  "via": "N12, Nelson Mandela Drive",
+  "fetched": "2026-11-14"
+ },
+ "george-to-plettenberg-bay": {
+  "distance": 94097,
+  "duration": 5527,
+  "via": "Knysna Street, N2",
+  "fetched": "2026-11-14"
+ },
+ "montagu-to-cape-town": {
+  "distance": 184213,
+  "duration": 8519,
+  "via": "R60, N1",
+  "fetched": "2026-11-14"
+ },
+ "paternoster-to-cape-town": {
+  "distance": 160915,
+  "duration": 6816,
+  "via": "R27, West Coast Road",
+  "fetched": "2026-11-14"
+ },
+ "durban-to-richards-bay": {
+  "distance": 172679,
+  "duration": 7622,
+  "via": "North Coast Toll Road, John Ross Highway",
+  "fetched": "2026-11-14"
+ },
+ "east-london-to-komani": {
+  "distance": 185186,
+  "duration": 7758,
+  "via": "North East Expressway, N6",
+  "fetched": "2026-11-14"
+ },
+ "knysna-to-gqeberha": {
+  "distance": 261584,
+  "duration": 11245,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "paarl-to-cape-town": {
+  "distance": 61306,
+  "duration": 2634,
+  "via": "N1, N1 Freeway",
+  "fetched": "2026-11-14"
+ },
+ "harare-to-cape-town": {
+  "distance": 2512135,
+  "duration": 97376,
+  "via": "Harare-Beitbridge Highway, N1",
+  "fetched": "2026-11-14"
+ },
+ "johannesburg-to-gqeberha": {
+  "distance": 1058016,
+  "duration": 42929,
+  "via": "N1, N10",
+  "fetched": "2026-11-14"
+ },
+ "margate-to-durban": {
+  "distance": 136143,
+  "duration": 5668,
+  "via": "N2, Inkosi Albert Luthuli Freeway",
+  "fetched": "2026-11-14"
+ },
+ "east-london-to-gqeberha": {
+  "distance": 289982,
+  "duration": 13029,
+  "via": "R72, N2",
+  "fetched": "2026-11-14"
+ },
+ "george-to-gqeberha": {
+  "distance": 322133,
+  "duration": 14767,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "mthatha-to-durban": {
+  "distance": 425722,
+  "duration": 17969,
+  "via": "N2, N2; R56",
+  "fetched": "2026-11-14"
+ },
+ "swellendam-to-cape-town": {
+  "distance": 219907,
+  "duration": 9535,
+  "via": "N2, Settlers Way",
+  "fetched": "2026-11-14"
+ },
+ "george-to-oudtshoorn": {
+  "distance": 59317,
+  "duration": 3105,
+  "via": "N9; N12, N12; R62",
+  "fetched": "2026-11-14"
+ },
+ "durban-to-ballito": {
+  "distance": 46987,
+  "duration": 2111,
+  "via": "Ruth First Highway, North Coast Toll Road",
+  "fetched": "2026-11-14"
+ },
+ "darling-to-cape-town": {
+  "distance": 78023,
+  "duration": 4070,
+  "via": "Dassenberg Street, N7",
+  "fetched": "2026-11-14"
+ },
+ "laingsburg-to-cape-town": {
+  "distance": 263688,
+  "duration": 11174,
+  "via": "N1, Hex River Pass",
+  "fetched": "2026-11-14"
+ },
+ "cape-town-to-east-london": {
+  "distance": 1035587,
+  "duration": 44644,
+  "via": "N2, R72",
+  "fetched": "2026-11-14"
+ },
+ "caledon-to-cape-town": {
+  "distance": 113347,
+  "duration": 5292,
+  "via": "N2, Settlers Way",
+  "fetched": "2026-11-14"
+ },
+ "kimberley-to-cape-town": {
+  "distance": 954138,
+  "duration": 39745,
+  "via": "N12, N1",
+  "fetched": "2026-11-14"
+ },
+ "port-edward-to-durban": {
+  "distance": 163030,
+  "duration": 7028,
+  "via": "R61, N2",
+  "fetched": "2026-11-14"
+ },
+ "makhanda-to-gqeberha": {
+  "distance": 128247,
+  "duration": 5480,
+  "via": "N2, N2; R342",
+  "fetched": "2026-11-14"
+ },
+ "mossel-bay-to-knysna": {
+  "distance": 107692,
+  "duration": 5375,
+  "via": "Louis Fourie Road, N2",
+  "fetched": "2026-11-14"
+ },
+ "harrismith-to-johannesburg": {
+  "distance": 269965,
+  "duration": 11435,
+  "via": "N3, M2",
+  "fetched": "2026-11-14"
+ },
+ "nelspruit-to-johannesburg": {
+  "distance": 342539,
+  "duration": 13996,
+  "via": "N4, N12",
+  "fetched": "2026-11-14"
+ },
+ "plettenberg-bay-to-gqeberha": {
+  "distance": 230250,
+  "duration": 9497,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "pennington-to-durban": {
+  "distance": 72870,
+  "duration": 3273,
+  "via": "N2, Inkosi Albert Luthuli Freeway",
+  "fetched": "2026-11-14"
+ },
+ "potchefstroom-to-johannesburg": {
+  "distance": 120042,
+  "duration": 5327,
+  "via": "Nelson Mandela Drive, N12",
+  "fetched": "2026-11-14"
+ },
+ "estcourt-to-durban": {
+  "distance": 176959,
+  "duration": 7376,
+  "via": "P29, N3",
+  "fetched": "2026-11-14"
+ },
+ "hoedspruit-to-johannesburg": {
+  "distance": 447065,
+  "duration": 21277,
+  "via": "R36, N12",
+  "fetched": "2026-11-14"
+ },
+ "windhoek-to-swakopmund": {
+  "distance": 359857,
+  "duration": 14132,
+  "via": "A1, Trans-Kalahari Corridor",
+  "fetched": "2026-11-14"
+ },
+ "witbank-to-middelburg": {
+  "distance": 31711,
+  "duration": 1619,
+  "via": "Mandela Street, N4",
+  "fetched": "2026-11-14"
+ },
+ "bellville-to-cape-town": {
+  "distance": 24011,
+  "duration": 1218,
+  "via": "N1, F.W. de Klerk Boulevard",
+  "fetched": "2026-11-14"
+ },
+ "port-shepstone-to-durban": {
+  "distance": 124695,
+  "duration": 5136,
+  "via": "N2, Inkosi Albert Luthuli Freeway",
+  "fetched": "2026-11-14"
+ },
+ "umhlanga-to-durban": {
+  "distance": 16879,
+  "duration": 800,
+  "via": "Leo Boyd Highway, Ruth First Highway",
+  "fetched": "2026-11-14"
+ },
+ "greyton-to-cape-town": {
+  "distance": 142030,
+  "duration": 7325,
+  "via": "R406, N2",
+  "fetched": "2026-11-14"
+ },
+ "robertson-to-cape-town": {
+  "distance": 157295,
+  "duration": 6817,
+  "via": "R60, N1",
+  "fetched": "2026-11-14"
+ },
+ "beaufort-west-to-johannesburg": {
+  "distance": 935047,
+  "duration": 35779,
+  "via": "N1; N12, N1",
+  "fetched": "2026-11-14"
+ },
+ "colesberg-to-beaufort-west": {
+  "distance": 316697,
+  "duration": 12331,
+  "via": "N1, N1; N12",
+  "fetched": "2026-11-14"
+ },
+ "franschhoek-to-stellenbosch": {
+  "distance": 31090,
+  "duration": 2005,
+  "via": "Huguenot Road, Helshoogte Road",
+  "fetched": "2026-11-14"
+ },
+ "kuruman-to-upington": {
+  "distance": 262182,
+  "duration": 11223,
+  "via": "N14, Schroder Street",
+  "fetched": "2026-11-14"
+ },
+ "nelspruit-to-komatipoort": {
+  "distance": 108131,
+  "duration": 4613,
+  "via": "Northern Bypass, N4",
+  "fetched": "2026-11-14"
+ },
+ "windhoek-to-keetmanshoop": {
+  "distance": 496011,
+  "duration": 19470,
+  "via": "Auas Road, B1",
+  "fetched": "2026-11-14"
+ },
+ "kenner-to-new-orleans": {
+  "distance": 21182,
+  "duration": 1162,
+  "via": "I 10, Pontchartrain Expressway",
+  "fetched": "2026-11-14"
+ },
+ "cape-town-to-gqeberha": {
+  "distance": 749660,
+  "duration": 32230,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "boston-to-new-york": {
+  "distance": 344588,
+  "duration": 16896,
+  "via": "Massachusetts Turnpike, I 95",
+  "fetched": "2026-11-14"
+ },
+ "gansbaai-to-cape-town": {
+  "distance": 163596,
+  "duration": 8234,
+  "via": "R43, N2",
+  "fetched": "2026-11-14"
+ },
+ "colesberg-to-johannesburg": {
+  "distance": 619936,
+  "duration": 23654,
+  "via": "N1, Western Bypass",
+  "fetched": "2026-11-14"
+ },
+ "greytown-to-durban": {
+  "distance": 148934,
+  "duration": 6948,
+  "via": "R33, N3",
+  "fetched": "2026-11-14"
+ },
+ "johannesburg-to-george": {
+  "distance": 1162659,
+  "duration": 46876,
+  "via": "N1, N9",
+  "fetched": "2026-11-14"
+ },
+ "mthatha-to-gqeberha": {
+  "distance": 513741,
+  "duration": 22626,
+  "via": "N2, R72",
+  "fetched": "2026-11-14"
+ },
+ "komani-to-mthatha": {
+  "distance": 222454,
+  "duration": 12188,
+  "via": "N6, R61",
+  "fetched": "2026-11-14"
+ },
+ "carletonville-to-johannesburg": {
+  "distance": 76620,
+  "duration": 3570,
+  "via": "R501, N12",
+  "fetched": "2026-11-14"
+ },
+ "mossel-bay-to-gqeberha": {
+  "distance": 368963,
+  "duration": 16505,
+  "via": "N2, Great West Way",
+  "fetched": "2026-11-14"
+ },
+ "clanwilliam-to-cape-town": {
+  "distance": 229379,
+  "duration": 9583,
+  "via": "N7, F.W. de Klerk Boulevard",
+  "fetched": "2026-11-14"
+ },
+ "jeffreys-bay-to-cape-town": {
+  "distance": 682894,
+  "duration": 29865,
+  "via": "Saint Francis Street, N2",
+  "fetched": "2026-11-14"
+ },
+ "durban-to-kokstad": {
+  "distance": 256535,
+  "duration": 10950,
+  "via": "N2, N2; R56",
+  "fetched": "2026-11-14"
+ },
+ "east-london-to-durban": {
+  "distance": 650211,
+  "duration": 27581,
+  "via": "N2, N2; R56",
+  "fetched": "2026-11-14"
+ },
+ "kroonstad-to-johannesburg": {
+  "distance": 188400,
+  "duration": 7452,
+  "via": "N1, M1",
+  "fetched": "2026-11-14"
+ },
+ "gansbaai-to-hermanus": {
+  "distance": 44753,
+  "duration": 2516,
+  "via": "Main Road, R43",
+  "fetched": "2026-11-14"
+ },
+ "bloemfontein-to-east-london": {
+  "distance": 554539,
+  "duration": 23656,
+  "via": "N6, Somerset Street",
+  "fetched": "2026-11-14"
+ },
+ "durban-to-empangeni": {
+  "distance": 162023,
+  "duration": 6545,
+  "via": "Ruth First Highway, North Coast Toll Road",
+  "fetched": "2026-11-14"
+ },
+ "mossel-bay-to-plettenberg-bay": {
+  "distance": 140927,
+  "duration": 7265,
+  "via": "Louis Fourie Road, N2",
+  "fetched": "2026-11-14"
+ },
+ "nelspruit-to-pretoria": {
+  "distance": 320608,
+  "duration": 13054,
+  "via": "N4, Schoemanskloof",
+  "fetched": "2026-11-14"
+ },
+ "nelspruit-to-witbank": {
+  "distance": 211781,
+  "duration": 8975,
+  "via": "N4, Schoemanskloof",
+  "fetched": "2026-11-14"
+ },
+ "polokwane-to-louis-trichardt": {
+  "distance": 110834,
+  "duration": 4655,
+  "via": "Munnik Avenue, N1",
+  "fetched": "2026-11-14"
+ },
+ "middelburg-to-johannesburg": {
+  "distance": 162778,
+  "duration": 6706,
+  "via": "N4, N12",
+  "fetched": "2026-11-14"
+ },
+ "vanderbijlpark-to-johannesburg": {
+  "distance": 74334,
+  "duration": 3313,
+  "via": "Sybrand van Niekerk Freeway, R59",
+  "fetched": "2026-11-14"
+ },
+ "ottawa-to-winnipeg": {
+  "distance": 2118810,
+  "duration": 101917,
+  "via": "Highway 17, US 2",
+  "fetched": "2026-11-14"
+ }
+}
