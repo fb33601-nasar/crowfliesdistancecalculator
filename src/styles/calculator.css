@@ -1655,3 +1655,236 @@
 .bearing-formats td {
   white-space: nowrap;
 }
+
+/* ---------- Distance between two points ---------- */
+.calc-points .calc-tabs-top {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin: 1rem clamp(1.1rem, 3vw, 1.9rem) 0;
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+}
+.calc-points .calc-tabs-top button {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+.calc-points .calc-tabs-top button[aria-selected='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+.calc-points-wide {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+.coord-field label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--step--1);
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+}
+.coord-row {
+  display: flex;
+  gap: 0.4rem;
+}
+.coord-row input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 1.02rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.8rem;
+  min-height: 3rem;
+}
+.coord-row input:focus-visible {
+  outline: 3px solid var(--course-bright);
+  outline-offset: 1px;
+  background: #fff;
+}
+.coord-row input[aria-invalid='true'] {
+  border-color: #a3123f;
+}
+.coord-pick {
+  width: 3rem;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.coord-pick:hover {
+  color: var(--course);
+  border-color: var(--course);
+}
+.coord-field small {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+.coord-field small.is-error,
+.is-error {
+  color: #a3123f;
+}
+.coord-swap {
+  justify-self: start;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  min-height: 2.3rem;
+  cursor: pointer;
+}
+.coord-steps {
+  margin: 1rem 0 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  background: var(--paper);
+}
+.coord-steps summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+.coord-steps ol {
+  margin: 0.6rem 0 0.2rem;
+  padding-left: 1.2rem;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.coord-steps li + li {
+  margin-top: 0.35rem;
+}
+.xy-wrap {
+  display: grid;
+  gap: 1.4rem;
+  padding: clamp(1.1rem, 3vw, 1.9rem);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 940px) {
+  .xy-wrap {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 20rem;
+    align-items: start;
+  }
+}
+.xy-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.xy-form legend {
+  font-size: var(--step--1);
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+}
+.xy-form fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.xy-form fieldset input {
+  width: 4.6rem;
+  font: inherit;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.4rem;
+  min-height: 2.8rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+.xy-steps {
+  margin: 0.8rem 0 1rem;
+  padding-left: 1.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.xy-steps li + li {
+  margin-top: 0.35rem;
+}
+.xy-plot {
+  width: 100%;
+  max-width: 20rem;
+  height: auto;
+}
+.xy-bg {
+  fill: var(--paper);
+  stroke: var(--rule);
+}
+.xy-axis {
+  stroke: #b7bdd8;
+  stroke-width: 1.5;
+}
+.xy-legs {
+  fill: none;
+  stroke: #0f8a6c;
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+.xy-line {
+  stroke: var(--course);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+.xy-pt {
+  fill: #fff;
+  stroke: var(--course);
+  stroke-width: 3;
+}
+.xy-label {
+  font: 800 14px var(--font);
+  fill: var(--ink);
+}
+.xy-note {
+  font: 700 11.5px var(--font);
+  fill: #0f8a6c;
+}
+.batch-wrap {
+  padding: clamp(1.1rem, 3vw, 1.9rem);
+  display: grid;
+  gap: 0.9rem;
+}
+.batch-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+.batch-wrap textarea {
+  width: 100%;
+  font: 0.9rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.8rem;
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+}
+.batch-table {
+  width: 100%;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}

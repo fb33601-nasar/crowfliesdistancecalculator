@@ -1,0 +1,30 @@
+<figure>
+  <svg viewBox="0 0 760 320" role="img" aria-labelledby="dff-t dff-d" class="fig-light" style="background:#f4f7fb">
+    <title id="dff-t">The distance formula as a right triangle</title>
+    <desc id="dff-d">Point A at (2, 3) and point B at (8, 6) on a grid. A horizontal leg of 6 and a vertical leg of 3 form a right triangle whose long side is the distance, the square root of 45, about 6.708.</desc>
+    <g stroke="#dbe2ee" stroke-width="1">
+      {Array.from({ length: 11 }, (_, i) => <line x1={40 + i * 36} y1="20" x2={40 + i * 36} y2="296" />)}
+      {Array.from({ length: 8 }, (_, i) => <line x1="40" y1={296 - i * 36} x2="400" y2={296 - i * 36} />)}
+    </g>
+    <line x1="40" y1="296" x2="404" y2="296" stroke="#5b6385" stroke-width="2" />
+    <line x1="40" y1="296" x2="40" y2="16" stroke="#5b6385" stroke-width="2" />
+    <path d="M112 188 H328 V80" fill="none" stroke="#0f8a6c" stroke-width="3" stroke-dasharray="7 5" />
+    <line x1="112" y1="188" x2="328" y2="80" stroke="#c4157a" stroke-width="5" stroke-linecap="round" />
+    <rect x="314" y="174" width="14" height="14" fill="none" stroke="#0f8a6c" stroke-width="2" />
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+      <circle cx="112" cy="188" r="9" fill="#fff" stroke="#c4157a" stroke-width="4" />
+      <circle cx="328" cy="80" r="9" fill="#fff" stroke="#c4157a" stroke-width="4" />
+      <text x="100" y="214" text-anchor="end" font-size="15" font-weight="800" fill="#161b3d">A (2, 3)</text>
+      <text x="340" y="70" font-size="15" font-weight="800" fill="#161b3d">B (8, 6)</text>
+      <text x="220" y="210" text-anchor="middle" font-size="14" font-weight="700" fill="#0f8a6c">Δx = 6</text>
+      <text x="338" y="140" font-size="14" font-weight="700" fill="#0f8a6c">Δy = 3</text>
+      <text x="205" y="124" text-anchor="middle" font-size="15" font-weight="800" fill="#c4157a" transform="rotate(-26.6 205 124)">d = √45 ≈ 6.708</text>
+      <text x="450" y="90" font-size="15" fill="#5b6385">The distance formula</text>
+      <text x="450" y="124" font-size="22" font-weight="800" fill="#161b3d">d = √((x₂ − x₁)² + (y₂ − y₁)²)</text>
+      <text x="450" y="176" font-size="15" fill="#5b6385">For A (2, 3) and B (8, 6)</text>
+      <text x="450" y="208" font-size="20" font-weight="700" fill="#161b3d">d = √(6² + 3²) = √45</text>
+      <text x="450" y="240" font-size="20" font-weight="700" fill="#161b3d">  = 3√5 ≈ 6.708</text>
+    </g>
+  </svg>
+  <figcaption>The distance formula is Pythagoras’ theorem: the horizontal and vertical differences are the two short sides of a right triangle, and the distance is its long side.</figcaption>
+</figure>

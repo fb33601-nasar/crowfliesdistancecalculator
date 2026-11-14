@@ -1,0 +1,38 @@
+---
+// Distance by each formula for pairs of points, against the WGS 84 ellipsoid result.
+import { geodesic, haversine, lawOfCosines, equirectangular, formatNumber } from '../../lib/geo';
+const pairs: [string, [number, number], [number, number]][] = [
+  ['Eiffel Tower to the Louvre', [48.8584, 2.2945], [48.8606, 2.3376]],
+  ['Los Angeles to San Francisco', [34.0522, -118.2437], [37.7749, -122.4194]],
+  ['Anchorage to Fairbanks', [61.2181, -149.9003], [64.8378, -147.7164]],
+  ['Sydney to Melbourne', [-33.8688, 151.2093], [-37.8136, 144.9631]],
+  ['Oslo to Helsinki', [59.9139, 10.7522], [60.1699, 24.9384]],
+  ['New York to London', [40.7128, -74.006], [51.5074, -0.1278]],
+  ['Quito to Singapore', [-0.1807, -78.4678], [1.3521, 103.8198]],
+];
+const rows = pairs.map(([n, a, b]) => {
+  const A = { lat: a[0], lon: a[1] }, B = { lat: b[0], lon: b[1] };
+  const g = geodesic(A, B).distance / 1000;
+  const pct = (v: number) => ((v / 1000 - g) / g) * 100;
+  return { n, link: `/distance-between-two-points-calculator/?a=${a.join(',')}&b=${b.join(',')}`, g, h: pct(haversine(A, B)), l: pct(lawOfCosines(A, B)), e: pct(equirectangular(A, B)) };
+});
+const p = (v: number) => `${v > 0 ? '+' : ''}${v.toFixed(Math.abs(v) < 0.1 ? 3 : 2)}%`;
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">How far each formula lands from the ellipsoid distance</p>
+  <table>
+    <caption class="visually-hidden">How far each formula lands from the ellipsoid distance</caption>
+    <thead><tr><th scope="col">Points</th><th scope="col" class="num">WGS 84 (Vincenty)</th><th scope="col" class="num">Haversine</th><th scope="col" class="num">Law of cosines</th><th scope="col" class="num">Flat approximation</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row"><a href={r.link}>{r.n}</a></th>
+          <td class="num">{formatNumber(r.g, r.g < 10 ? 3 : 1)} km</td>
+          <td class="num">{p(r.h)}</td>
+          <td class="num">{p(r.l)}</td>
+          <td class="num">{p(r.e)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

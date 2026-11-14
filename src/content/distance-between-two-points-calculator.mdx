@@ -1,0 +1,211 @@
+---
+slug: /distance-between-two-points-calculator/
+title: 'Distance Between Two Points Calculator'
+seo_title: 'Distance Between Two Points Calculator: GPS Coordinates & Formula'
+description: 'Find the distance between two points from GPS coordinates (decimal or DMS) or x, y values. Shows haversine and WGS 84 results, the worked formula and batch CSV export.'
+lede: 'Enter two latitude and longitude coordinates, or two points on a graph, to get the exact distance between them with the formula worked through. Paste a list to measure hundreds of pairs at once.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import FormulaCompareTable from '../components/figures/FormulaCompareTable.astro';
+import DegreeLengthTable from '../components/figures/DegreeLengthTable.astro';
+import DistanceFormulaFigure from '../components/figures/DistanceFormulaFigure.astro';
+import Callout from '../components/Callout.astro';
+
+The distance between two points depends on what the points are. For places on Earth given as latitude and longitude, it is the length of the shortest path over the planet's curved surface. For points on a flat graph given as x and y, it is the straight line between them, found with the distance formula.
+
+The calculator handles both. It opens with the coordinates of New York and London, 5,585 km apart on the WGS 84 ellipsoid. The **x, y coordinates** tab works out graph distances step by step, and the **Many pairs** tab measures a whole list at once.
+
+## How to use the calculator
+
+**For GPS coordinates:**
+
+<div class="steps">
+
+1. Keep the **Latitude & longitude** tab selected.
+2. Paste or type the first point in the **Point A** box. Decimal degrees (`40.7128, -74.0060`), degrees and decimal minutes (`N 40 42.767 W 74 0.36`) and degrees-minutes-seconds (`40°42′46″N 74°00′22″W`) all work.
+3. Enter the second point in the **Point B** box. Under each box the calculator shows how it read your input, in degrees, minutes and seconds, so you can check it.
+4. Read the distance and switch units between kilometers, miles, nautical miles, meters and feet. The table underneath gives the same distance by four other formulas, with the difference from the most accurate result.
+5. Select **Show the haversine working** to see every step of the calculation with your numbers.
+
+</div>
+
+**For points on a graph:** choose the **x, y coordinates** tab, enter x and y for both points, and read the distance with each step of the distance formula, the exact answer in simplest radical form, the midpoint and the slope. Tick **Add a z coordinate** for points in three dimensions.
+
+**For a list of points:** choose **Many pairs**, paste one pair per line as `lat1, lon1, lat2, lon2`, and press **Download CSV** to save the results.
+
+<Callout title="Picking points on the map">
+Press the pin button beside either box, then click the map, to drop a point exactly where you want it. The coordinates fill in to six decimal places, which is about 10 centimeters.
+</Callout>
+
+## Distance between two GPS coordinates
+
+Latitude and longitude are angles, not distances. Latitude measures how far north or south of the equator a point is, from −90° to +90°. Longitude measures how far east or west of the Greenwich meridian it is, from −180° to +180°. To turn two pairs of angles into a distance, a formula has to allow for the shape of the Earth.
+
+The calculator's main answer uses **Vincenty's formula on the WGS 84 ellipsoid**, the same model of the Earth that GPS uses. The Earth is slightly flattened, about 21 km shorter from pole to pole than across the equator, and the ellipsoid allows for that. This is the figure surveyors and mapping software treat as the reference.
+
+### Coordinate formats the calculator accepts
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Coordinate formats</p>
+  <table>
+    <caption class="visually-hidden">Coordinate formats</caption>
+    <thead><tr><th scope="col">Format</th><th scope="col">Example</th><th scope="col">Where you see it</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Decimal degrees</th><td>40.7128, -74.0060</td><td>Google Maps, GIS software, spreadsheets, APIs</td></tr>
+      <tr><th scope="row">Decimal degrees with letters</th><td>40.7128 N, 74.0060 W</td><td>Travel guides, some GPS units</td></tr>
+      <tr><th scope="row">Degrees and decimal minutes</th><td>N 40° 42.767′, W 74° 0.360′</td><td>Geocaching, marine and aviation GPS</td></tr>
+      <tr><th scope="row">Degrees, minutes, seconds</th><td>40° 42′ 46″ N, 74° 0′ 22″ W</td><td>Topographic maps, surveys, Wikipedia</td></tr>
+    </tbody>
+  </table>
+</div>
+
+South latitudes and west longitudes are negative in decimal form. If you type letters, the calculator applies the sign for you, and it will even read a pair written longitude first as long as the letters make it clear.
+
+## Which distance formula should you use?
+
+Several formulas turn coordinates into distance. They trade accuracy for simplicity. The table measures the same pairs of points with each one and shows how far it lands from the ellipsoid result.
+
+<FormulaCompareTable />
+
+- **Vincenty on the WGS 84 ellipsoid** is accurate to well under a millimeter for almost any pair of points. Use it whenever accuracy matters.
+- **Haversine** treats the Earth as a perfect sphere with a radius of 6,371 km. It is simple, fast and within about 0.5% of the ellipsoid result anywhere, which is good enough for most apps and websites.
+- **The spherical law of cosines** gives the same answer as haversine for most points, but it can lose precision with very close points in some programming environments, which is why haversine became the usual choice.
+- **The flat approximation** treats a small patch of the Earth as flat. It is fine across a city, off by a few tenths of a percent across a region, and wrong across an ocean: New York to London comes out 4% too long.
+
+## The haversine formula
+
+For two points with latitudes φ1, φ2 and longitudes λ1, λ2, all in radians, and the Earth's mean radius R of 6,371 km:
+
+<div class="formula">
+
+a = sin²(Δφ / 2) + cos φ1 · cos φ2 · sin²(Δλ / 2)
+
+c = 2 · asin(√a)
+
+d = R · c
+
+</div>
+
+Δφ is the difference in latitude and Δλ the difference in longitude. The angle c is the distance in radians as seen from the center of the Earth; multiplying by the radius turns it into kilometers.
+
+**Worked example: New York (40.7128, −74.0060) to London (51.5074, −0.1278)**
+
+1. Convert to radians: φ1 = 0.710572, φ2 = 0.898974, Δφ = 0.188401, Δλ = 1.289418.
+2. a = sin²(0.094201) + cos(0.710572) × cos(0.898974) × sin²(0.644709) = 0.179236.
+3. c = 2 × asin(√0.179236) = 0.874309 radians.
+4. d = 6,371 km × 0.874309 = **5,570 km**.
+
+The ellipsoid gives 5,585 km for the same points, 0.27% more. Open the calculator's working panel to see these steps for any pair of coordinates.
+
+## How long is a degree of latitude and longitude?
+
+A degree of latitude is always about 111 km, because lines of latitude are evenly spaced. A degree of longitude shrinks toward the poles, because lines of longitude meet there.
+
+<DegreeLengthTable />
+
+This is why two points that are one degree apart in longitude can be 111 km apart at the equator and less than 20 km apart near the Arctic. It is also why you cannot measure distance by treating latitude and longitude as x and y on a graph, except over very short distances.
+
+### How many decimal places do you need?
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Decimal places and precision</p>
+  <table>
+    <caption class="visually-hidden">Decimal places and precision</caption>
+    <thead><tr><th scope="col">Decimal places</th><th scope="col">Example</th><th scope="col" class="num">Precision at the equator</th><th scope="col">Good enough for</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1</th><td>40.7</td><td class="num">about 11 km</td><td>A city or region</td></tr>
+      <tr><th scope="row">2</th><td>40.71</td><td class="num">about 1.1 km</td><td>A town or neighborhood</td></tr>
+      <tr><th scope="row">3</th><td>40.713</td><td class="num">about 110 m</td><td>A large field or a block</td></tr>
+      <tr><th scope="row">4</th><td>40.7128</td><td class="num">about 11 m</td><td>A building or a land parcel</td></tr>
+      <tr><th scope="row">5</th><td>40.71278</td><td class="num">about 1.1 m</td><td>A tree or a doorway</td></tr>
+      <tr><th scope="row">6</th><td>40.712776</td><td class="num">about 11 cm</td><td>Survey work, the limit of most GPS receivers</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A phone's GPS is usually accurate to a few meters outdoors, so more than five or six decimal places adds digits without adding accuracy.
+
+## Distance between two points on a graph
+
+On a flat plane, the distance between two points (x₁, y₁) and (x₂, y₂) comes straight from Pythagoras' theorem.
+
+<DistanceFormulaFigure />
+
+<div class="formula">
+
+d = √( (x₂ − x₁)² + (y₂ − y₁)² )
+
+</div>
+
+**Worked example with negative numbers: (−3, 4) and (5, −2)**
+
+1. Δx = 5 − (−3) = 8, and Δy = −2 − 4 = −6.
+2. Square them: 8² = 64 and (−6)² = 36. Squaring removes the minus sign, so the order of the points does not matter.
+3. Add: 64 + 36 = 100.
+4. Take the square root: d = √100 = **10**.
+
+When the sum under the root is not a perfect square, the calculator also gives the exact answer in simplest radical form, the form most math classes ask for. For (2, 3) and (8, 6) the sum is 45, which is 9 × 5, so d = √45 = 3√5 ≈ 6.708.
+
+### In three dimensions
+
+For points with a z coordinate, add the third difference under the root:
+
+<div class="formula">
+
+d = √( (x₂ − x₁)² + (y₂ − y₁)² + (z₂ − z₁)² )
+
+</div>
+
+From (1, 2, 3) to (4, 6, 15), the differences are 3, 4 and 12, the squares add to 9 + 16 + 144 = 169, and d = 13.
+
+The **x, y coordinates** tab also gives the midpoint, the slope and angle of the line between the points, and the Manhattan distance: the distance when you can only move along the grid, |Δx| + |Δy|.
+
+## Calculating distance in Excel, Google Sheets and code
+
+To measure many pairs in a spreadsheet, put the coordinates in columns A to D (lat1, lon1, lat2, lon2) and use this haversine formula. It returns kilometers; replace 6371 with 3958.8 for miles.
+
+<div class="formula formula-code">
+
+=2\*6371\*ASIN(SQRT(SIN(RADIANS(C2-A2)/2)^2+COS(RADIANS(A2))\*COS(RADIANS(C2))\*SIN(RADIANS(D2-B2)/2)^2))
+
+</div>
+
+The same formula in JavaScript:
+
+```js
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const r = (d) => (d * Math.PI) / 180;
+  const a = Math.sin(r(lat2 - lat1) / 2) ** 2 +
+    Math.cos(r(lat1)) * Math.cos(r(lat2)) * Math.sin(r(lon2 - lon1) / 2) ** 2;
+  return 2 * 6371.0088 * Math.asin(Math.sqrt(a));
+}
+```
+
+And in Python:
+
+```python
+from math import radians, sin, cos, asin, sqrt
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    dlat, dlon = radians(lat2 - lat1), radians(lon2 - lon1)
+    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+    return 2 * 6371.0088 * asin(sqrt(a))
+```
+
+Use the **Many pairs** tab to check your spreadsheet or code against both the haversine and the ellipsoid result.
+
+## Measuring many pairs at once
+
+The **Many pairs** tab takes up to 500 lines. Each line needs four numbers in the order lat1, lon1, lat2, lon2, separated by commas, spaces or tabs, so you can paste straight from a spreadsheet. A header row is skipped automatically, and any line the calculator cannot read is flagged with the reason.
+
+The results table gives the ellipsoid distance, the haversine distance and the initial bearing for each pair. **Download CSV** saves them in your chosen unit. Everything runs in your browser; nothing you paste is uploaded.
+
+## Accuracy and limits
+
+- **The answer is only as good as the coordinates.** Phone GPS is usually good to a few meters outdoors, and an address looked up on a map may sit at the middle of a street or a building rather than its door.
+- **Distances ignore height.** Two points on a mountainside are farther apart than the map distance, though the difference is small unless the slope is steep.
+- **This is the straight line, not a route.** For driving, walking or cycling distance, use the [address distance calculator](/distance-between-two-addresses/).
+- **Nearly opposite points are a special case.** For two points almost exactly on opposite sides of the Earth, Vincenty's method can fail to settle on an answer. The calculator then falls back to the spherical result.
+
+To see the direction from one point to the other in more detail, use the [bearing calculator](/bearing-calculator/). To find the point halfway between them, use the [halfway point calculator](/halfway-point-calculator/).

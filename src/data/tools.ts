@@ -28,6 +28,7 @@ export const TOOLS: Tool[] = [
   { href: '/air-miles-calculator/', name: 'Air miles calculator', blurb: 'Flight distance between airports and cities.', icon: 'globe', live: true },
   { href: '/halfway-point-calculator/', name: 'Halfway point', blurb: 'Find the middle between two or more places.', icon: 'pin', live: true },
   { href: '/bearing-calculator/', name: 'Bearing calculator', blurb: 'Compass direction and azimuth between two points.', icon: 'compass', live: true },
+  { href: '/distance-between-two-points-calculator/', name: 'Distance between two points', blurb: 'GPS coordinates or x, y points, with the formula.', icon: 'measure', live: true },
 ];
 
 export const liveTools = () => TOOLS.filter((t) => t.live);

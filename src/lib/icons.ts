@@ -18,6 +18,14 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-use-the-calculator': 'measure',
+  'distance-between-two-gps-coordinates': 'pin',
+  'which-distance-formula-should-you-use': 'table',
+  'the-haversine-formula': 'formula',
+  'how-long-is-a-degree-of-latitude-and-longitude': 'globe',
+  'distance-between-two-points-on-a-graph': 'ruler',
+  'calculating-distance-in-excel-google-sheets-and-code': 'formula',
+  'measuring-many-pairs-at-once': 'table',
   'how-to-use-the-bearing-calculator': 'measure',
   'how-a-bearing-is-measured': 'compass',
   'initial-bearing-final-bearing-and-the-rhumb-line': 'globe',

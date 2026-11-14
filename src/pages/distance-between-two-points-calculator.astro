@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import TwoPointsTool from '../components/calculator/TwoPointsTool';
+import Article, { frontmatter as fm } from '../content/distance-between-two-points-calculator.mdx';
+import { pointsFaqs } from '../content/points-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Distance between two points', href: fm.slug },
+];
+const toc = [
+  ['how-to-use-the-calculator', 'How to use the calculator'],
+  ['distance-between-two-gps-coordinates', 'Distance between GPS coordinates'],
+  ['which-distance-formula-should-you-use', 'Which formula to use'],
+  ['the-haversine-formula', 'The haversine formula'],
+  ['how-long-is-a-degree-of-latitude-and-longitude', 'Length of a degree'],
+  ['distance-between-two-points-on-a-graph', 'Distance between points on a graph'],
+  ['calculating-distance-in-excel-google-sheets-and-code', 'In Excel, Sheets and code'],
+  ['measuring-many-pairs-at-once', 'Many pairs at once'],
+  ['accuracy-and-limits', 'Accuracy and limits'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Distance Between Two Points Calculator',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Distance between two latitude and longitude coordinates',
+    'Decimal degrees, degrees-minutes and DMS input',
+    'WGS 84 ellipsoid, haversine, law of cosines and flat results compared',
+    'Step-by-step haversine working',
+    'Distance formula for x, y and x, y, z points with exact radical form',
+    'Batch distances for up to 500 pairs with CSV download',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={pointsFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <TwoPointsTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {pointsFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Street map from OpenStreetMap via OpenFreeMap.</p>
+  </div>
+</Base>

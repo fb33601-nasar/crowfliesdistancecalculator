@@ -1,0 +1,36 @@
+---
+// Length of one degree of latitude and longitude on the WGS 84 ellipsoid.
+import { formatNumber } from '../../lib/geo';
+const a = 6378137, f = 1 / 298.257223563, e2 = f * (2 - f);
+const rows = [0, 15, 30, 40, 45, 50, 60, 70, 80].map((lat) => {
+  const p = (lat * Math.PI) / 180;
+  const w = Math.sqrt(1 - e2 * Math.sin(p) ** 2);
+  const lon = ((Math.PI / 180) * a * Math.cos(p)) / w;
+  const latLen = ((Math.PI / 180) * a * (1 - e2)) / w ** 3;
+  return { lat, lon, latLen };
+});
+const max = rows[0].lon;
+---
+<div class="table-scroll dlt">
+  <p class="table-title" aria-hidden="true">Length of one degree by latitude</p>
+  <table>
+    <caption class="visually-hidden">Length of one degree by latitude</caption>
+    <thead><tr><th scope="col">Latitude</th><th scope="col" class="num">1° of latitude</th><th scope="col" class="num">1° of longitude</th><th scope="col" class="num">1° of longitude (miles)</th><th scope="col">Longitude degree, relative</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.lat}°</th>
+          <td class="num">{formatNumber(r.latLen / 1000, 2)} km</td>
+          <td class="num">{formatNumber(r.lon / 1000, 2)} km</td>
+          <td class="num">{formatNumber(r.lon / 1609.344, 1)} mi</td>
+          <td><span class="bar"><span style={`width:${((r.lon / max) * 100).toFixed(1)}%`}></span></span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .dlt td:last-child { min-width: 9rem; }
+  .bar { display: block; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+</style>

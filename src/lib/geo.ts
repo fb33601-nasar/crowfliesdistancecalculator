@@ -379,3 +379,61 @@ export function quadrantBearing(bearing: number): string {
   const [d, m] = toDMS(angle).split(' ');
   return `${ns} ${d} ${m} ${ew}`;
 }
+
+function parseComponent(part: string): { value: number; hemi: string | null } | null {
+  const hemi = part.match(/[NSEW]/i)?.[0].toUpperCase() ?? null;
+  const nums = part.match(/-?\d+(?:\.\d+)?/g);
+  if (!nums || nums.length > 3) return null;
+  const [d, m = '0', s = '0'] = nums;
+  const deg = Number(d);
+  if (Number(m) >= 60 || Number(s) >= 60) return null;
+  let value = Math.abs(deg) + Number(m) / 60 + Number(s) / 3600;
+  if (deg < 0 || d.startsWith('-') || hemi === 'S' || hemi === 'W') value = -value;
+  return { value, hemi };
+}
+
+/**
+ * Reads coordinates in decimal degrees, degrees and decimal minutes or degrees-minutes-seconds:
+ * "40.7128, -74.006", "40°42′46″N 74°00′22″W", "N 40 42.767 W 74 0.36", "40 42 46 N, 74 0 22 W".
+ */
+export function parseAnyCoordinates(input: string): LatLon | null {
+  const simple = parseCoordinates(input);
+  if (simple) return simple;
+  const s = input.trim().replace(/[′’‘`´]/g, "'").replace(/[″”“]/g, '"').replace(/º/g, '°');
+  let parts: string[] | null = null;
+  if (/[,;]/.test(s)) parts = s.split(/[,;]/).map((x) => x.trim()).filter(Boolean);
+  else {
+    const prefixed = s.match(/^([NS][^EW]+)([EW].+)$/i);
+    const suffixed = s.match(/^([^NS]+[NS])\s*(.+)$/i);
+    if (prefixed) parts = [prefixed[1], prefixed[2]];
+    else if (suffixed) parts = [suffixed[1], suffixed[2]];
+    else {
+      const nums = s.match(/-?\d+(?:\.\d+)?/g) ?? [];
+      if (nums.length === 4) parts = [nums.slice(0, 2).join(' '), nums.slice(2).join(' ')];
+      else if (nums.length === 6) parts = [nums.slice(0, 3).join(' '), nums.slice(3).join(' ')];
+    }
+  }
+  if (!parts || parts.length !== 2) return null;
+  const a = parseComponent(parts[0]);
+  const b = parseComponent(parts[1]);
+  if (!a || !b) return null;
+  // Allow longitude first only when the hemisphere letters say so.
+  let lat = a.value;
+  let lon = b.value;
+  if ((a.hemi === 'E' || a.hemi === 'W') && (b.hemi === 'N' || b.hemi === 'S')) [lat, lon] = [b.value, a.value];
+  if (Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
+  return { lat, lon };
+}
+
+/** Distance by the spherical law of cosines, for comparison with haversine. */
+export function lawOfCosines(a: LatLon, b: LatLon): number {
+  const c = Math.sin(rad(a.lat)) * Math.sin(rad(b.lat)) + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.cos(rad(b.lon - a.lon));
+  return MEAN_EARTH_RADIUS_M * Math.acos(Math.max(-1, Math.min(1, c)));
+}
+
+/** Flat-earth (equirectangular) approximation, good only for short distances. */
+export function equirectangular(a: LatLon, b: LatLon): number {
+  const x = rad(b.lon - a.lon) * Math.cos(rad((a.lat + b.lat) / 2));
+  const y = rad(b.lat - a.lat);
+  return MEAN_EARTH_RADIUS_M * Math.hypot(x, y);
+}
