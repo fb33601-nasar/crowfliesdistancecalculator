@@ -1,0 +1,104 @@
+---
+slug: /drive-time-map/
+title: 'Drive Time Map: See How Far You Can Drive in Any Time'
+seo_title: 'Drive Time Map: Free Travel Time Radius & Isochrone Calculator'
+description: 'Map how far you can drive, cycle or walk in 10, 30 or 60 minutes from any address. Free drive time map with real road-based travel time areas, area sizes and towns inside.'
+lede: 'Choose a starting point and up to four travel times to see the area you can reach by car, bike or on foot. The shapes follow the real road network, so they stretch along highways and shrink around rivers, hills and city streets.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import Callout from '../components/Callout.astro';
+
+A drive time map shows every place you can reach from a starting point within a set time. Unlike a radius, which draws a perfect circle, it follows the roads: the area reaches far along fast highways and stops short where the roads are slow or there are none. The map above opens on downtown Chicago with 15, 30, 45 and 60-minute drive times.
+
+Mapmakers call these shapes **isochrones**, from the Greek for "equal time". Every point on the edge of a shape takes the same time to reach.
+
+## How to make a drive time map
+
+<div class="steps">
+
+1. Enter a starting point in **Start from**: an address, a city, a ZIP code or coordinates. You can also choose **Use my location**, or pick a point on the map.
+2. Choose **Driving**, **Cycling** or **Walking**.
+3. Pick up to four travel times. The defaults are 15, 30, 45 and 60 minutes for driving and cycling and 10, 20 and 30 minutes for walking.
+4. Read the result. The large figure is the area you can reach in the longest time. The table gives the area, the farthest straight line reach and the number of towns inside each time band.
+5. See the largest towns within reach, each with the shortest time band that includes it.
+6. Drag the center point to compare another start, and press **Copy link** to share the map.
+
+</div>
+
+<Callout title="Darker means sooner">
+The darkest shading is reachable in the shortest time, the palest in the longest. Each band includes all the bands inside it.
+</Callout>
+
+## Drive time map vs radius map
+
+A radius map asks "what is within 20 miles?". A drive time map asks "what can I reach in 30 minutes?". The second question is usually the one that matters for a commute, a delivery or a day out, and its answer is never a circle.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Radius vs drive time</p>
+  <table>
+    <caption class="visually-hidden">Radius vs drive time</caption>
+    <thead><tr><th scope="col">&nbsp;</th><th scope="col">Radius map</th><th scope="col">Drive time map</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Measures</th><td>Straight line distance</td><td>Travel time along roads or paths</td></tr>
+      <tr><th scope="row">Shape</th><td>A circle</td><td>An irregular shape with arms along fast roads</td></tr>
+      <tr><th scope="row">Crosses water and mountains</th><td>Yes</td><td>Only where a road, bridge or path does</td></tr>
+      <tr><th scope="row">Changes with how you travel</th><td>No</td><td>Yes: driving, cycling and walking differ</td></tr>
+      <tr><th scope="row">Best for</th><td>Rules and limits set in miles</td><td>Commutes, service areas, site choice</td></tr>
+    </tbody>
+  </table>
+</div>
+
+For a straight line distance, use the [radius map tool](/radius-map/) or the [mile radius from current location](/mile-radius-from-current-location/) tool.
+
+## How far can you drive in 15, 30 or 60 minutes?
+
+The honest answer is "it depends where you start". From a highway junction on the edge of town, a 30-minute drive might reach 30 miles along the interstate. From a downtown street at rush hour, it might reach eight. The table gives typical road distances at average speeds, before you map your own start.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Typical distance covered by drive time</p>
+  <table>
+    <caption class="visually-hidden">Typical distance covered by drive time</caption>
+    <thead><tr><th scope="col">Drive time</th><th scope="col" class="num">City streets, 20 mph</th><th scope="col" class="num">Mixed roads, 35 mph</th><th scope="col" class="num">Highway, 60 mph</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">10 minutes</th><td class="num">3.3 mi</td><td class="num">5.8 mi</td><td class="num">10 mi</td></tr>
+      <tr><th scope="row">15 minutes</th><td class="num">5 mi</td><td class="num">8.8 mi</td><td class="num">15 mi</td></tr>
+      <tr><th scope="row">30 minutes</th><td class="num">10 mi</td><td class="num">17.5 mi</td><td class="num">30 mi</td></tr>
+      <tr><th scope="row">45 minutes</th><td class="num">15 mi</td><td class="num">26 mi</td><td class="num">45 mi</td></tr>
+      <tr><th scope="row">1 hour</th><td class="num">20 mi</td><td class="num">35 mi</td><td class="num">60 mi</td></tr>
+      <tr><th scope="row">2 hours</th><td class="num">40 mi</td><td class="num">70 mi</td><td class="num">120 mi</td></tr>
+    </tbody>
+  </table>
+</div>
+
+These are road miles. Because roads wind, the straight line reach is shorter: in our sample of 18 city pairs the road was a median 1.19 times longer than the straight line. A drive time area also has gaps between its arms, so it covers far less ground than a circle with the same farthest reach. The calculator shows both the area and the farthest point for every band.
+
+## What people use drive time maps for
+
+- **Choosing where to live.** Map a 30 or 45-minute drive from a workplace, or from two workplaces, to see which neighborhoods work for a commute.
+- **Choosing a business site.** Compare the 10 and 20-minute drive areas around possible store, clinic or warehouse locations, and count the towns inside each.
+- **Setting service and delivery areas.** A delivery promise of "within 30 minutes" fits a drive time area much better than a radius.
+- **Planning field work.** See which customers or jobs a technician can reach in an hour, or how far a sales territory extends in a half-day trip.
+- **Planning days out.** Find towns, parks and attractions within a two-hour drive for a day trip.
+- **Walking and cycling access.** Switch to walking to see a 10 or 15-minute walk around a station or a school, or to cycling for a bike commute.
+
+## How the drive time areas are worked out
+
+The calculator sends your start and chosen times to a public instance of Valhalla, an open-source routing engine, running on OpenStreetMap data at the FOSSGIS server. Valhalla spreads out along the road network from your start, adding up the expected time on each stretch of road from its type, speed limit and turns, until it reaches each time limit. The edge of each shape joins the points where the time runs out.
+
+Then the calculator does the rest in your browser:
+
+- **Area** is measured on a sphere, with any holes inside the shape subtracted.
+- **Farthest reach** is the straight line distance from the start to the farthest point on the edge.
+- **Towns inside** come from a list of about 24,600 towns: every town of 5,000 people or more in the US, the UK, Canada and Australia, and every city of 25,000 or more elsewhere.
+
+If the routing service is busy or cannot be reached, the calculator shows estimated circles at typical average speeds instead and says so. Try again a minute later for the road-based shapes.
+
+## Limits of a drive time map
+
+- **No live traffic.** Times use typical speeds for each kind of road, not today's congestion. Rush hour can shrink a city drive time area dramatically.
+- **No waiting at lights or stops.** Short urban trips may take longer than the map suggests.
+- **Ferries and private roads.** Some ferries are included and some private or restricted roads are not, depending on the OpenStreetMap data.
+- **Up to two hours.** The public routing service limits each request to four bands and two hours of travel.
+
+For the travel time between two specific places, use the [distance between two addresses](/distance-between-two-addresses/) calculator, which gives driving, cycling and walking times for the actual route.

@@ -12,7 +12,8 @@ interface Props {
   placeholder: string;
   value: Place | null;
   onChange: (place: Place | null) => void;
-  onPickOnMap: () => void;
+  /** leave out to hide the pick-on-map option */
+  onPickOnMap?: () => void;
 }
 
 type Row =
@@ -87,7 +88,7 @@ export default function PlaceInput({ letter, pickLabel, label, placeholder, valu
   const rows: Row[] = [
     ...places.map((s): Row => ({ kind: 'place', s })),
     { kind: 'locate' },
-    { kind: 'map' },
+    ...(onPickOnMap ? [{ kind: 'map' } as Row] : []),
   ];
 
   function choose(row: Row) {
@@ -98,7 +99,7 @@ export default function PlaceInput({ letter, pickLabel, label, placeholder, valu
       return;
     }
     if (row.kind === 'map') {
-      onPickOnMap();
+      onPickOnMap?.();
       return;
     }
     if (!('geolocation' in navigator)) {

@@ -1,0 +1,98 @@
+---
+slug: /elevation-finder/
+title: 'Elevation Finder: Height Above Sea Level by Address'
+seo_title: 'Elevation Finder: Find Height Above Sea Level by Address or Map'
+description: 'Find the elevation of any address, place or point on the map in feet and meters above sea level. Draw an elevation profile between two points with total climb and grade.'
+lede: 'Type an address or click the map to see its height above sea level in feet and meters. Switch to an elevation profile to see the ups and downs between two points, with the highest point, total climb and average grade.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import Callout from '../components/Callout.astro';
+
+Elevation is the height of the ground at a place above mean sea level. The elevation finder above opens on Denver, the Mile High City, whose official one-mile marker on the Colorado State Capitol steps sits at 5,280 feet.
+
+## How to find the elevation of an address
+
+<div class="steps">
+
+1. Keep **Elevation of a place** selected.
+2. Type an address, a city, a ZIP code or a pair of coordinates in the **Place** box and choose the right match. To use where you are now, choose **Use my location**.
+3. Read the elevation in feet or meters above sea level, with the coordinates and the nearest town.
+4. To check another spot, pick it on the map or drag the pin. The elevation updates for the exact point.
+
+</div>
+
+<Callout title="Exact spot, not the town">
+A town or ZIP code search lands on a single point near its center. In hilly places, the elevation a few streets away can be hundreds of feet different, so search for the street address or drag the pin to the exact spot you care about.
+</Callout>
+
+## How to draw an elevation profile
+
+An elevation profile shows how the height of the ground changes along a line, like a slice through the landscape.
+
+<div class="steps">
+
+1. Choose **Elevation profile**.
+2. Enter a start (A) and an end (B), or pick them on the map.
+3. Read the height range, the elevation at each end, the total climb, the total descent and the average grade from A to B.
+4. Point at the chart to read the elevation and distance at any point along the line.
+
+</div>
+
+The profile follows the straight line between the two points, sampled at 120 evenly spaced points. It shows the shape of the land, such as the climb from Denver to the top of Pikes Peak, rather than the road you would drive.
+
+## Elevations of notable places
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Elevations around the world</p>
+  <table>
+    <caption class="visually-hidden">Elevations around the world</caption>
+    <thead><tr><th scope="col">Place</th><th scope="col" class="num">Feet</th><th scope="col" class="num">Meters</th><th scope="col">Note</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Mount Everest, Nepal and China</th><td class="num">29,032</td><td class="num">8,849</td><td>Highest point on Earth</td></tr>
+      <tr><th scope="row">Denali, Alaska</th><td class="num">20,310</td><td class="num">6,190</td><td>Highest point in North America</td></tr>
+      <tr><th scope="row">Mount Whitney, California</th><td class="num">14,505</td><td class="num">4,421</td><td>Highest point in the contiguous US</td></tr>
+      <tr><th scope="row">Leadville, Colorado</th><td class="num">10,152</td><td class="num">3,094</td><td>Highest incorporated city in the US</td></tr>
+      <tr><th scope="row">Mexico City, Mexico</th><td class="num">about 7,350</td><td class="num">about 2,240</td><td>One of the highest large cities</td></tr>
+      <tr><th scope="row">Denver, Colorado</th><td class="num">5,280</td><td class="num">1,609</td><td>The Mile High City</td></tr>
+      <tr><th scope="row">New Orleans, Louisiana</th><td class="num">varies, partly below 0</td><td class="num">varies</td><td>Much of the city lies below sea level</td></tr>
+      <tr><th scope="row">Badwater Basin, Death Valley</th><td class="num">−282</td><td class="num">−86</td><td>Lowest point in North America</td></tr>
+      <tr><th scope="row">Dead Sea shore</th><td class="num">about −1,410</td><td class="num">about −430</td><td>Lowest land on Earth, and still falling</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Click **Compare** in the calculator to jump to some of these places and check them yourself.
+
+## Why elevation matters
+
+- **Flood risk.** Land a few feet above a river, a lake or the sea is far more exposed to flooding than land 50 feet higher. Elevation is one of the first things to check when looking at a property, alongside official flood maps.
+- **Weather.** Air cools by roughly 3.5°F for every 1,000 feet of height (about 6.5°C per 1,000 m) in the standard atmosphere, which is why mountain towns are cooler and snowier.
+- **Cooking.** Water boils at a lower temperature higher up, roughly 1°F lower for every 500 feet, so pasta and boiled eggs take longer in Denver than in Miami, and some baking recipes need adjusting.
+- **Exercise and health.** Air pressure, and so the oxygen in each breath, falls with height. Above about 8,000 feet some people feel the effects of altitude.
+- **Hiking and cycling.** The total climb along a route matters as much as its length. A profile shows where the hard work is.
+- **Building and gardening.** Drainage, the slope of a lot and which plants will thrive all depend on the lie of the land.
+
+## Where the elevation data comes from
+
+The finder reads elevations from the open Terrain Tiles dataset, which combines public elevation models into one worldwide grid:
+
+- **USGS 3DEP** for the United States, with points about 10 meters apart in most areas and finer in many places.
+- **SRTM**, the Shuttle Radar Topography Mission, for most land between 60° north and 56° south, at about 30 meters.
+- **Other national and global models**, including GMTED and ETOPO1, to fill the gaps and cover the oceans.
+
+The calculator takes the four nearest grid values around your point and blends them for a smooth result.
+
+### How accurate is it?
+
+On open, gently sloping ground the elevation is usually within a few feet of a surveyed height. Accuracy drops where the ground is steep, because the true height can change a lot between grid points, and where buildings or dense forest affected the original measurements. The data describes the bare ground, so it does not include the height of buildings, bridges or trees.
+
+<Callout title="Why your phone shows a different number" kind="note">
+GPS works out height above a smooth mathematical model of the Earth, the ellipsoid, not above sea level. Phones convert that using a model of sea level called the geoid, and the result can wander by tens of feet. The elevation here is measured from the ground models above, which is usually steadier than a phone's GPS height.
+</Callout>
+
+## Feet and meters
+
+One meter is 3.28084 feet, and one foot is exactly 0.3048 meters. To turn meters into feet in your head, multiply by three and add 10%: 1,000 m is about 3,300 ft. Switch between **ft** and **m** in the calculator to see both.
+
+To measure how far apart two places are, rather than how high, use the [crow flies distance calculator](/) or the [distance between two points calculator](/distance-between-two-points-calculator/).

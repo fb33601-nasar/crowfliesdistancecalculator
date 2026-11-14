@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "data": "node scripts/build-data.mjs && node scripts/build-towns.mjs",
+    "data": "node scripts/build-data.mjs && node scripts/build-towns.mjs && node scripts/build-zips.mjs",
     "icons": "node scripts/build-icons.mjs",
     "build": "astro build",
     "preview": "astro preview",
@@ -36,6 +36,7 @@
     "typescript": "^6.0.3",
     "tz-lookup": "^6.1.25",
     "world-atlas": "^2.0.2",
-    "wrangler": "^4.161.0"
+    "wrangler": "^4.161.0",
+    "zipcodes-us": "^1.2.0"
   }
 }

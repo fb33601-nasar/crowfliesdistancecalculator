@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import ZipRadiusTool from '../components/calculator/ZipRadiusTool';
+import Article, { frontmatter as fm } from '../content/zip-code-radius.mdx';
+import { zipFaqs } from '../content/zip-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'ZIP code radius', href: fm.slug },
+];
+const toc = [
+  ['how-to-find-zip-codes-within-a-radius', 'How to find ZIP codes within a radius'],
+  ['how-many-zip-codes-fall-within-a-radius', 'How many ZIP codes fall within a radius'],
+  ['what-people-use-a-zip-code-radius-for', 'Common uses'],
+  ['how-zip-codes-work', 'How ZIP codes work'],
+  ['how-the-radius-search-works', 'How the search works'],
+  ['related-tools', 'Related tools'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'ZIP Code Radius Map',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Find every US ZIP code within a radius of a ZIP or an address',
+    'Distances, place names, counties and states',
+    'Copy the ZIP list or download a CSV',
+    'Check whether a ZIP code is inside the radius',
+    'Map with draggable center and radius',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={zipFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <ZipRadiusTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {zipFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. ZIP code data © <a href="https://www.geonames.org/" rel="noopener">GeoNames</a>, CC BY 4.0.</p>
+  </div>
+</Base>

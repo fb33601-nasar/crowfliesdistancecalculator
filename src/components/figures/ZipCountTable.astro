@@ -1,0 +1,40 @@
+---
+// ZIP codes within 10, 25 and 50 miles of downtown ZIPs, counted from the GeoNames list at build time.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { haversine, formatNumber } from '../../lib/geo';
+type Row = [string, string, string, string, number, number];
+const zips: Row[] = JSON.parse(readFileSync(join(process.cwd(), 'public/data/zips.json'), 'utf8'));
+const by = new Map(zips.map((z) => [z[0], z]));
+const centers = ['10001', '60601', '90012', '77002', '85004', '30303', '80202', '98101', '33131', '59601'];
+const radii = [10, 25, 50];
+const rows = centers.map((c) => {
+  const z = by.get(c)!;
+  const near = zips.filter((x) => Math.abs(x[4] - z[4]) < 0.9).map((x) => haversine({ lat: z[4], lon: z[5] }, { lat: x[4], lon: x[5] }));
+  return { zip: c, name: `${z[1]}, ${z[2]}`, counts: radii.map((r) => near.filter((d) => d <= r * 1609.344).length) };
+});
+const max = Math.max(...rows.map((r) => r.counts[2]));
+---
+<div class="table-scroll zct">
+  <p class="table-title" aria-hidden="true">ZIP codes within a radius of city centers</p>
+  <table>
+    <caption class="visually-hidden">ZIP codes within a radius of city centers</caption>
+    <thead><tr><th scope="col">Center ZIP</th>{radii.map((r) => <th scope="col" class="num">{r} miles</th>)}<th scope="col">Within 50 miles</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row"><a href={`/zip-code-radius/?zip=${r.zip}&r=25`}>{r.zip}</a> <span class="muted">{r.name}</span></th>
+          {r.counts.map((c) => <td class="num">{formatNumber(c, 0)}</td>)}
+          <td><span class="bar"><span style={`width:${Math.max((r.counts[2] / max) * 100, 1).toFixed(1)}%`}></span></span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">{`Counted from ${formatNumber(zips.length, 0)} US ZIP codes in the GeoNames postal code list, by the distance between ZIP code center points.`}</p>
+<style>
+  .zct td:last-child { min-width: 9rem; }
+  .zct th .muted { display: block; font-weight: 500; }
+  .bar { display: block; height: 0.7rem; background: color-mix(in srgb, var(--sea) 45%, #fff); border-radius: 4px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--course); border-radius: 0 4px 4px 0; }
+</style>

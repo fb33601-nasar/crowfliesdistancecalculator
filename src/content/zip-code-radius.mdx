@@ -1,0 +1,106 @@
+---
+slug: /zip-code-radius/
+title: 'Zip Code Radius Map: Find Zip Codes Within a Radius'
+seo_title: 'Zip Code Radius Map: Find All Zip Codes Within X Miles'
+description: 'Find every ZIP code within a radius of a ZIP or address. Free ZIP code radius map with distances, place names, counties, CSV download and an inside-or-outside check.'
+lede: 'Enter a ZIP code or an address and a radius to list every US ZIP code inside it, with distances and place names. Copy the list, download it as a CSV, or check whether a single ZIP falls inside.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import ZipCountTable from '../components/figures/ZipCountTable.astro';
+import Callout from '../components/Callout.astro';
+
+A ZIP code radius search lists every ZIP code whose center lies within a set distance of a starting point. The tool above opens on ZIP 10001 in Midtown Manhattan with a 10-mile radius; type any five-digit ZIP or an address to start your own.
+
+## How to find ZIP codes within a radius
+
+<div class="steps">
+
+1. Type a five-digit ZIP code in **Center ZIP code**. The place, state and county appear underneath so you can check it. To center on a street address, a city or a landmark instead, use **Or center on an address**.
+2. Enter the radius, or press a preset from 5 to 100 miles. Switch to kilometers if you prefer.
+3. Read the count of ZIP codes inside the radius, with the number of places and counties and the states they fall in.
+4. Scroll the list, nearest first, or sort it by ZIP code. Each row gives the place name and the distance from the center.
+5. Press **Copy ZIP list** for a comma-separated list you can paste into a form, an ad platform or a spreadsheet, or **Download CSV** for the full table with distances, counties and coordinates.
+6. To test one ZIP code, type it in **Is this ZIP inside the radius?**
+
+</div>
+
+<Callout title="Adjusting on the map">
+Drag the center point to move the search, or drag the white handle on the edge of the circle to change the radius. The list updates as you go. Dark dots are ZIP code centers inside the circle; light dots are just outside it.
+</Callout>
+
+## How many ZIP codes fall within a radius?
+
+It depends on where you are. ZIP codes are drawn around mail delivery, so they are small and packed together in cities and large and sparse in the country. A 25-mile radius around Midtown Manhattan holds hundreds of ZIP codes; the same radius around Helena, Montana holds only a handful.
+
+<ZipCountTable />
+
+Doubling the radius roughly quadruples the area, but in a city it can do more than quadruple the ZIP count as the circle reaches dense suburbs, or far less if half the circle falls over water or mountains.
+
+## What people use a ZIP code radius for
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Common uses for a ZIP code radius</p>
+  <table>
+    <caption class="visually-hidden">Common uses for a ZIP code radius</caption>
+    <thead><tr><th scope="col">Use</th><th scope="col">Typical radius</th><th scope="col">What the list is for</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Delivery or service area</th><td>5 to 25 miles</td><td>Deciding which ZIP codes a business will deliver to or serve</td></tr>
+      <tr><th scope="row">Local advertising</th><td>5 to 50 miles</td><td>Entering target ZIP codes in ad platforms and mail campaigns</td></tr>
+      <tr><th scope="row">Sales territories</th><td>25 to 100 miles</td><td>Assigning ZIP codes to reps or franchise areas</td></tr>
+      <tr><th scope="row">Job and home searches</th><td>10 to 30 miles</td><td>Filtering listings by ZIP code within a commute</td></tr>
+      <tr><th scope="row">Contracts and policies</th><td>Varies</td><td>Checking which areas a radius clause or a coverage rule includes</td></tr>
+      <tr><th scope="row">Research and planning</th><td>Varies</td><td>Pulling census or market data for the ZIP codes around a site</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## How ZIP codes work
+
+ZIP stands for Zone Improvement Plan. The US Postal Service introduced five-digit ZIP codes in 1963 to speed up mail sorting. A ZIP code is really a set of delivery routes rather than a neatly bounded area, which has a few practical effects:
+
+- **Some ZIP codes are tiny or have no area at all.** Large buildings, universities, government agencies and post office box sections can have their own ZIP code.
+- **Boundaries change.** The Postal Service adds and adjusts ZIP codes as routes change, so lists from different years can differ slightly.
+- **The Census Bureau uses ZCTAs.** For statistics, the Census Bureau builds ZIP Code Tabulation Areas, which approximate ZIP codes as areas. They are close to, but not the same as, postal ZIP codes.
+
+### What the first digit tells you
+
+The first digit of a ZIP code marks a broad group of states, running roughly from the Northeast (0) to the West Coast (9).
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">First digit of a ZIP code</p>
+  <table>
+    <caption class="visually-hidden">First digit of a ZIP code</caption>
+    <thead><tr><th scope="col">First digit</th><th scope="col">States and territories</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">0</th><td>Connecticut, Maine, Massachusetts, New Hampshire, New Jersey, Rhode Island, Vermont, Puerto Rico, US Virgin Islands</td></tr>
+      <tr><th scope="row">1</th><td>Delaware, New York, Pennsylvania</td></tr>
+      <tr><th scope="row">2</th><td>District of Columbia, Maryland, North Carolina, South Carolina, Virginia, West Virginia</td></tr>
+      <tr><th scope="row">3</th><td>Alabama, Florida, Georgia, Mississippi, Tennessee</td></tr>
+      <tr><th scope="row">4</th><td>Indiana, Kentucky, Michigan, Ohio</td></tr>
+      <tr><th scope="row">5</th><td>Iowa, Minnesota, Montana, North Dakota, South Dakota, Wisconsin</td></tr>
+      <tr><th scope="row">6</th><td>Illinois, Kansas, Missouri, Nebraska</td></tr>
+      <tr><th scope="row">7</th><td>Arkansas, Louisiana, Oklahoma, Texas</td></tr>
+      <tr><th scope="row">8</th><td>Arizona, Colorado, Idaho, Nevada, New Mexico, Utah, Wyoming</td></tr>
+      <tr><th scope="row">9</th><td>Alaska, California, Hawaii, Oregon, Washington</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## How the radius search works
+
+Each ZIP code in the list is represented by a single center point with a latitude and longitude. The tool measures the straight line distance from your center to each ZIP's point over the curved Earth, and includes the ZIP when that distance is within the radius.
+
+That means:
+
+- **A ZIP whose center is just outside the circle is left out,** even if some of its streets are inside. If edge cases matter, add a mile or two to the radius and check the extra ZIP codes by hand.
+- **Distances are straight lines, not drives.** A ZIP 10 miles away across a river or a bay may be a much longer trip. For driving distances to a particular place, use the [distance between two addresses](/distance-between-two-addresses/) calculator.
+- **Centering on a ZIP code uses the ZIP's center point,** which may be some way from your address in a large rural ZIP. Center on the exact address when precision matters.
+
+The list covers about 41,000 US ZIP codes from the GeoNames postal code database, which is published under a Creative Commons Attribution license.
+
+## Related tools
+
+- To draw a radius around any place without ZIP codes, use the [radius map tool](/radius-map/).
+- To see what is within a set distance of where you are now, use the [mile radius from current location](/mile-radius-from-current-location/) tool.
+- To see how far you can drive in a set time rather than a set distance, use the [drive time map](/drive-time-map/).

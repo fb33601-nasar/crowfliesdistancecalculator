@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import ElevationTool from '../components/calculator/ElevationTool';
+import Article, { frontmatter as fm } from '../content/elevation-finder.mdx';
+import { elevationFaqs } from '../content/elevation-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Elevation finder', href: fm.slug },
+];
+const toc = [
+  ['how-to-find-the-elevation-of-an-address', 'Elevation of an address'],
+  ['how-to-draw-an-elevation-profile', 'Elevation profile'],
+  ['elevations-of-notable-places', 'Notable elevations'],
+  ['why-elevation-matters', 'Why elevation matters'],
+  ['where-the-elevation-data-comes-from', 'Where the data comes from'],
+  ['feet-and-meters', 'Feet and meters'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Elevation Finder',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Elevation above sea level for any address or map point',
+    'Feet and meters',
+    'Elevation profile between two points',
+    'Total climb, descent and grade',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={elevationFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <ElevationTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {elevationFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Elevation from the Terrain Tiles open dataset on AWS (USGS 3DEP, SRTM and others).</p>
+  </div>
+</Base>

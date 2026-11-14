@@ -39,6 +39,8 @@ interface Props {
   onMoveCenter: (id: string, point: LatLon) => void;
   onResize: (id: string, radius: number) => void;
   onSelect: (id: string) => void;
+  /** extra labelled dots, e.g. ZIP code centers; inside ones are drawn stronger */
+  points?: { lat: number; lon: number; label: string; inside: boolean }[];
 }
 
 export interface RadiusMapHandle {
@@ -83,7 +85,7 @@ function toGeoJSON(circles: MapCircle[]): FeatureCollection<Polygon> {
 }
 
 const RadiusMapView = forwardRef<RadiusMapHandle, Props>(function RadiusMapView(
-  { circles, probe, imperial, picking, visible, onPick, onMoveCenter, onResize, onSelect },
+  { circles, probe, imperial, picking, visible, onPick, onMoveCenter, onResize, onSelect, points = [] },
   ref,
 ) {
   const container = useRef<HTMLDivElement>(null);
@@ -150,6 +152,26 @@ const RadiusMapView = forwardRef<RadiusMapHandle, Props>(function RadiusMapView(
             'line-width': ['case', ['==', ['get', 'selected'], 1], 3, 2],
           },
         });
+        instance.addSource('pts', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+        instance.addLayer({
+          id: 'pts',
+          type: 'circle',
+          source: 'pts',
+          paint: {
+            'circle-radius': ['interpolate', ['linear'], ['zoom'], 6, 2.5, 11, 5],
+            'circle-color': ['case', ['==', ['get', 'inside'], 1], '#161b3d', '#9aa1c4'],
+            'circle-stroke-color': '#fff',
+            'circle-stroke-width': 1.2,
+          },
+        });
+        instance.addLayer({
+          id: 'pts-label',
+          type: 'symbol',
+          source: 'pts',
+          minzoom: 10,
+          layout: { 'text-field': ['get', 'label'], 'text-size': 11, 'text-offset': [0, 1.1], 'text-anchor': 'top', 'text-optional': true },
+          paint: { 'text-color': '#161b3d', 'text-halo-color': '#fff', 'text-halo-width': 1.4 },
+        });
         instance.on('click', 'circle-fill', (e) => {
           if (latest.current.picking) return;
           const id = e.features?.[0]?.properties?.id as string | undefined;
@@ -173,6 +195,10 @@ const RadiusMapView = forwardRef<RadiusMapHandle, Props>(function RadiusMapView(
     const m = map.current;
     if (!m || !ready) return;
     (m.getSource('circles') as GeoJSONSource | undefined)?.setData(toGeoJSON(circles));
+    (m.getSource('pts') as GeoJSONSource | undefined)?.setData({
+      type: 'FeatureCollection',
+      features: points.map((p) => ({ type: 'Feature', properties: { label: p.label, inside: p.inside ? 1 : 0 }, geometry: { type: 'Point', coordinates: [p.lon, p.lat] } })),
+    });
 
     const seen = new Set<string>();
     for (const c of circles) {
@@ -251,7 +277,7 @@ const RadiusMapView = forwardRef<RadiusMapHandle, Props>(function RadiusMapView(
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       m.fitBounds(bounds, { padding: 48, maxZoom: 16, duration: reduce || firstFit ? 0 : 600 });
     }
-  }, [ready, circles]);
+  }, [ready, circles, points]);
 
   useEffect(() => {
     const m = map.current;

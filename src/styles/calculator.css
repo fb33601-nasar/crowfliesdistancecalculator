@@ -2060,3 +2060,179 @@
 .minutes-wrap .nearme-modes {
   align-self: start;
 }
+
+/* ---------- ZIP code radius ---------- */
+.zip-hint {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+#zip-in {
+  letter-spacing: 0.12em;
+}
+.zip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+.zip-actions button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  min-height: 2.3rem;
+  cursor: pointer;
+}
+.zip-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.zip-sort {
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: var(--ink-soft);
+}
+.zip-sort select {
+  font: inherit;
+  font-weight: 700;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.4rem;
+  background: #fff;
+}
+.zip-table-wrap {
+  max-height: 22rem;
+  overflow: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+}
+.zip-table {
+  margin: 0;
+}
+.zip-table thead th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+.zip-table th[scope='row'] {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.zip-check {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.zip-check label {
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+.zip-check input {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  width: 9rem;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  background: var(--paper);
+}
+
+/* ---------- Drive time map ---------- */
+.dt-label {
+  font-size: var(--step--1);
+  font-weight: 700;
+}
+.dt-table th[scope='row'] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.dt-fallback {
+  background: #fff6e5;
+  border-left: 4px solid #d9822b;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+}
+.calc-drivetime .calc-stage,
+.calc-zip .calc-stage,
+.calc-elevation .calc-stage {
+  min-height: 30rem;
+}
+
+/* ---------- Elevation ---------- */
+.elev-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+}
+.elev-grid {
+  stroke: #dbe2ee;
+}
+.elev-tick {
+  font: 600 11px var(--font);
+  fill: var(--ink-soft);
+}
+.elev-area {
+  fill: color-mix(in srgb, var(--course) 18%, #fff);
+}
+.elev-line {
+  fill: none;
+  stroke: var(--course);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.elev-peak {
+  fill: var(--ink);
+  stroke: #fff;
+  stroke-width: 2;
+}
+.elev-cursor {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.elev-dot {
+  fill: #fff;
+  stroke: var(--course);
+  stroke-width: 3;
+}
+.elev-readout {
+  margin: 0.2rem 0 0.8rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  min-height: 1.3em;
+}
+.elev-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+.elev-examples button {
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+}
+.zip-table thead th {
+  background: var(--ink);
+  color: #fff;
+}
