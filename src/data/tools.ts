@@ -29,6 +29,7 @@ export const TOOLS: Tool[] = [
   { href: '/halfway-point-calculator/', name: 'Halfway point', blurb: 'Find the middle between two or more places.', icon: 'pin', live: true },
   { href: '/bearing-calculator/', name: 'Bearing calculator', blurb: 'Compass direction and azimuth between two points.', icon: 'compass', live: true },
   { href: '/distance-between-two-points-calculator/', name: 'Distance between two points', blurb: 'GPS coordinates or x, y points, with the formula.', icon: 'measure', live: true },
+  { href: '/how-far-did-i-run/', name: 'How far did I run', blurb: 'Draw your route to measure a run or walk.', icon: 'route', live: true },
 ];
 
 export const liveTools = () => TOOLS.filter((t) => t.live);

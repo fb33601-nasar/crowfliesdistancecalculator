@@ -1,0 +1,22 @@
+---
+// How long common distances take to walk or run at steady speeds.
+import { clock } from '../calculator/runroute';
+const speeds: [string, number][] = [['Walking, 3 mph', 3], ['Brisk walk, 4 mph', 4], ['Easy run, 6 mph', 6], ['Steady run, 7.5 mph', 7.5]];
+const miles = [1, 2, 3, 5, 10, 13.1, 15, 20, 25, 26.2, 30];
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">How long it takes to walk or run a distance</p>
+  <table>
+    <caption class="visually-hidden">How long it takes to walk or run a distance</caption>
+    <thead><tr><th scope="col">Distance</th>{speeds.map(([n]) => <th scope="col" class="num">{n}</th>)}</tr></thead>
+    <tbody>
+      {miles.map((m) => (
+        <tr>
+          <th scope="row">{m} {m === 1 ? 'mile' : 'miles'} <span class="muted">({(m * 1.609344).toFixed(1)} km)</span></th>
+          {speeds.map(([, mph]) => <td class="num">{clock((m / mph) * 3600)}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">Moving time at a steady speed, in hours:minutes:seconds or minutes:seconds. Stops, hills and heat add time.</p>

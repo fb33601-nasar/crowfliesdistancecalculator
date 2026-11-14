@@ -1,0 +1,24 @@
+---
+// Finish times for race distances at common paces.
+import { clock } from '../calculator/runroute';
+const MI = 1609.344;
+const races: [string, number][] = [['5K', 5000], ['10K', 10000], ['Half marathon', 21097.5], ['Marathon', 42195]];
+const paces = [6, 7, 8, 9, 10, 11, 12, 13, 15, 18, 20];
+const rows = paces.map((p) => ({ p, km: (p * 60 * 1000) / MI, times: races.map(([, m]) => (p * 60 * m) / MI) }));
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Finish times by pace</p>
+  <table>
+    <caption class="visually-hidden">Finish times by pace</caption>
+    <thead><tr><th scope="col">Pace per mile</th><th scope="col" class="num">Per km</th>{races.map(([n]) => <th scope="col" class="num">{n}</th>)}</tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.p}:00{r.p >= 15 ? ' (walking)' : ''}</th>
+          <td class="num">{clock(r.km)}</td>
+          {r.times.map((t) => <td class="num">{clock(t)}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

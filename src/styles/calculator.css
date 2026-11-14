@@ -1888,3 +1888,131 @@
   font-size: var(--step--1);
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- How far did I run ---------- */
+.run-tools,
+.run-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.9rem;
+  align-items: center;
+}
+.run-tools button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1.5px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  min-height: 2.3rem;
+  cursor: pointer;
+}
+.run-tools button:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+.run-tools button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.run-time {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+.run-time label {
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+.run-time input {
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  width: 11rem;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.7rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+.run-time input[aria-invalid='true'] {
+  border-color: #a3123f;
+}
+.run-races {
+  margin-top: 1rem;
+}
+.run-races ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+.run-races li {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 3.5rem;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.run-races li > span:last-child {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.run-races .bar {
+  display: block;
+  height: 0.6rem;
+  background: color-mix(in srgb, var(--sea) 45%, #fff);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.run-races .bar span {
+  display: block;
+  height: 100%;
+  background: var(--course);
+}
+.run-vertex {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--course);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  font: 800 10px/1 var(--font);
+  color: #fff;
+}
+.run-vertex.is-start,
+.run-vertex.is-end {
+  width: 26px;
+  height: 26px;
+  border-width: 3px;
+  border-color: #fff;
+  background: #0f8a6c;
+  display: grid;
+  place-items: center;
+}
+.run-vertex.is-end {
+  background: var(--ink);
+}
+.run-mile {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font: 800 11px/20px var(--font);
+  text-align: center;
+  box-shadow: 0 0 0 2px #fff;
+  pointer-events: none;
+}
+.calc-run .calc-stage {
+  min-height: 30rem;
+}

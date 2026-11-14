@@ -1,0 +1,127 @@
+---
+slug: /how-far-did-i-run/
+title: 'How Far Did I Run? Map Your Route to Measure the Distance'
+seo_title: 'How Far Did I Run? Route Distance & Pace Calculator'
+description: 'Measure how far you ran or walked by drawing your route on a map. See the distance in miles and km, mile markers, your pace, and export the route as a GPX file.'
+lede: 'Click along the streets and paths you took to see exactly how far you ran or walked. Add your time to get your pace, mark every mile or kilometer, and save the route as a GPX file.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import PaceTable from '../components/figures/PaceTable.astro';
+import TimeToCoverTable from '../components/figures/TimeToCoverTable.astro';
+import Callout from '../components/Callout.astro';
+
+To find out how far you ran, draw the route you took on the map above. Each click adds a point, and the calculator adds up the distance between them as you go. It opens with an example 5.4-mile loop through Central Park in New York; press **Clear** and start drawing your own.
+
+## How to measure the distance you ran or walked
+
+<div class="steps">
+
+1. Find your starting point. Type a park, street or town in **Go to a place**, or press **My location** to center the map on where you are now.
+2. Click the map where you started, then click at every turn along the way you went. Points only need to go where the route changes direction; straight stretches need just one point at each end.
+3. Tick **Follow paths and roads** to snap each leg to the nearest footpaths and streets. This saves clicks on winding routes.
+4. If you ran out and back on the same route, draw it one way and tick **Out and back** to double it. If you finished where you started, press **Back to start** to close the loop.
+5. Read the distance in miles or kilometers. Numbered dots on the map mark each mile or kilometer.
+6. Enter your time, such as `27:30` or `1:05:00`, to see your pace and speed, plus how your pace compares with common race distances.
+7. Press **Download GPX** to save the route for a running watch or app, or **Copy link** to share it.
+
+</div>
+
+<Callout title="Fixing a mistake">
+Drag any point to move it, and double-click a point to remove it. **Undo** steps back through your last changes, and **Clear** starts again.
+</Callout>
+
+## Tips for an accurate route
+
+- **Zoom in before you click.** At street level it is easy to put points on the right side of a park or on the right path. Zoomed out, a small slip of the mouse can add or cut tens of meters.
+- **Click at every bend.** A straight line between two points cuts the corner of any curve between them. More points on curvy sections give a truer distance.
+- **Use path snapping on streets and park paths.** It follows the actual footways mapped in OpenStreetMap. On trails or open ground that is not mapped, turn it off and click the route by hand.
+- **Follow the path you actually took.** If you ran on the road side of a sidewalk or cut across a field, draw that line, not the official path.
+
+## Why your watch, your phone and the map can disagree
+
+GPS watches and phone apps measure a run by recording your position every second or two and joining the dots. Small errors in each position add up:
+
+- **Buildings and trees** block and reflect satellite signals, which makes the recorded track wander. Tall city streets are the worst case.
+- **Corner cutting.** If the device records a point only every few seconds, it misses the outside of each bend, so twisty routes often read a little short.
+- **Wobble on slow sections.** When you stop at a crossing, position noise can add distance even though you are standing still.
+- **Elevation.** A route drawn on a map measures horizontal distance. On a steep hill the distance along the slope is slightly longer, though the difference is under 1% on all but very steep ground.
+
+A route carefully drawn on a map is usually closer to the true distance than a GPS track on a busy city route, and it costs nothing to check a run after the fact. On a measured athletics track or a certified race course, trust the measured distance over either.
+
+## Pace calculator: finish times by pace
+
+Enter your time in the calculator to get your pace for the route you drew. The table shows what common paces mean for standard race distances.
+
+<PaceTable />
+
+Pace is time per mile or kilometer; speed is distance per hour. A 10-minute mile is 6 mph, an 8-minute mile is 7.5 mph, and a 6-minute mile is 10 mph. To convert, divide 60 by your pace in minutes per mile to get miles per hour.
+
+## How long does it take to walk or run a distance?
+
+Use this table to plan a walk or run, or to estimate how far you went if you know how long you were out.
+
+<TimeToCoverTable />
+
+A typical walking pace is about 3 mph, or 20 minutes per mile. A brisk walk is closer to 4 mph. Most recreational runners run between about 5 and 7 mph, which is a pace between 12 and roughly 8½ minutes per mile.
+
+## Common running distances
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Race and track distances</p>
+  <table>
+    <caption class="visually-hidden">Race and track distances</caption>
+    <thead><tr><th scope="col">Distance</th><th scope="col" class="num">Kilometers</th><th scope="col" class="num">Miles</th><th scope="col" class="num">Laps of a 400 m track</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1 mile</th><td class="num">1.609</td><td class="num">1</td><td class="num">4.02</td></tr>
+      <tr><th scope="row">5K</th><td class="num">5</td><td class="num">3.107</td><td class="num">12.5</td></tr>
+      <tr><th scope="row">10K</th><td class="num">10</td><td class="num">6.214</td><td class="num">25</td></tr>
+      <tr><th scope="row">15K</th><td class="num">15</td><td class="num">9.321</td><td class="num">37.5</td></tr>
+      <tr><th scope="row">Half marathon</th><td class="num">21.0975</td><td class="num">13.109</td><td class="num">52.7</td></tr>
+      <tr><th scope="row">Marathon</th><td class="num">42.195</td><td class="num">26.219</td><td class="num">105.5</td></tr>
+      <tr><th scope="row">50K ultramarathon</th><td class="num">50</td><td class="num">31.069</td><td class="num">125</td></tr>
+    </tbody>
+  </table>
+</div>
+
+A standard outdoor running track is 400 meters around the inside lane, so four laps is 1,600 meters, about 9 meters short of a mile. Outer lanes are longer: each lane out adds roughly 7.7 meters per lap on a standard track.
+
+## Running in miles or kilometers
+
+Switch between **mi** and **km** at any time; the distance, the markers on the map and your pace all update. Races are usually named in kilometers (5K, 10K) but many runners in the United States and the United Kingdom track their training in miles. One mile is exactly 1.609344 km, and one kilometer is about 0.621 miles.
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Pace per mile and per kilometer</p>
+  <table>
+    <caption class="visually-hidden">Pace per mile and per kilometer</caption>
+    <thead><tr><th scope="col">Per mile</th><th scope="col" class="num">Per kilometer</th><th scope="col" class="num">Speed</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">6:00</th><td class="num">3:44</td><td class="num">10 mph · 16.1 km/h</td></tr>
+      <tr><th scope="row">8:00</th><td class="num">4:58</td><td class="num">7.5 mph · 12.1 km/h</td></tr>
+      <tr><th scope="row">10:00</th><td class="num">6:13</td><td class="num">6 mph · 9.7 km/h</td></tr>
+      <tr><th scope="row">12:00</th><td class="num">7:27</td><td class="num">5 mph · 8.0 km/h</td></tr>
+      <tr><th scope="row">15:00</th><td class="num">9:19</td><td class="num">4 mph · 6.4 km/h</td></tr>
+      <tr><th scope="row">20:00</th><td class="num">12:26</td><td class="num">3 mph · 4.8 km/h</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Saving and sharing your route
+
+- **Download GPX** saves the route as a GPX file, the standard format for GPS routes. Most running watches, cycling computers and fitness apps can import a GPX file as a route to follow.
+- **Copy link** creates a link that rebuilds the whole route, with your settings, when someone opens it. The route is stored in the link itself, not on our servers.
+
+<Callout title="Think before sharing a route from home" kind="note">
+A route that starts and ends at your front door shows where you live. Before you share a link or a GPX file publicly, consider starting the drawing a few streets away.
+</Callout>
+
+## Other ways to use the route tool
+
+The route tool measures any path you can trace on a map, not just runs:
+
+- **Walks and hikes**, to check how far a dog walk, a hike or a commute on foot really is.
+- **Bike rides**, with path snapping turned off for roads that bikes share with cars.
+- **Planning a new route** to hit an exact distance before you head out, such as a 5K loop from your door.
+- **Fences, trails and boundaries**, to measure a length along a property line or a trail you plan to build.
+
+For a straight line between two places rather than a route, use the [crow flies distance calculator](/). To see how far roads and paths make a trip between two addresses, use the [address distance calculator](/distance-between-two-addresses/).

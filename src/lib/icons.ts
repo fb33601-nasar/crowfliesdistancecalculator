@@ -18,6 +18,15 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-measure-the-distance-you-ran-or-walked': 'route',
+  'tips-for-an-accurate-route': 'info',
+  'why-your-watch-your-phone-and-the-map-can-disagree': 'globe',
+  'pace-calculator-finish-times-by-pace': 'table',
+  'how-long-does-it-take-to-walk-or-run-a-distance': 'compass',
+  'common-running-distances': 'ruler',
+  'running-in-miles-or-kilometers': 'measure',
+  'saving-and-sharing-your-route': 'pin',
+  'other-ways-to-use-the-route-tool': 'target',
   'how-to-use-the-calculator': 'measure',
   'distance-between-two-gps-coordinates': 'pin',
   'which-distance-formula-should-you-use': 'table',
