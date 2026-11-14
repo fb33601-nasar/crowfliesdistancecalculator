@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../lib/site';
+import pairs from '../data/pairs.json';
+import pairRoutes from '../data/pair-routes.json';
 import { RADIUS_MILES, RADIUS_KM, RADIUS_HOURS, RADIUS_MINUTES, RADIUS_DATE, radiusSlug, kmSlug, hourSlug, minuteSlug, MINUTE_MILES, minutesSlug } from '../data/radius-pages';
 
 /**
@@ -21,6 +23,8 @@ export const GET: APIRoute = () => {
         dateModified: RADIUS_DATE,
       })),
     )
+    .concat([{ slug: '/distance/', dateModified: RADIUS_DATE }])
+    .concat(pairs.map((p) => ({ slug: `/distance/${p.slug}/`, dateModified: (pairRoutes as Record<string, { fetched?: string }>)[p.slug]?.fetched ?? RADIUS_DATE })))
     .sort((a, b) => a.slug.localeCompare(b.slug));
 
   const urls = entries

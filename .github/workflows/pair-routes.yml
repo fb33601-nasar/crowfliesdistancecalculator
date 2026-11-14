@@ -1,0 +1,38 @@
+name: Fetch pair routes
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh:
+        description: 'Refetch every route'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths: ['src/data/pairs.json']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pair-routes
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/fetch-pair-routes.mjs ${{ inputs.refresh && '--refresh' || '' }}
+      - name: Commit route data
+        run: |
+          if git diff --quiet src/data/pair-routes.json; then echo "No changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/pair-routes.json
+          git commit -m "Update pair route data"
+          git push

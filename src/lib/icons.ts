@@ -18,6 +18,15 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'key-facts': 'table',
+  'driving': 'route',
+  'crow-flies': 'measure',
+  'related': 'pin',
+  'south-africa': 'globe',
+  'united-states': 'globe',
+  'namibia': 'globe',
+  'canada': 'globe',
+  'between-countries': 'globe',
   'how-to-use-the-miles-to-minutes-calculator': 'measure',
   'the-formula': 'formula',
   'what-average-speed-should-you-use': 'route',

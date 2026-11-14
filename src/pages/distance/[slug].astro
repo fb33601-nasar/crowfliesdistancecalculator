@@ -1,0 +1,177 @@
+---
+import Base from '../../layouts/Base.astro';
+import H2 from '../../components/H2.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import Callout from '../../components/Callout.astro';
+import Calculator from '../../components/calculator/Calculator';
+import pairs from '../../data/pairs.json';
+import routes from '../../data/pair-routes.json';
+import { compass, formatNumber, geodesic, intermediate, formatCoord } from '../../lib/geo';
+import { nearestTown } from '../../lib/server/nearest';
+import { SITE, abs } from '../../lib/site';
+import '../../styles/calculator.css';
+
+type City = { name: string; cc: string; region: string; country: string; slug: string; lat: number; lon: number; pop: number };
+type Pair = { slug: string; vol: number; a: City; b: City };
+type Route = { distance: number | null; duration: number | null; via: string; fetched: string };
+
+export function getStaticPaths() {
+  return (pairs as Pair[]).map((p) => ({ params: { slug: p.slug }, props: { pair: p } }));
+}
+
+const { pair } = Astro.props as { pair: Pair };
+const { a, b } = pair;
+const route = (routes as Record<string, Route>)[pair.slug];
+const road = route?.distance ? route : null;
+const MI = 1609.344;
+const metricFirst = a.cc !== 'US' && b.cc !== 'US' && a.cc !== 'GB' && b.cc !== 'GB';
+const fmt = (m: number) => {
+  const km = m / 1000, mi = m / MI;
+  const k = `${formatNumber(km, km < 100 ? 1 : 0)} km`;
+  const mm = `${formatNumber(mi, mi < 100 ? 1 : 0)} miles`;
+  return metricFirst ? `${k} (${mm})` : `${mm} (${k})`;
+};
+const short = (m: number) => (metricFirst ? `${formatNumber(m / 1000, m < 100000 ? 1 : 0)} km` : `${formatNumber(m / MI, m < 160934 ? 1 : 0)} mi`);
+const hm = (s: number) => {
+  const t = Math.round(s / 60);
+  const h = Math.floor(t / 60), m = t % 60;
+  return h ? (m ? `${h} hours ${m} minutes` : `${h} hours`) : `${m} minutes`;
+};
+const hmShort = (s: number) => {
+  const t = Math.round(s / 60);
+  const h = Math.floor(t / 60), m = t % 60;
+  return h ? `${h} h ${String(m).padStart(2, '0')} min` : `${m} min`;
+};
+
+const g = geodesic(a, b);
+const crow = g.distance;
+const detour = road ? road.distance! / crow : null;
+const mid = intermediate(a, b, 0.5);
+const midTown = nearestTown(mid);
+const placeLabel = (c: City) => (c.cc === 'US' ? `${c.name}, ${c.region}` : c.region ? `${c.name}, ${c.region}` : `${c.name}, ${c.country}`);
+const sameCountry = a.cc === b.cc;
+const flightH = crow > 300000 ? 0.5 + crow / MI / 500 : null;
+const avgSpeed = road ? road.distance! / road.duration! : null;
+const breaks = road && road.duration! > 4 * 3600 ? Math.floor(road.duration! / 3600 / 2) : 0;
+const long = road ? road.duration! > 6 * 3600 : crow > 500000;
+
+// Other pages that share a city.
+const related = (pairs as Pair[]).filter((p) => p.slug !== pair.slug && [p.a.slug, p.b.slug].some((s) => s === a.slug || s === b.slug)).slice(0, 10);
+
+const title = `Distance from ${a.name} to ${b.name}`;
+const seoTitle = road
+  ? `${a.name} to ${b.name} Distance: ${short(road.distance!)} by Road, ${hmShort(road.duration!)} Drive`
+  : `${a.name} to ${b.name} Distance: ${short(crow)} as the Crow Flies`;
+const lede = road
+  ? `${a.name} to ${b.name} is ${fmt(road.distance!)} by road, about ${hm(road.duration!)} of driving${road.via ? ` via the ${road.via}` : ''}. In a straight line, as the crow flies, it is ${fmt(crow)}.`
+  : `${a.name} is ${fmt(crow)} from ${b.name} in a straight line, as the crow flies. Use the calculator for the driving distance and time.`;
+const description = road
+  ? `${a.name} to ${b.name}: ${short(road.distance!)} by road (${hmShort(road.duration!)} drive) and ${short(crow)} as the crow flies. Route, halfway point, direction and travel times.`
+  : `${a.name} to ${b.name}: ${short(crow)} as the crow flies. Driving distance, halfway point, direction and travel times.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Distance between cities', href: '/distance/' },
+  { name: `${a.name} to ${b.name}`, href: `/distance/${pair.slug}/` },
+];
+const faqs = [
+  ...(road
+    ? [
+        { q: `How far is ${a.name} from ${b.name} by road?`, a: `About ${fmt(road.distance!)} along the fastest driving route${road.via ? `, which uses the ${road.via}` : ''}.` },
+        { q: `How long is the drive from ${a.name} to ${b.name}?`, a: `About ${hm(road.duration!)} of driving in free-flowing traffic${breaks ? `. With a 15-minute break every two hours, allow roughly ${hm(road.duration! + breaks * 900)}` : ''}.` },
+      ]
+    : []),
+  { q: `How far is ${a.name} from ${b.name} as the crow flies?`, a: `${fmt(crow)} in a straight line, measured on the WGS 84 ellipsoid between the two city centers.` },
+  { q: `Which direction is ${b.name} from ${a.name}?`, a: `${b.name} lies to the ${compass(g.initialBearing).name.toLowerCase()} of ${a.name}, on an initial bearing of ${Math.round(g.initialBearing)}°.` },
+  { q: `What is halfway between ${a.name} and ${b.name}?`, a: midTown && midTown.d < 60000 ? `The straight line midpoint is near ${midTown.label}, about ${short(crow / 2)} from each city. The halfway point along the road can be different; the halfway point calculator shows both.` : `The straight line midpoint is at ${formatCoord(mid, 3)}, about ${short(crow / 2)} from each city.` },
+  ...(flightH ? [{ q: `How long is a flight from ${a.name} to ${b.name}?`, a: `A direct flight would take roughly ${hm(flightH * 3600)}, allowing 30 minutes for take-off and landing plus about 500 mph in the air. Check airline schedules for actual times and routes.` }] : []),
+];
+const tripSchema = {
+  '@type': 'Trip',
+  '@id': abs(`/distance/${pair.slug}/#trip`),
+  name: `${a.name} to ${b.name}`,
+  itinerary: [
+    { '@type': 'City', name: a.name, geo: { '@type': 'GeoCoordinates', latitude: a.lat, longitude: a.lon }, containedInPlace: { '@type': 'Country', name: a.country } },
+    { '@type': 'City', name: b.name, geo: { '@type': 'GeoCoordinates', latitude: b.lat, longitude: b.lon }, containedInPlace: { '@type': 'Country', name: b.country } },
+  ],
+};
+const updated = route?.fetched ?? '2026-11-14';
+---
+<Base title={seoTitle} description={description} path={`/distance/${pair.slug}/`} breadcrumbs={crumbs} faqs={faqs} schema={[tripSchema]} datePublished="2026-11-14" dateModified={updated}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{title}</h1>
+    <p class="lede">{lede}</p>
+  </div>
+
+  <div class="wrap">
+    <Calculator client:load variant="travel" initialA={{ name: placeLabel(a), lat: a.lat, lon: a.lon }} initialB={{ name: placeLabel(b), lat: b.lat, lon: b.lon }} initialUnit={metricFirst ? 'km' : 'mi'} />
+  </div>
+
+  <div class="wrap article">
+    <H2 id="key-facts">{`${a.name} to ${b.name} at a glance`}</H2>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`${a.name} to ${b.name}`}</p>
+      <table>
+        <caption class="visually-hidden">{`${a.name} to ${b.name} distance facts`}</caption>
+        <tbody>
+          {road && <tr><th scope="row">Driving distance</th><td>{fmt(road.distance!)}</td></tr>}
+          {road && <tr><th scope="row">Driving time</th><td>{hm(road.duration!)}, without stops or traffic</td></tr>}
+          {road?.via && <tr><th scope="row">Main roads</th><td>{road.via}</td></tr>}
+          <tr><th scope="row">Straight line distance</th><td>{fmt(crow)}</td></tr>
+          {detour && <tr><th scope="row">Road vs straight line</th><td>{`The road is ${formatNumber((detour - 1) * 100, 0)}% longer`}</td></tr>}
+          <tr><th scope="row">Direction</th><td>{`${Math.round(g.initialBearing)}° ${compass(g.initialBearing).name.toLowerCase()} from ${a.name}`}</td></tr>
+          <tr><th scope="row">Halfway point</th><td>{midTown && midTown.d < 60000 ? `Near ${midTown.label}` : formatCoord(mid, 3)}</td></tr>
+          {flightH && <tr><th scope="row">Flying time, estimated</th><td>{hm(flightH * 3600)}</td></tr>}
+          <tr><th scope="row">{a.name}</th><td>{`${placeLabel(a)} · ${formatCoord(a, 3)}`}</td></tr>
+          <tr><th scope="row">{b.name}</th><td>{`${placeLabel(b)} · ${formatCoord(b, 3)}`}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    {road && (
+      <>
+        <H2 id="driving">{`Driving from ${a.name} to ${b.name}`}</H2>
+        <p>{`The fastest route by car is ${fmt(road.distance!)}${road.via ? ` and runs mainly along the ${road.via}` : ''}. In free-flowing traffic it takes about ${hm(road.duration!)}, an average of ${formatNumber((avgSpeed! * 3.6) / (metricFirst ? 1 : 1.609344), 0)} ${metricFirst ? 'km/h' : 'mph'} including slower sections in and out of each city.`}</p>
+        {long ? (
+          <p>{`That is a long day at the wheel. With a 15-minute break every two hours, which is common road safety advice, plan on about ${hm(road.duration! + breaks * 900)} door to door, and consider sharing the driving or splitting the trip with an overnight stop${midTown && midTown.d < 60000 ? ` around ${midTown.label}, near the halfway point` : ''}.`}</p>
+        ) : breaks > 0 ? (
+          <p>{`Allow for at least ${breaks} short ${breaks === 1 ? 'break' : 'breaks'} on the way, and extra time if you leave or arrive at a busy time of day.`}</p>
+        ) : (
+          <p>{`It is a short enough drive to do without a stop, though traffic in and around ${sameCountry ? 'either city' : 'the cities'} at busy times can add a good deal to the time.`}</p>
+        )}
+        <p class="table-note">{`Route from the FOSSGIS OSRM routing engine on OpenStreetMap data, ${new Date(route.fetched).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}. Times assume free-flowing traffic. The calculator above finds the current route.`}</p>
+      </>
+    )}
+
+    <H2 id="crow-flies">{`${a.name} to ${b.name} as the crow flies`}</H2>
+    <p>{`In a straight line, ${b.name} is ${fmt(crow)} from ${a.name}. ${detour ? `The road is ${formatNumber((detour - 1) * 100, 0)}% longer than that, ${detour < 1.15 ? 'a fairly direct route' : detour < 1.35 ? 'a typical amount of detour for roads between towns' : 'a large detour, because the road has to work around mountains, water or other obstacles'}.` : ''} Heading out of ${a.name}, the straight line points ${compass(g.initialBearing).name.toLowerCase()}, at a bearing of ${Math.round(g.initialBearing)}°.`}</p>
+    {flightH && <p>{`A direct flight covering that distance would take roughly ${hm(flightH * 3600)} in the air, using the common estimate of 30 minutes for take-off and landing plus about 500 mph cruising. Real schedules depend on the airports and the routes airlines fly.`}</p>}
+
+    <Callout title="Going the other way?">
+      {`The distance from ${b.name} to ${a.name} is the same, ${fmt(crow)} in a straight line${road ? `, and the road distance is usually within a few kilometers of the outbound route` : ''}. Swap the two places in the calculator to see the return route.`}
+    </Callout>
+
+    {related.length > 0 && (
+      <>
+        <H2 id="related">More distances</H2>
+        <ul class="radius-links">
+          {related.map((p) => <li><a href={`/distance/${p.slug}/`}>{`${p.a.name} to ${p.b.name}`}</a></li>)}
+          <li><a href="/distance/">All city distances</a></li>
+        </ul>
+      </>
+    )}
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {faqs.map((q, i) => (
+        <details open={i < 2}>
+          <summary><h3>{q.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{q.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current="/distance-between-two-addresses/" />
+  </div>
+</Base>

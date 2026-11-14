@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro';
+import H2 from '../../components/H2.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import RelatedTools from '../../components/RelatedTools.astro';
+import pairs from '../../data/pairs.json';
+import routes from '../../data/pair-routes.json';
+import { geodesic, formatNumber } from '../../lib/geo';
+
+type City = { name: string; cc: string; country: string; lat: number; lon: number };
+type Pair = { slug: string; vol: number; a: City; b: City };
+const list = (pairs as Pair[]).map((p) => {
+  const r = (routes as Record<string, { distance: number | null; duration: number | null }>)[p.slug];
+  return { ...p, crow: geodesic(p.a, p.b).distance, road: r?.distance ?? null, time: r?.duration ?? null };
+});
+const groups = new Map<string, typeof list>();
+for (const p of list) {
+  const key = p.a.cc === p.b.cc ? p.a.country : 'Between countries';
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key)!.push(p);
+}
+const order = [...groups.keys()].sort((x, y) => groups.get(y)!.length - groups.get(x)!.length);
+const hm = (s: number) => {
+  const t = Math.round(s / 60);
+  const h = Math.floor(t / 60), m = t % 60;
+  return h ? `${h} h ${String(m).padStart(2, '0')} min` : `${m} min`;
+};
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Distance between cities', href: '/distance/' },
+];
+const title = 'Distance Between Cities: Road and Straight Line Distances';
+const description = `Road and straight line distances with driving times for ${list.length} popular city routes, from Johannesburg to Cape Town to New York to Philadelphia.`;
+const slugId = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+---
+<Base title={title} description={description} path="/distance/" breadcrumbs={crumbs}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>Distance Between Cities</h1>
+    <p class="lede">Driving distances, drive times and straight line distances for popular city routes. Choose a route for its halfway point, direction and a live route map, or use the calculator for any two places.</p>
+  </div>
+  <div class="wrap article">
+    <p>Each distance below was worked out from the city centers. Road distances and times come from the OpenStreetMap routing engine in free-flowing traffic; straight line distances are measured on the WGS 84 ellipsoid. For two places that are not listed, use the <a href="/distance-between-two-addresses/">distance between two addresses</a> calculator.</p>
+    {order.map((k) => (
+      <>
+        <H2 id={slugId(k)}>{k}</H2>
+        <div class="table-scroll">
+          <table>
+            <caption class="visually-hidden">{`City distances: ${k}`}</caption>
+            <thead><tr><th scope="col">Route</th><th scope="col" class="num">By road</th><th scope="col" class="num">Drive time</th><th scope="col" class="num">Straight line</th></tr></thead>
+            <tbody>
+              {groups.get(k)!.map((p) => {
+                const metric = p.a.cc !== 'US' && p.b.cc !== 'US';
+                const d = (m: number) => (metric ? `${formatNumber(m / 1000, 0)} km` : `${formatNumber(m / 1609.344, 0)} mi`);
+                return (
+                  <tr>
+                    <th scope="row"><a href={`/distance/${p.slug}/`}>{p.a.name} to {p.b.name}</a></th>
+                    <td class="num">{p.road ? d(p.road) : '—'}</td>
+                    <td class="num">{p.time ? hm(p.time) : '—'}</td>
+                    <td class="num">{d(p.crow)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </>
+    ))}
+    <RelatedTools current="/distance-between-two-addresses/" />
+  </div>
+</Base>

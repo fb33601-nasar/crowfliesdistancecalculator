@@ -79,14 +79,18 @@ function decodePlace(raw: string | null): Place | null {
 
 interface Props {
   variant?: Variant;
+  /** open with these places instead of the first example */
+  initialA?: Place;
+  initialB?: Place;
+  initialUnit?: Unit;
 }
 
-export default function Calculator({ variant = 'crow' }: Props) {
+export default function Calculator({ variant = 'crow', initialA, initialB, initialUnit }: Props) {
   const travel = variant === 'travel';
   const examples = travel ? TRAVEL_EXAMPLES : CROW_EXAMPLES;
-  const [a, setA] = useState<Place | null>(examples[0].a);
-  const [b, setB] = useState<Place | null>(examples[0].b);
-  const [unit, setUnit] = useState<Unit>('mi');
+  const [a, setA] = useState<Place | null>(initialA ?? examples[0].a);
+  const [b, setB] = useState<Place | null>(initialB ?? examples[0].b);
+  const [unit, setUnit] = useState<Unit>(initialUnit ?? 'mi');
   const [view, setView] = useState<'globe' | 'map'>(travel ? 'map' : 'globe');
   const [mapWanted, setMapWanted] = useState(travel);
   const [picking, setPicking] = useState<'a' | 'b' | null>(null);
@@ -108,7 +112,7 @@ export default function Calculator({ variant = 'crow' }: Props) {
     }
     if (travel && (m === 'line' || m === 'car' || m === 'bike' || m === 'foot')) setMode(m);
     if (u === 'mi' || u === 'km' || u === 'nmi') setUnit(u);
-    else {
+    else if (!initialUnit) {
       try {
         const saved = window.localStorage.getItem('unit');
         if (saved === 'mi' || saved === 'km' || saved === 'nmi') setUnit(saved);
