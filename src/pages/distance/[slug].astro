@@ -23,7 +23,10 @@ export function getStaticPaths() {
 const { pair } = Astro.props as { pair: Pair };
 const { a, b } = pair;
 const route = (routes as Record<string, Route>)[pair.slug];
-const road = route?.distance ? route : null;
+// OSRM summaries look like "N1; N12, N1": keep each road once, in order.
+const roadNames = route?.via ? [...new Set(route.via.split(/[;,]/).map((s) => s.trim()).filter(Boolean))].slice(0, 3) : [];
+const viaText = roadNames.length > 1 ? `${roadNames.slice(0, -1).join(', ')} and ${roadNames[roadNames.length - 1]}` : roadNames[0] ?? '';
+const road = route?.distance ? { ...route, via: viaText } : null;
 const MI = 1609.344;
 const metricFirst = a.cc !== 'US' && b.cc !== 'US' && a.cc !== 'GB' && b.cc !== 'GB';
 const fmt = (m: number) => {
@@ -121,7 +124,7 @@ const updated = route?.fetched ?? '2026-11-14';
           <tr><th scope="row">Straight line distance</th><td>{fmt(crow)}</td></tr>
           {detour && <tr><th scope="row">Road vs straight line</th><td>{`The road is ${formatNumber((detour - 1) * 100, 0)}% longer`}</td></tr>}
           <tr><th scope="row">Direction</th><td>{`${Math.round(g.initialBearing)}° ${compass(g.initialBearing).name.toLowerCase()} from ${a.name}`}</td></tr>
-          <tr><th scope="row">Halfway point</th><td>{midTown && midTown.d < 60000 ? `Near ${midTown.label}` : formatCoord(mid, 3)}</td></tr>
+          <tr><th scope="row">Straight line midpoint</th><td>{midTown && midTown.d < 60000 ? `Near ${midTown.label}` : formatCoord(mid, 3)}</td></tr>
           {flightH && <tr><th scope="row">Flying time, estimated</th><td>{hm(flightH * 3600)}</td></tr>}
           <tr><th scope="row">{a.name}</th><td>{`${placeLabel(a)} · ${formatCoord(a, 3)}`}</td></tr>
           <tr><th scope="row">{b.name}</th><td>{`${placeLabel(b)} · ${formatCoord(b, 3)}`}</td></tr>
@@ -134,7 +137,7 @@ const updated = route?.fetched ?? '2026-11-14';
         <H2 id="driving">{`Driving from ${a.name} to ${b.name}`}</H2>
         <p>{`The fastest route by car is ${fmt(road.distance!)}${road.via ? ` and runs mainly along the ${road.via}` : ''}. In free-flowing traffic it takes about ${hm(road.duration!)}, an average of ${formatNumber((avgSpeed! * 3.6) / (metricFirst ? 1 : 1.609344), 0)} ${metricFirst ? 'km/h' : 'mph'} including slower sections in and out of each city.`}</p>
         {long ? (
-          <p>{`That is a long day at the wheel. With a 15-minute break every two hours, which is common road safety advice, plan on about ${hm(road.duration! + breaks * 900)} door to door, and consider sharing the driving or splitting the trip with an overnight stop${midTown && midTown.d < 60000 ? ` around ${midTown.label}, near the halfway point` : ''}.`}</p>
+          <p>{`${road.duration! > 10 * 3600 ? 'That is more driving than most people should do in one day' : 'That is a long day at the wheel'}. With a 15-minute break every two hours, which is common road safety advice, plan on about ${hm(road.duration! + breaks * 900)} door to door, and consider sharing the driving${road.duration! > 10 * 3600 ? ' and splitting the trip with an overnight stop. The halfway point calculator can find the point halfway along the route' : ' or stopping overnight'}.`}</p>
         ) : breaks > 0 ? (
           <p>{`Allow for at least ${breaks} short ${breaks === 1 ? 'break' : 'breaks'} on the way, and extra time if you leave or arrive at a busy time of day.`}</p>
         ) : (
