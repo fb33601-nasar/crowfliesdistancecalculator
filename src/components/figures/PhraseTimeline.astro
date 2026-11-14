@@ -1,0 +1,32 @@
+---
+const events = [
+  { year: '1761', title: 'Earliest known use', text: 'A Dublin magazine describes a territory as hundreds of miles long and broad "as the crow flies".' },
+  { year: '1767', title: 'Defined in print', text: 'A London literary review uses the phrase and explains that it means a straight line.' },
+  { year: '1795', title: 'The Scots "crow road"', text: 'A similar Scottish expression for the most direct way appears in writing.' },
+  { year: '1838', title: 'Oliver Twist', text: 'Charles Dickens uses it in a novel read on both sides of the Atlantic.' },
+  { year: 'Today', title: 'Maps and apps', text: 'The phrase names the straight line distance that mapping tools measure.' },
+];
+---
+<figure>
+  <ol class="phrase-timeline">
+    {events.map((e) => (
+      <li>
+        <span class="pt-year">{e.year}</span>
+        <span class="pt-dot" aria-hidden="true"></span>
+        <span class="pt-body"><strong>{e.title}</strong>{e.text}</span>
+      </li>
+    ))}
+  </ol>
+  <figcaption>Milestones in the history of the phrase, from the earliest printed examples that word historians have found.</figcaption>
+</figure>
+<style>
+  .phrase-timeline { list-style: none; padding: 1.4rem 1.2rem !important; margin: 0; background: var(--night); border-radius: var(--radius); display: grid; gap: 0; }
+  .phrase-timeline li { display: grid; grid-template-columns: 4.2rem 1.4rem minmax(0, 1fr); gap: 0.6rem; align-items: start; position: relative; padding-bottom: 1.1rem; margin: 0 !important; color: #cfd3ef; }
+  .phrase-timeline li:last-child { padding-bottom: 0; }
+  .phrase-timeline li::before { content: ''; position: absolute; left: calc(4.2rem + 0.6rem + 0.7rem - 1px); top: 0.6rem; bottom: -0.4rem; width: 2px; background: #3a4390; }
+  .phrase-timeline li:last-child::before { display: none; }
+  .pt-year { font-weight: 820; color: #ff8fca; font-size: 1.05rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .pt-dot { width: 14px; height: 14px; margin: 0.3rem auto 0; border-radius: 50%; background: #fff; border: 3px solid var(--course-bright); position: relative; z-index: 1; }
+  .pt-body strong { display: block; color: #fff; font-size: 1rem; }
+  .pt-body { font-size: var(--step--1); line-height: 1.5; }
+</style>

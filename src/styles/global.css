@@ -1108,3 +1108,6 @@ tr.is-highlight td {
   padding: 0;
   font-size: inherit;
 }
+.site-footer .footer-sub {
+  margin-top: 1.4rem;
+}

@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import Calculator from '../components/calculator/Calculator';
+import Article, { frontmatter as fm } from '../content/google-maps-as-the-crow-flies.mdx';
+import { gmapsFaqs } from '../content/gmaps-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Google Maps as the crow flies', href: fm.slug },
+];
+const toc = [
+  ['measure-as-the-crow-flies-on-google-maps-on-a-computer', 'On a computer'],
+  ['measure-as-the-crow-flies-on-android-and-iphone', 'On Android and iPhone'],
+  ['why-use-measure-distance-instead-of-directions', 'Measure distance vs directions'],
+  ['why-the-line-curves-on-long-measurements', 'Why the line curves'],
+  ['other-ways-to-measure-straight-line-distance', 'Other ways to measure'],
+  ['tips-for-an-accurate-measurement', 'Tips for accuracy'],
+  ['common-problems', 'Common problems'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'HowTo',
+  '@id': abs(`${fm.slug}#howto`),
+  name: 'How to measure as the crow flies distance on Google Maps on a computer',
+  description: fm.description,
+  inLanguage: SITE.lang,
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Find the start', text: 'Open Google Maps in a web browser and zoom in on your starting point.' },
+    { '@type': 'HowToStep', position: 2, name: 'Right-click the start', text: 'Right-click a blank spot at the starting point, not a place label.' },
+    { '@type': 'HowToStep', position: 3, name: 'Choose Measure distance', text: 'Select Measure distance at the bottom of the menu.' },
+    { '@type': 'HowToStep', position: 4, name: 'Click the destination', text: 'Click the destination to draw a straight line and read the distance in the box at the bottom.' },
+    { '@type': 'HowToStep', position: 5, name: 'Add more points', text: 'Keep clicking to add points for a path with turns; the box shows the total.' },
+  ],
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={gmapsFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <Calculator client:load variant="crow" />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {gmapsFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Distances on the WGS 84 ellipsoid.</p>
+  </div>
+</Base>

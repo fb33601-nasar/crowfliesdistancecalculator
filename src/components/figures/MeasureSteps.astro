@@ -1,0 +1,42 @@
+---
+// A schematic of the three Measure distance steps on a computer (not a screenshot).
+---
+<figure>
+  <svg viewBox="0 0 760 250" role="img" aria-labelledby="ms-t ms-d" class="fig-light" style="background:#f4f7fb">
+    <title id="ms-t">The three steps of measuring a straight line on a web map</title>
+    <desc id="ms-d">Three panels. First, a right-click menu opens at the starting point with Measure distance at the bottom. Second, a click at the destination draws a straight line between the two points. Third, a box at the bottom of the map shows the total distance.</desc>
+    {[0, 1, 2].map((i) => (
+      <g transform={`translate(${20 + i * 246} 18)`}>
+        <rect width="228" height="196" rx="14" fill="#fff" stroke="#d6dcea" />
+        <path d="M0 60 C 60 40, 120 90, 228 70" stroke="#e3e8f2" stroke-width="10" fill="none" />
+        <path d="M60 196 C 80 130, 150 110, 170 0" stroke="#e3e8f2" stroke-width="8" fill="none" />
+        <circle cx="26" cy="26" r="15" fill="#c4157a" />
+        <text x="26" y="31" text-anchor="middle" font-family="Archivo Variable, Archivo, system-ui, sans-serif" font-size="14" font-weight="800" fill="#fff">{i + 1}</text>
+      </g>
+    ))}
+    <g font-family="Archivo Variable, Archivo, system-ui, sans-serif">
+      <circle cx="80" cy="140" r="7" fill="#fff" stroke="#161b3d" stroke-width="3" />
+      <rect x="92" y="78" width="132" height="98" rx="8" fill="#fff" stroke="#c9d1e2" />
+      <text x="104" y="100" font-size="11.5" fill="#5b6385">Directions from here</text>
+      <text x="104" y="122" font-size="11.5" fill="#5b6385">What's here?</text>
+      <text x="104" y="144" font-size="11.5" fill="#5b6385">Search nearby</text>
+      <rect x="96" y="152" width="124" height="20" rx="5" fill="#fde7f2" />
+      <text x="104" y="166" font-size="11.5" font-weight="800" fill="#c4157a">Measure distance</text>
+      <text x="130" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#161b3d">Right-click the start</text>
+
+      <circle cx="310" cy="160" r="7" fill="#fff" stroke="#161b3d" stroke-width="3" />
+      <circle cx="430" cy="74" r="7" fill="#fff" stroke="#161b3d" stroke-width="3" />
+      <line x1="310" y1="160" x2="430" y2="74" stroke="#161b3d" stroke-width="3" />
+      <path d="M440 92 l10 26 l5 -9 l9 -2 z" fill="#161b3d" />
+      <text x="376" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#161b3d">Click the destination</text>
+
+      <circle cx="556" cy="150" r="7" fill="#fff" stroke="#161b3d" stroke-width="3" />
+      <circle cx="676" cy="64" r="7" fill="#fff" stroke="#161b3d" stroke-width="3" />
+      <line x1="556" y1="150" x2="676" y2="64" stroke="#161b3d" stroke-width="3" />
+      <rect x="560" y="176" width="140" height="30" rx="8" fill="#161b3d" />
+      <text x="630" y="196" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">Total distance: 4.2 mi</text>
+      <text x="622" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#161b3d">Read the total</text>
+    </g>
+  </svg>
+  <figcaption>A simplified picture of the Measure distance steps on a computer. The menu wording may differ slightly in your language or version.</figcaption>
+</figure>

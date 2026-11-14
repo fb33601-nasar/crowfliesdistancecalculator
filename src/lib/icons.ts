@@ -18,6 +18,19 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'examples-of-as-the-crow-flies-in-a-sentence': 'meaning',
+  'where-does-the-phrase-come-from': 'info',
+  'do-crows-really-fly-in-a-straight-line': 'compass',
+  'as-the-crow-flies-vs-driving-distance': 'route',
+  'similar-phrases-in-english-and-other-languages': 'globe',
+  'how-to-use-the-phrase-correctly': 'meaning',
+  'measure-as-the-crow-flies-on-google-maps-on-a-computer': 'measure',
+  'measure-as-the-crow-flies-on-android-and-iphone': 'pin',
+  'why-use-measure-distance-instead-of-directions': 'route',
+  'why-the-line-curves-on-long-measurements': 'globe',
+  'other-ways-to-measure-straight-line-distance': 'ruler',
+  'tips-for-an-accurate-measurement': 'info',
+  'common-problems': 'limits',
   'how-to-measure-the-distance-you-ran-or-walked': 'route',
   'tips-for-an-accurate-route': 'info',
   'why-your-watch-your-phone-and-the-map-can-disagree': 'globe',

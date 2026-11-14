@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import Calculator from '../components/calculator/Calculator';
+import Article, { frontmatter as fm } from '../content/as-the-crow-flies-meaning.mdx';
+import { meaningFaqs } from '../content/meaning-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'As the crow flies meaning', href: fm.slug },
+];
+const toc = [
+  ['what-does-as-the-crow-flies-mean', 'What it means'],
+  ['examples-of-as-the-crow-flies-in-a-sentence', 'Examples in a sentence'],
+  ['where-does-the-phrase-come-from', 'Where the phrase comes from'],
+  ['do-crows-really-fly-in-a-straight-line', 'Do crows fly straight?'],
+  ['as-the-crow-flies-vs-driving-distance', 'Crow flies vs driving distance'],
+  ['similar-phrases-in-english-and-other-languages', 'Similar phrases'],
+  ['how-to-use-the-phrase-correctly', 'Using the phrase correctly'],
+  ['how-to-measure-distance-as-the-crow-flies', 'How to measure it'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'Article',
+  '@id': abs(`${fm.slug}#article`),
+  headline: fm.title,
+  description: fm.description,
+  url: abs(fm.slug),
+  inLanguage: SITE.lang,
+  datePublished: fm.datePublished,
+  dateModified: fm.dateModified,
+  author: { '@id': abs('/#organization') },
+  publisher: { '@id': abs('/#organization') },
+  about: { '@type': 'Thing', name: 'As the crow flies' },
+  mainEntityOfPage: abs(fm.slug),
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={meaningFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <Calculator client:load variant="crow" />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {meaningFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Distances on the WGS 84 ellipsoid.</p>
+  </div>
+</Base>
