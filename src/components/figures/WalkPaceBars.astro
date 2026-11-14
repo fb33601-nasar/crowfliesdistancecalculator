@@ -1,0 +1,30 @@
+---
+// Horizontal bars: how long one distance takes at each walking pace.
+import { PACES, hm } from '../calculator/walking';
+interface Props { miles: number }
+const { miles } = Astro.props;
+const rows = [...PACES].reverse().map((p) => ({ ...p, h: miles / p.mph }));
+const max = Math.max(...rows.map((r) => r.h));
+const W = 900, L = 150, R = 100, ROW = 46, TOP = 8;
+const H = TOP + rows.length * ROW + 6;
+const x = (h: number) => ((W - L - R) * h) / max;
+const label = `${miles} ${miles === 1 ? 'mile' : 'miles'}`;
+---
+<figure>
+  <svg class="walk-bars" viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="wpb-t wpb-d" style="width:100%;max-width:900px;height:auto">
+    <title id="wpb-t">{`Time to walk ${label} at five paces`}</title>
+    <desc id="wpb-d">{rows.map((r) => `${r.label}, ${r.mph} mph: ${hm(r.h)}`).join('. ')}</desc>
+    {rows.map((r, i) => {
+      const y = TOP + i * ROW;
+      return (
+        <g>
+          <text x={L - 12} y={y + 17} text-anchor="end" font-size="16">{r.label}</text>
+          <text class="lab" x={L - 12} y={y + 35} text-anchor="end" font-size="13">{r.mph} mph</text>
+          <rect x={L} y={y + 6} width={x(r.h)} height="28" rx="4" fill={r.id === 'avg' ? 'var(--course)' : 'var(--ink-soft)'} opacity={r.id === 'avg' ? 1 : 0.55} />
+          <text x={L + x(r.h) + 10} y={y + 26} font-size="16">{hm(r.h)}</text>
+        </g>
+      );
+    })}
+  </svg>
+  <figcaption>{`Moving time for ${label}. The highlighted bar is the 3 mph average most estimates use.`}</figcaption>
+</figure>

@@ -2236,3 +2236,107 @@
   background: var(--ink);
   color: #fff;
 }
+
+/* ---------- Walking time ---------- */
+.walk-paces {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.walk-paces legend {
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+  padding: 0;
+}
+.walk-pace-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.4rem;
+}
+.walk-pace-list button {
+  display: grid;
+  gap: 0.1rem;
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--card);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.walk-pace-list button small {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+.walk-pace-list button[aria-checked='true'] {
+  border-color: var(--course);
+  box-shadow: inset 0 0 0 1px var(--course);
+}
+.walk-pace-list button:focus-visible {
+  outline: 2px solid var(--course);
+  outline-offset: 2px;
+}
+.walk-paces .radius-inputs {
+  margin-top: 0.55rem;
+}
+.walk-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.4rem;
+  align-items: center;
+  font-size: 0.92rem;
+}
+.walk-extras .check {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+.walk-start input {
+  margin-left: 0.35rem;
+  font: inherit;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.walk-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+}
+.walk-breakdown div {
+  border-left: 3px solid var(--course);
+  padding-left: 0.6rem;
+}
+.walk-breakdown dt {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.walk-breakdown dd {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.walk-bars text {
+  font: 600 13px var(--font);
+  fill: var(--ink);
+}
+.walk-bars .lab {
+  fill: var(--ink-soft);
+  font-weight: 500;
+}
+figure .key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-right: 1rem;
+}
+figure .key i {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 2px;
+}

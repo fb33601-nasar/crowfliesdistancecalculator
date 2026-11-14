@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import WalkTool from '../components/calculator/WalkTool';
+import Article, { frontmatter as fm } from '../content/walking-time-calculator.mdx';
+import { walkFaqs } from '../content/walk-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+import { WALK_MILES, walkSlug } from '../data/radius-pages';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Walking time calculator', href: fm.slug },
+];
+const toc = [
+  ['how-to-use-the-walking-time-calculator', 'How to use the calculator'],
+  ['the-walking-time-formula', 'The formula'],
+  ['walking-speeds-and-paces', 'Walking speeds and paces'],
+  ['how-long-common-distances-take-to-walk', 'Common distances'],
+  ['how-far-can-you-walk-in-a-set-time', 'How far in a set time'],
+  ['adding-time-for-hills-rests-and-terrain', 'Hills, rests and terrain'],
+  ['walking-times-by-distance', 'Walking times by distance'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Walking Time Calculator',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'HealthApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Walking time for any distance in miles or kilometers',
+    'Five preset paces or your own minutes per mile',
+    "Extra time for hills using Naismith's rule",
+    'Optional rest stops and a finish time',
+    'Rough step count',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={walkFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <WalkTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="walking-times-by-distance">Walking times by distance</H2>
+    <p>Pick a distance for the full breakdown: the time at every pace, split times along the way, rest stops, hills and step counts.</p>
+    <ul class="radius-links">
+      {WALK_MILES.map((m) => <li><a href={walkSlug(m)}>{m} {m === 1 ? 'mile' : 'miles'}</a></li>)}
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {walkFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>.</p>
+  </div>
+</Base>

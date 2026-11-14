@@ -1,0 +1,201 @@
+---
+// "How long does it take to walk N miles" page.
+import Base from '../layouts/Base.astro';
+import H2 from './H2.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import RelatedTools from './RelatedTools.astro';
+import Callout from './Callout.astro';
+import WalkTool from './calculator/WalkTool';
+import WalkPaceBars from './figures/WalkPaceBars.astro';
+import WalkDayPlan from './figures/WalkDayPlan.astro';
+import { PACES, words, hm, pace, withBreaks, climbHours, STEPS_PER_MILE } from './calculator/walking';
+import { WALK_MILES, walkSlug, RADIUS_DATE, MINUTE_MILES, minutesSlug } from '../data/radius-pages';
+import { formatNumber } from '../lib/geo';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+interface Props { n: number }
+const { n } = Astro.props;
+const unit = n === 1 ? 'mile' : 'miles';
+const Unit = n === 1 ? 'Mile' : 'Miles';
+const slug = walkSlug(n);
+const km = n * 1.609344;
+const avg = words(n / 3);
+const brisk = words(n / 4);
+const slow = words(n / 2.5);
+const steady = words(n / 3.5);
+const rested = words(withBreaks(n / 3));
+const steps = Math.round((n * STEPS_PER_MILE) / 500) * 500;
+const named = n === 13.1 ? 'a half marathon' : n === 26.2 ? 'a marathon' : null;
+const scale = n <= 3 ? 'short' : n <= 10 ? 'medium' : n <= 26.2 ? 'long' : 'ultra';
+
+// Split table: time at each marker along the way.
+const step = n <= 6 ? 1 : n <= 15 ? (n === 13.1 ? 1 : 2) : n <= 30 ? 5 : n <= 60 ? 10 : 20;
+const marks: number[] = [];
+for (let m = step; m < n - 1e-9; m += step) marks.push(m);
+marks.push(n);
+
+const idx = WALK_MILES.indexOf(n);
+const neighbours = WALK_MILES.filter((_, i) => Math.abs(i - idx) <= 3 && i !== idx);
+const minutesPage = MINUTE_MILES.includes(n) ? minutesSlug(n) : null;
+
+// Hill example: a modest 500 ft of climb per 5 miles walked.
+const exampleClimb = Math.round((n / 5) * 500 / 100) * 100 || 100;
+
+const title = `How Long Does It Take to Walk ${n} ${Unit}?`;
+const seoTitle = `How Long Does It Take to Walk ${n} ${Unit}? (${hm(n / 3)} at 3 mph)`;
+const description = `Walking ${n} ${unit} takes about ${avg} at an average 3 mph pace, or ${brisk} at a brisk 4 mph. See times at every pace, with rest stops, hills and splits.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Walking time calculator', href: '/walking-time-calculator/' },
+  { name: `Walk ${n} ${unit}`, href: slug },
+];
+const faqs = [
+  { q: `How long does it take to walk ${n} ${unit}?`, a: `About ${avg} at an average walking pace of 3 mph (20 minutes per mile). At a brisk 4 mph it takes ${brisk}, and at a leisurely 2.5 mph ${slow}. Those are moving times with no stops.` },
+  { q: `How long does it take to walk ${n} ${unit} with breaks?`, a: `With a 10-minute rest every hour at 3 mph, allow about ${rested}.${n / 3 > 3 ? ' A longer meal stop adds more on top.' : ''}` },
+  { q: `How many steps is ${n} ${unit}?`, a: `Roughly ${formatNumber(steps, 0)} steps, using about ${formatNumber(STEPS_PER_MILE, 0)} steps per mile for an average adult stride. Taller people with a longer stride take fewer; shorter strides take more.` },
+  { q: `Is walking ${n} ${unit} a day a lot?`, a: scale === 'short' ? `No. ${n} ${unit} is about ${avg} of walking, comfortably within what most healthy adults can do every day.` : scale === 'medium' ? `It is a solid walk. At ${avg} it fits into a morning or an afternoon, and regular walkers can do it most days.` : scale === 'long' ? `Yes, for most people it is a long day. ${avg} of walking needs comfortable shoes, food and water, and some build-up if you do not walk long distances already.` : `Yes. At ${avg} of pure walking time, ${n} ${unit} is more than most people can cover in one day, and is usually split over several.` },
+  { q: `How far is ${n} ${unit} in kilometers?`, a: `${n} ${unit} is ${formatNumber(km, 2)} km. At a typical 5 km/h it takes ${words(km / 5)} to walk.` },
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${slug}#calculator`),
+  name: 'Walking Time Calculator',
+  url: abs(slug),
+  description,
+  applicationCategory: 'HealthApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={seoTitle} description={description} path={slug} breadcrumbs={crumbs} faqs={faqs} schema={[appSchema]} datePublished={RADIUS_DATE} dateModified={RADIUS_DATE}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{title}</h1>
+    <p class="lede">{`Walking ${n} ${unit}${named ? `, ${named},` : ''} takes about ${avg} at an average pace of 3 mph. At a brisk 4 mph it takes ${brisk}${n >= 6 ? `, and with a short rest every hour allow about ${rested}` : ''}.`}</p>
+  </div>
+
+  <div class="wrap">
+    <WalkTool client:load initialMiles={n} />
+  </div>
+
+  <div class="wrap article">
+    <H2 id="time-at-each-pace">{`How long it takes to walk ${n} ${unit} at each pace`}</H2>
+    <p>{`Walking time is distance divided by speed. Most estimates, including map apps, assume about 3 mph, which is 20 minutes per mile. Your real pace depends on your fitness, your stride, the surface and whether you stop, so it helps to see the whole range.`}</p>
+    <WalkPaceBars miles={n} />
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`Time to walk ${n} ${unit}`}</p>
+      <table>
+        <caption class="visually-hidden">{`Time to walk ${n} ${unit}`}</caption>
+        <thead><tr><th scope="col">Pace</th><th scope="col" class="num">Speed</th><th scope="col" class="num">Minutes per mile</th><th scope="col" class="num">Moving time</th><th scope="col" class="num">With rests</th></tr></thead>
+        <tbody>
+          {PACES.map((p) => (
+            <tr class={p.id === 'avg' ? 'is-highlight' : undefined}>
+              <th scope="row">{p.label}</th>
+              <td class="num">{p.mph} mph</td>
+              <td class="num">{pace(p.mph)}</td>
+              <td class="num">{hm(n / p.mph)}</td>
+              <td class="num">{hm(withBreaks(n / p.mph))}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">"With rests" adds 10 minutes for every full hour of walking. The highlighted row is the 3 mph average.</p>
+
+    <H2 id="what-pace-are-you">Which pace fits you</H2>
+    <ul>
+      <li><strong>2.5 mph, leisurely.</strong> Strolling, walking with young children, sightseeing or rough ground. {`${n} ${unit} takes ${slow}.`}</li>
+      <li><strong>3 mph, average.</strong> {`An everyday pace on pavement or a good path, and the figure most walking estimates use. ${n} ${unit} takes ${avg}.`}</li>
+      <li><strong>3.5 mph, steady.</strong> {`A purposeful walk, like heading to work when you are not in a hurry. ${n} ${unit} takes ${steady}.`}</li>
+      <li><strong>4 mph, brisk.</strong> {`Fast enough that talking takes a little effort. ${n} ${unit} takes ${brisk}.`}</li>
+      <li><strong>4.5 mph, power walking.</strong> {`Hard to hold for long without training. ${n} ${unit} takes ${words(n / 4.5)}.`}</li>
+    </ul>
+    <p>To find your own pace, time yourself over a mile you already know, or over a loop you measure with <a href="/how-far-did-i-run/">the route measuring tool</a>, then type the minutes into the calculator as your own pace.</p>
+
+    {scale === 'short' && (
+      <>
+        <H2 id="is-it-walkable">{`Is ${n} ${unit} walkable?`}</H2>
+        <p>{`Yes. At ${avg}, ${n} ${unit} is a normal everyday walk, the kind of distance people cover getting to a station, a shop or school. ${n === 1 ? 'Twenty minutes each way is an easy round trip for most people.' : 'It is a good length for a daily fitness walk.'}`}</p>
+        <p>{`For comparison, the same ${n} ${unit} takes about ${words(n / 12)} by bike at 12 mph and around ${words(n / 25)} by car at 25 mph on town streets, before parking. Over short distances walking loses less time than people expect.`}</p>
+      </>
+    )}
+    {scale === 'medium' && (
+      <>
+        <H2 id="planning-the-walk">{`Planning a ${n} mile walk`}</H2>
+        <p>{`At ${avg}, a ${n} mile walk fills a morning or an afternoon. Most people manage it without special preparation if they already walk regularly, but a few things make it easier:`}</p>
+        <ul>
+          <li>Wear shoes you have already walked in. New shoes are a common cause of blisters on a walk this long.</li>
+          <li>{`Take water. ${hm(n / 3)} is long enough to get thirsty, especially in warm weather.`}</li>
+          <li>{`Plan a turnaround or a pick-up point. Half of ${n} ${unit} out and back is ${formatNumber(n / 2, (n / 2) % 1 ? 1 : 0)} ${n / 2 === 1 ? 'mile' : 'miles'} each way.`}</li>
+        </ul>
+      </>
+    )}
+    {(scale === 'long' || scale === 'ultra') && (
+      <>
+        <H2 id="walking-it-in-a-day">{scale === 'long' ? `Walking ${n} ${unit} in a day` : `Can you walk ${n} ${unit} in a day?`}</H2>
+        <p>{scale === 'long'
+          ? `${n} ${unit} is ${avg} of walking at 3 mph before any stops. Real days include rests, a meal and the odd wrong turn, so most walkers should allow ${rested} or more. Here is how the day could look if you set off at 8:00 am with a 10-minute rest each hour and a lunch stop:`
+          : `At 3 mph, ${n} ${unit} is ${avg} of walking with no stops at all. That is more than most people can walk in a day, so long walks of this length are normally split over several days. Here is how one continuous push would look from an 8:00 am start:`}</p>
+        <WalkDayPlan miles={n} />
+        {named && <p>{`If you are walking ${named}, check the event's cut-off time before you enter. At 3 mph you would finish in ${avg}; at 4 mph in ${brisk}. Many events publish a minimum pace, and walkers near the back should know theirs.`}</p>}
+        {scale === 'ultra' && <p>{`Split over days, ${n} ${unit} at a manageable 12 to 15 miles a day takes ${Math.ceil(n / 15)} to ${Math.ceil(n / 12)} days. Fit, experienced walkers on long-distance trails often cover 15 to 20 miles a day, which would be ${Math.ceil(n / 20)} to ${Math.ceil(n / 15)} days.`}</p>}
+        <p>Distances this long are easier when you build up to them. Walk shorter distances over several weeks, wear the shoes and socks you will use on the day, and carry food as well as water.</p>
+      </>
+    )}
+
+    <H2 id="splits">{`Split times for ${n} ${unit}`}</H2>
+    <p>{`Where you should be along the way at an average 3 mph and a brisk 4 mph, counting moving time only. Halfway, at ${formatNumber(n / 2, (n / 2) % 1 ? 2 : 0)} ${n / 2 === 1 ? 'mile' : 'miles'}, comes after ${hm(n / 2 / 3)} at 3 mph.`}</p>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`Split times for ${n} ${unit}`}</p>
+      <table>
+        <caption class="visually-hidden">{`Split times for ${n} ${unit}`}</caption>
+        <thead><tr><th scope="col">Distance walked</th><th scope="col" class="num">At 3 mph</th><th scope="col" class="num">At 4 mph</th><th scope="col" class="num">Left to go</th></tr></thead>
+        <tbody>
+          {marks.map((m) => (
+            <tr class={m === n ? 'is-highlight' : undefined}>
+              <th scope="row">{formatNumber(m, m % 1 ? 1 : 0)} mi <span class="muted">({formatNumber(m * 1.609344, 1)} km)</span></th>
+              <td class="num">{hm(m / 3)}</td>
+              <td class="num">{hm(m / 4)}</td>
+              <td class="num">{m === n ? 'Finish' : `${formatNumber(n - m, (n - m) % 1 ? 1 : 0)} mi`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <H2 id="hills-and-terrain">Hills, trails and weather</H2>
+    <p>{`The times above assume flat, firm ground. Hills slow everyone down, and the usual rule of thumb for hill walking, Naismith's rule, adds 30 minutes for every 1,000 feet you climb. If your ${n} mile route climbs ${formatNumber(exampleClimb, 0)} feet in total, add about ${words(climbHours(exampleClimb))}, for roughly ${words(n / 3 + climbHours(exampleClimb))} at 3 mph.`}</p>
+    <p>Rough or muddy trails, sand, snow, heat, a heavy pack and walking in a group all push the pace toward 2 to 2.5 mph. Pavement and a good path in cool weather make 3.5 mph or more easy to hold. Enter your total climb in the calculator to add it to the time, or use the <a href="/elevation-finder/">elevation finder</a> to check how high the start and end are.</p>
+
+    <H2 id="steps">{`How many steps is ${n} ${unit}?`}</H2>
+    <p>{`About ${formatNumber(steps, 0)} steps. A typical adult takes around 2,000 to 2,500 steps per mile depending on height and stride, and this page uses ${formatNumber(STEPS_PER_MILE, 0)}. Walking faster lengthens your stride, so a brisk walk usually takes fewer steps per mile than a slow one. Your phone or watch counts your own steps more closely than any average.`}</p>
+
+    <Callout title={`${n} ${unit} in kilometers`}>
+      {`${n} ${unit} is ${formatNumber(km, 2)} km. At 5 km/h, close to the 3 mph average, it takes ${words(km / 5)}; at a brisk 6 km/h, ${words(km / 6)}. That works out to about 12 minutes per kilometer at 5 km/h.`}
+    </Callout>
+
+    <H2 id="other-distances">Other walking distances</H2>
+    <ul class="radius-links">
+      {neighbours.map((m) => <li><a href={walkSlug(m)}>{`Walk ${m} ${m === 1 ? 'mile' : 'miles'}`}</a></li>)}
+      <li><a href="/walking-time-calculator/">Any distance</a></li>
+      {minutesPage && <li><a href={minutesPage}>{`${n} ${unit} in minutes by car`}</a></li>}
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {faqs.map((q, i) => (
+        <details open={i < 2}>
+          <summary><h3>{q.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{q.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current="/walking-time-calculator/" />
+  </div>
+</Base>

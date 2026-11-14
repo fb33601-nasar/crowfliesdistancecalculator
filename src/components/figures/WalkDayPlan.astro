@@ -1,0 +1,56 @@
+---
+// A day timeline for a long walk: walking blocks, short rests and a lunch stop.
+import { hm } from '../calculator/walking';
+interface Props { miles: number; mph?: number }
+const { miles, mph = 3 } = Astro.props;
+const START = 8 * 60; // 8:00 am
+let walkLeft = (miles / mph) * 60;
+const blocks: { kind: 'walk' | 'rest' | 'lunch'; from: number; len: number }[] = [];
+let t = START;
+let walked = 0;
+let lunch = false;
+while (walkLeft > 0.5) {
+  const len = Math.min(60, walkLeft);
+  blocks.push({ kind: 'walk', from: t, len });
+  t += len; walkLeft -= len; walked += len;
+  if (walkLeft <= 0.5) break;
+  if (!lunch && walked >= 180) { blocks.push({ kind: 'lunch', from: t, len: 45 }); t += 45; lunch = true; }
+  else { blocks.push({ kind: 'rest', from: t, len: 10 }); t += 10; }
+}
+const end = t;
+const days = Math.ceil((end - START) / 60 / 10); // >10 h on the move means more than one day
+const span = Math.max(end - START, 60);
+const W = 900, PAD = 16, Y = 34, BH = 30;
+const x = (m: number) => PAD + ((W - PAD * 2) * (m - START)) / span;
+const fmt = (m: number) => { const h = Math.floor(m / 60) % 24; const mm = String(Math.round(m % 60)).padStart(2, '0'); return `${h % 12 || 12}:${mm} ${h < 12 ? 'am' : 'pm'}`; };
+const hours: number[] = [];
+const tick = [60, 120, 180, 240, 360, 480, 720].find((t) => span / t <= 8) ?? 1440;
+for (let h = START; h <= end; h += tick) hours.push(h);
+const dayOf = (m: number) => Math.floor(m / 1440);
+const fmtD = (m: number) => fmt(m) + (dayOf(m) ? ` day ${dayOf(m) + 1}` : '');
+const label = `${miles} ${miles === 1 ? 'mile' : 'miles'}`;
+---
+<figure>
+  <svg viewBox={`0 0 ${W} 110`} role="img" aria-labelledby="wdp-t wdp-d" style="width:100%;height:auto">
+    <title id="wdp-t">{`A day walking ${label} at ${mph} mph`}</title>
+    <desc id="wdp-d">{`Starting at 8:00 am with a 10-minute rest each hour and a 45-minute lunch, you finish around ${fmtD(end)}, ${hm((end - START) / 60)} after setting off.`}</desc>
+    {blocks.map((b) => (
+      <rect x={x(b.from)} y={Y} width={Math.max(1, x(b.from + b.len) - x(b.from) - 1)} height={BH} rx="3"
+        fill={b.kind === 'walk' ? 'var(--course)' : b.kind === 'lunch' ? 'var(--ink)' : 'var(--rule)'} />
+    ))}
+    {hours.map((h) => (
+      <g>
+        <line x1={x(h)} x2={x(h)} y1={Y + BH + 3} y2={Y + BH + 9} stroke="var(--ink-faint)" />
+        <text x={x(h)} y={Y + BH + 24} text-anchor={h === START ? "start" : x(h) > W - 60 ? "end" : "middle"} font-size="12" fill="var(--ink-soft)">{fmtD(h)}</text>
+      </g>
+    ))}
+    <text x={PAD} y="20" font-size="13" font-weight="700" fill="var(--ink)">Set off 8:00 am</text>
+    <text x={W - PAD} y="20" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="end">{`Finish about ${fmtD(end)}`}</text>
+  </svg>
+  <figcaption>
+    <span class="key"><i style="background:var(--course)"></i> walking</span>
+    <span class="key"><i style="background:var(--rule)"></i> 10-minute rest</span>
+    {lunch && <span class="key"><i style="background:var(--ink)"></i> 45-minute lunch</span>}
+    {days > 1 && <span>{` More than 10 hours on the move: most walkers would split this over ${days} days.`}</span>}
+  </figcaption>
+</figure>

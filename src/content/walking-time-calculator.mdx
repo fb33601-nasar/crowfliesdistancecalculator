@@ -1,0 +1,95 @@
+---
+slug: /walking-time-calculator/
+title: 'Walking Time Calculator: How Long Will It Take to Walk?'
+seo_title: 'Walking Time Calculator: How Long to Walk Any Distance (Miles or km)'
+description: 'Work out how long it takes to walk any distance at your pace, with rest stops, hills and a finish time. Free walking time calculator in miles or kilometers.'
+lede: 'Enter a distance and pick a pace to see how long the walk takes, with optional rest stops, extra time for hills and the time you will finish.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import WalkDistanceTable from '../components/figures/WalkDistanceTable.astro';
+import WalkReachTable from '../components/figures/WalkReachTable.astro';
+import WalkPaceBars from '../components/figures/WalkPaceBars.astro';
+import Callout from '../components/Callout.astro';
+
+Walking time comes down to two numbers: how far, and how fast. At the 3 mph most estimates use, every mile takes 20 minutes, so 3 miles is an hour and 12 miles is 4 hours. The calculator above opens on 3 miles at that average pace.
+
+## How to use the walking time calculator
+
+<div class="steps">
+
+1. Type a distance in miles or kilometers, or press one of the presets, from 1 mile up to a 26.2-mile marathon.
+2. Pick the pace closest to how you walk. If you know your own pace, choose **My own pace** and type it as minutes per mile or per kilometer, such as 18 or 18:30.
+3. If the route has hills, enter the total climb. The calculator adds time for it using Naismith's rule.
+4. Tick **Add a 10-minute rest every hour** for longer walks, and set a start time to see when you will finish.
+
+</div>
+
+The result shows the total time, your pace in minutes per mile or kilometer, a rough step count, and the same walk at every other pace so you can see how much a slower or faster day changes things.
+
+## The walking time formula
+
+<div class="formula">
+
+time in hours = distance in miles ÷ speed in mph
+
+</div>
+
+For 7 miles at 3.5 mph: 7 ÷ 3.5 = 2 hours. The same works in kilometers with km/h.
+
+Walkers often think in pace, minutes per mile, rather than speed. Then the formula is simpler still:
+
+<div class="formula">
+
+time in minutes = distance × minutes per mile
+
+</div>
+
+At a 17-minute-mile pace, 5 miles takes 5 × 17 = 85 minutes, or 1 hour 25 minutes. To turn a speed into a pace, divide 60 by the speed: 60 ÷ 3.5 mph is about 17 minutes 9 seconds per mile.
+
+## Walking speeds and paces
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Walking speeds and paces</p>
+  <table>
+    <caption class="visually-hidden">Walking speeds and paces</caption>
+    <thead><tr><th scope="col">Pace</th><th scope="col" class="num">Speed</th><th scope="col" class="num">Per mile</th><th scope="col" class="num">Per km</th><th scope="col">What it feels like</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Leisurely</th><td class="num">2.5 mph · 4.0 km/h</td><td class="num">24:00</td><td class="num">14:55</td><td>Strolling, sightseeing, rough ground</td></tr>
+      <tr><th scope="row">Average</th><td class="num">3 mph · 4.8 km/h</td><td class="num">20:00</td><td class="num">12:26</td><td>An everyday walk on pavement</td></tr>
+      <tr><th scope="row">Steady</th><td class="num">3.5 mph · 5.6 km/h</td><td class="num">17:09</td><td class="num">10:39</td><td>Walking with purpose, still easy to talk</td></tr>
+      <tr><th scope="row">Brisk</th><td class="num">4 mph · 6.4 km/h</td><td class="num">15:00</td><td class="num">9:19</td><td>Talking takes some effort</td></tr>
+      <tr><th scope="row">Power walking</th><td class="num">4.5 mph · 7.2 km/h</td><td class="num">13:20</td><td class="num">8:17</td><td>Hard to keep up without training</td></tr>
+    </tbody>
+  </table>
+</div>
+
+The 3 mph average is a convenient round number rather than a measurement of you. Fitness, height, age, footwear, the surface and how crowded the path is all move it. The simplest way to find your own pace is to time yourself over a distance you know. You can measure a loop near home with [how far did I run](/how-far-did-i-run/), walk it at your normal pace, and divide the minutes by the miles.
+
+<WalkPaceBars miles={5} />
+
+## How long common distances take to walk
+
+<WalkDistanceTable />
+
+A 5K (3.1 miles) takes about 1 hour 2 minutes at 3 mph. A half marathon (13.1 miles) takes about 4 hours 22 minutes, and a full marathon (26.2 miles) about 8 hours 44 minutes, before any stops. If you are entering an event, check its cut-off time against these figures.
+
+## How far can you walk in a set time?
+
+Turn the formula around: distance = speed × time. In 30 minutes at an average pace you cover 1.5 miles; in a full hour, 3 miles.
+
+<WalkReachTable />
+
+For a walk out and back, halve the distance: in an hour at 3 mph you can walk 1.5 miles out and 1.5 miles home. To see what lies within that straight-line distance of you, use the [mile radius from current location](/mile-radius-from-current-location/) tool.
+
+## Adding time for hills, rests and terrain
+
+Flat-ground times are a best case. Three things add to them on a real walk:
+
+- **Climbing.** Naismith's rule, a rule of thumb hill walkers have used since the 1890s, adds 30 minutes for every 1,000 feet of ascent, or an hour for every 600 meters. A 6-mile walk with 1,500 feet of climb at 3 mph becomes 2 hours plus 45 minutes, so about 2 hours 45 minutes.
+- **Rests.** A short stop every hour keeps a long walk comfortable. The calculator adds 10 minutes per full hour of walking when you tick the box. A meal stop adds more.
+- **Terrain and conditions.** Mud, sand, snow, rocky paths, heat, a heavy pack or walking in a group all slow you toward 2 to 2.5 mph.
+
+<Callout title="Walking between two real places">
+These times assume you know the distance. For the walking route and time between two addresses, using real footpaths and streets, try the [distance between two addresses](/distance-between-two-addresses/) calculator.
+</Callout>

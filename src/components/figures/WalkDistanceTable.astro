@@ -1,0 +1,23 @@
+---
+// How long common distances take to walk at four paces.
+import { hm } from '../calculator/walking';
+import { WALK_MILES, walkSlug } from '../../data/radius-pages';
+const speeds = [2.5, 3, 3.5, 4];
+const miles = [1, 2, 3, 5, 10, 13.1, 15, 20, 26.2, 30, 50];
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">How long it takes to walk common distances</p>
+  <table>
+    <caption class="visually-hidden">How long it takes to walk common distances</caption>
+    <thead><tr><th scope="col">Distance</th>{speeds.map((s) => <th scope="col" class={s === 3 ? 'num is-col' : 'num'}>{s} mph</th>)}</tr></thead>
+    <tbody>
+      {miles.map((m) => (
+        <tr>
+          <th scope="row">{WALK_MILES.includes(m) ? <a href={walkSlug(m)}>{m} {m === 1 ? 'mile' : 'miles'}</a> : `${m} miles`} <span class="muted">({(m * 1.609344).toFixed(1)} km)</span></th>
+          {speeds.map((s) => <td class="num">{hm(m / s)}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">Moving time on flat ground with no stops.</p>

@@ -1,0 +1,9 @@
+---
+import WalkPage from '../components/WalkPage.astro';
+import { WALK_MILES, walkParam } from '../data/radius-pages';
+export function getStaticPaths() {
+  return WALK_MILES.map((n) => ({ params: { n: walkParam(n) }, props: { n } }));
+}
+const { n } = Astro.props as { n: number };
+---
+<WalkPage n={n} />

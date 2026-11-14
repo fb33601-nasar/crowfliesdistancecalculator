@@ -33,6 +33,7 @@ export const TOOLS: Tool[] = [
   { href: '/bearing-calculator/', name: 'Bearing calculator', blurb: 'Compass direction and azimuth between two points.', icon: 'compass', live: true },
   { href: '/distance-between-two-points-calculator/', name: 'Distance between two points', blurb: 'GPS coordinates or x, y points, with the formula.', icon: 'measure', live: true },
   { href: '/how-far-did-i-run/', name: 'How far did I run', blurb: 'Draw your route to measure a run or walk.', icon: 'route', live: true },
+  { href: '/walking-time-calculator/', name: 'Walking time calculator', blurb: 'How long a walk takes at your pace, with hills and rests.', icon: 'route', live: true },
   { href: '/miles-to-minutes-calculator/', name: 'Miles to minutes', blurb: 'How long a distance takes to drive, walk or bike.', icon: 'compass', live: true },
 ];
 

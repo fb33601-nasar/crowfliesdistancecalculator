@@ -1,0 +1,21 @@
+---
+// How far you can walk in a set time.
+import { formatNumber } from '../../lib/geo';
+const times: [string, number][] = [['15 minutes', 0.25], ['30 minutes', 0.5], ['1 hour', 1], ['2 hours', 2], ['4 hours', 4], ['8 hours', 8]];
+const speeds = [2.5, 3, 4];
+---
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">How far you can walk in a set time</p>
+  <table>
+    <caption class="visually-hidden">How far you can walk in a set time</caption>
+    <thead><tr><th scope="col">Time walking</th>{speeds.map((s) => <th scope="col" class="num">{s} mph</th>)}</tr></thead>
+    <tbody>
+      {times.map(([label, h]) => (
+        <tr>
+          <th scope="row">{label}</th>
+          {speeds.map((s) => <td class="num">{formatNumber(h * s, h * s < 10 ? 2 : 0).replace(/\.?0+$/, '')} mi <span class="muted">({formatNumber(h * s * 1.609344, 1)} km)</span></td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

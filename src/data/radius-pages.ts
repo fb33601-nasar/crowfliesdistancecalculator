@@ -58,3 +58,8 @@ export const US_CITIES: [string, number, number][] = [
 /** "How many minutes is N miles" pages, chosen from search demand. */
 export const MINUTE_MILES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 32, 40, 50, 100, 150, 200, 300];
 export const minutesSlug = (n: number) => `/how-many-minutes-is-${n}-${n === 1 ? 'mile' : 'miles'}/`;
+
+/** "How long to walk N miles" pages, from Search Console demand plus common distances. */
+export const WALK_MILES = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 13.1, 15, 18, 19, 20, 21, 22, 25, 26.2, 30, 35, 40, 50, 60, 100];
+export const walkParam = (n: number) => `${String(n).replace('.', '-')}-${n === 1 ? 'mile' : 'miles'}`;
+export const walkSlug = (n: number) => `/how-long-does-it-take-to-walk-${walkParam(n)}/`;
