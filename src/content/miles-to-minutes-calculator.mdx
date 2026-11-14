@@ -1,0 +1,114 @@
+---
+slug: /miles-to-minutes-calculator/
+title: 'Miles to Minutes Calculator: How Long Will It Take?'
+seo_title: 'Miles to Minutes Calculator: Drive, Walk & Bike Time for Any Distance'
+description: 'Convert miles to minutes at any speed. See how long a distance takes to drive, walk, run or bike, or how far you can go in a set time. Free miles to minutes calculator.'
+lede: 'Enter a distance to see how many minutes it takes to drive, walk, run or cycle, at typical speeds or your own. Switch direction to see how far you can go in a set time.'
+datePublished: '2026-11-14'
+dateModified: '2026-11-14'
+---
+import SampleSpeeds from '../components/figures/SampleSpeeds.astro';
+import Callout from '../components/Callout.astro';
+
+How many minutes a number of miles takes depends on one thing: your average speed. At 60 mph a mile takes one minute. At 30 mph it takes two. Walking at 3 mph it takes 20.
+
+The calculator above opens on 10 miles, about 15 to 20 minutes by car at the 30–40 mph that is typical for a drive that long.
+
+## How to use the miles to minutes calculator
+
+<div class="steps">
+
+1. Leave **Distance → time** selected and type a distance in miles or kilometers, or press a preset.
+2. Read the estimate for a drive of that length at typical average speeds, then the full table of times from walking to an open interstate.
+3. If you know your speed, type it in **Your own speed** and it is added to the table, highlighted.
+4. To go the other way, choose **Time → distance**, enter a number of minutes, and see how far you can travel in that time at each speed.
+
+</div>
+
+## The formula
+
+<div class="formula">
+
+minutes = miles ÷ speed in mph × 60
+
+</div>
+
+For 25 miles at 40 mph: 25 ÷ 40 = 0.625 hours, and 0.625 × 60 = 37.5 minutes. The same formula works in kilometers if the speed is in km/h.
+
+To go the other way, from minutes to miles:
+
+<div class="formula">
+
+miles = minutes ÷ 60 × speed in mph
+
+</div>
+
+In 45 minutes at 50 mph: 45 ÷ 60 = 0.75 hours, and 0.75 × 50 = 37.5 miles.
+
+### Mental math shortcuts
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Quick conversions by speed</p>
+  <table>
+    <caption class="visually-hidden">Quick conversions by speed</caption>
+    <thead><tr><th scope="col">Average speed</th><th scope="col" class="num">Minutes per mile</th><th scope="col">Shortcut</th><th scope="col" class="num">10 miles takes</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">60 mph</th><td class="num">1</td><td>Minutes equal miles</td><td class="num">10 min</td></tr>
+      <tr><th scope="row">45 mph</th><td class="num">1.33</td><td>Miles plus a third</td><td class="num">13 min</td></tr>
+      <tr><th scope="row">40 mph</th><td class="num">1.5</td><td>Miles plus half</td><td class="num">15 min</td></tr>
+      <tr><th scope="row">30 mph</th><td class="num">2</td><td>Double the miles</td><td class="num">20 min</td></tr>
+      <tr><th scope="row">20 mph</th><td class="num">3</td><td>Triple the miles</td><td class="num">30 min</td></tr>
+      <tr><th scope="row">12 mph (cycling)</th><td class="num">5</td><td>Five times the miles</td><td class="num">50 min</td></tr>
+      <tr><th scope="row">3 mph (walking)</th><td class="num">20</td><td>Twenty times the miles</td><td class="num">3 h 20 min</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## What average speed should you use?
+
+The speed limit is not your average speed. Traffic lights, junctions, turns, slow traffic and the first and last miles all pull the average down, and the effect is strongest on short trips.
+
+<SampleSpeeds />
+
+In our sample, drives across a city center, such as the Empire State Building to One World Trade Center, averaged 14 to 26 mph even with no traffic modeled. Trips of 40 to 100 miles averaged 43 to 52 mph, and long highway trips of 170 miles or more averaged 45 to 58 mph. Real traffic would bring all of these down further.
+
+That is why the calculator's headline estimate depends on the distance:
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Typical average driving speed by trip length</p>
+  <table>
+    <caption class="visually-hidden">Typical average driving speed by trip length</caption>
+    <thead><tr><th scope="col">Trip length</th><th scope="col" class="num">Typical average</th><th scope="col">What the trip is like</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Under 10 miles</th><td class="num">20–30 mph</td><td>Town and city streets, lights and junctions</td></tr>
+      <tr><th scope="row">10 to 25 miles</th><td class="num">30–40 mph</td><td>A mix of town streets and faster roads</td></tr>
+      <tr><th scope="row">25 to 60 miles</th><td class="num">40–55 mph</td><td>Mostly main roads or highways, slow at each end</td></tr>
+      <tr><th scope="row">Over 60 miles</th><td class="num">50–60 mph</td><td>Mostly highway, before stops for fuel and rest</td></tr>
+    </tbody>
+  </table>
+</div>
+
+## Walking, running and cycling speeds
+
+<div class="table-scroll">
+  <p class="table-title" aria-hidden="true">Speeds on foot and by bike</p>
+  <table>
+    <caption class="visually-hidden">Speeds on foot and by bike</caption>
+    <thead><tr><th scope="col">Activity</th><th scope="col" class="num">Typical speed</th><th scope="col" class="num">Minutes per mile</th><th scope="col" class="num">Minutes per km</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Relaxed walk</th><td class="num">3 mph · 4.8 km/h</td><td class="num">20</td><td class="num">12.4</td></tr>
+      <tr><th scope="row">Brisk walk</th><td class="num">4 mph · 6.4 km/h</td><td class="num">15</td><td class="num">9.3</td></tr>
+      <tr><th scope="row">Easy run</th><td class="num">6 mph · 9.7 km/h</td><td class="num">10</td><td class="num">6.2</td></tr>
+      <tr><th scope="row">Steady run</th><td class="num">7.5 mph · 12.1 km/h</td><td class="num">8</td><td class="num">5.0</td></tr>
+      <tr><th scope="row">Leisure cycling</th><td class="num">10 mph · 16.1 km/h</td><td class="num">6</td><td class="num">3.7</td></tr>
+      <tr><th scope="row">Steady cycling</th><td class="num">12 mph · 19.3 km/h</td><td class="num">5</td><td class="num">3.1</td></tr>
+      <tr><th scope="row">Fast road cycling</th><td class="num">18 mph · 29 km/h</td><td class="num">3.3</td><td class="num">2.1</td></tr>
+    </tbody>
+  </table>
+</div>
+
+Hills, wind, heat and stops slow all of these. For a route you actually walked or ran, draw it with [how far did I run](/how-far-did-i-run/) and add your time to get your real pace.
+
+<Callout title="Distance between two real places">
+These figures assume a steady average speed. For the actual drive time between two addresses, using the road network, try the [distance between two addresses](/distance-between-two-addresses/) calculator.
+</Callout>

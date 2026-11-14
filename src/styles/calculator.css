@@ -2016,3 +2016,47 @@
 .calc-run .calc-stage {
   min-height: 30rem;
 }
+
+/* ---------- Miles to minutes ---------- */
+.calc-minutes {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+.minutes-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 900px) {
+  .minutes-wrap {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+  .minutes-wrap > .calc-result {
+    border-left: 1px solid var(--rule);
+  }
+}
+.minutes-wrap .calc-form {
+  gap: 1.1rem;
+}
+.minutes-unit {
+  align-self: center;
+  font-weight: 700;
+  color: var(--ink-soft);
+  padding: 0 0.4rem;
+}
+.minutes-table td,
+.minutes-table th {
+  white-space: nowrap;
+}
+.calc-minutes .calc-distance output {
+  font-size: clamp(2rem, 1.3rem + 3vw, 3.4rem);
+}
+.minutes-wrap > .calc-form,
+.minutes-wrap > .calc-result {
+  padding: clamp(1.1rem, 3vw, 1.9rem);
+}
+.minutes-wrap .calc-form {
+  align-content: start;
+  align-items: start;
+}
+.minutes-wrap .nearme-modes {
+  align-self: start;
+}

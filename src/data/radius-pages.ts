@@ -54,3 +54,7 @@ export const US_CITIES: [string, number, number][] = [
   ['Seattle', 47.6062, -122.3321],
   ['Dallas', 32.7831, -96.8067],
 ];
+
+/** "How many minutes is N miles" pages, chosen from search demand. */
+export const MINUTE_MILES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 32, 40, 50, 100, 150, 200, 300];
+export const minutesSlug = (n: number) => `/how-many-minutes-is-${n}-${n === 1 ? 'mile' : 'miles'}/`;

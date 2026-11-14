@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import H2 from '../components/H2.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import MinutesTool from '../components/calculator/MinutesTool';
+import Article, { frontmatter as fm } from '../content/miles-to-minutes-calculator.mdx';
+import { minutesFaqs } from '../content/minutes-faq';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+import { MINUTE_MILES, minutesSlug } from '../data/radius-pages';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Miles to minutes', href: fm.slug },
+];
+const toc = [
+  ['how-to-use-the-miles-to-minutes-calculator', 'How to use the calculator'],
+  ['the-formula', 'The formula'],
+  ['what-average-speed-should-you-use', 'What speed to use'],
+  ['walking-running-and-cycling-speeds', 'Walking, running and cycling'],
+  ['minutes-for-common-distances', 'Minutes for common distances'],
+  ['frequently-asked-questions', 'Frequently asked questions'],
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${fm.slug}#calculator`),
+  name: 'Miles to Minutes Calculator',
+  url: abs(fm.slug),
+  description: fm.description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Convert miles or kilometers to minutes at any speed',
+    'Typical driving time by trip length',
+    'Walking, running and cycling times',
+    'Time to distance conversion',
+  ],
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={fm.seo_title} description={fm.description} path={fm.slug} breadcrumbs={crumbs} faqs={minutesFaqs} schema={[appSchema]} datePublished={fm.datePublished} dateModified={fm.dateModified}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{fm.title}</h1>
+    <p class="lede">{fm.lede}</p>
+  </div>
+
+  <div class="wrap">
+    <MinutesTool client:load />
+  </div>
+
+  <div class="wrap article">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </nav>
+
+    <Article components={{ h2: H2 }} />
+
+    <H2 id="minutes-for-common-distances">Minutes for common distances</H2>
+    <p>Pick a distance to see how many minutes it takes to drive, walk, run or bike, with real drives of a similar length for comparison.</p>
+    <ul class="radius-links">
+      {MINUTE_MILES.map((m) => <li><a href={minutesSlug(m)}>{m} {m === 1 ? 'mile' : 'miles'}</a></li>)}
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {minutesFaqs.map((f, i) => (
+        <details open={i < 2}>
+          <summary><h3>{f.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current={fm.slug} />
+
+    <p class="updated">Last updated <time datetime={fm.dateModified}>November 14, 2026</time>. Sample drives timed with the FOSSGIS OSRM routing engine on OpenStreetMap data.</p>
+  </div>
+</Base>

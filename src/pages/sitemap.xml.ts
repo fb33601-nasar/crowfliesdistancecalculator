@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { SITE } from '../lib/site';
-import { RADIUS_MILES, RADIUS_KM, RADIUS_HOURS, RADIUS_MINUTES, RADIUS_DATE, radiusSlug, kmSlug, hourSlug, minuteSlug } from '../data/radius-pages';
+import { RADIUS_MILES, RADIUS_KM, RADIUS_HOURS, RADIUS_MINUTES, RADIUS_DATE, radiusSlug, kmSlug, hourSlug, minuteSlug, MINUTE_MILES, minutesSlug } from '../data/radius-pages';
 
 /**
  * One plain sitemap at /sitemap.xml. Every indexable page registers here with
@@ -16,7 +16,7 @@ export const GET: APIRoute = () => {
     .map((p) => p.frontmatter)
     .filter((f) => f?.slug)
     .concat(
-      [...RADIUS_MILES.map(radiusSlug), ...RADIUS_KM.map(kmSlug), ...RADIUS_HOURS.map(hourSlug), ...RADIUS_MINUTES.map(minuteSlug)].map((slug) => ({
+      [...RADIUS_MILES.map(radiusSlug), ...RADIUS_KM.map(kmSlug), ...RADIUS_HOURS.map(hourSlug), ...RADIUS_MINUTES.map(minuteSlug), ...MINUTE_MILES.map(minutesSlug)].map((slug) => ({
         slug,
         dateModified: RADIUS_DATE,
       })),

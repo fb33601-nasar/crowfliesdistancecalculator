@@ -1,0 +1,9 @@
+---
+import MinutesPage from '../components/MinutesPage.astro';
+import { MINUTE_MILES } from '../data/radius-pages';
+export function getStaticPaths() {
+  return MINUTE_MILES.map((n) => ({ params: { n: `${n}-${n === 1 ? 'mile' : 'miles'}` }, props: { n } }));
+}
+const { n } = Astro.props as { n: number };
+---
+<MinutesPage n={n} />

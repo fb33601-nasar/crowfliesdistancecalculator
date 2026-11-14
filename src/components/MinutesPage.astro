@@ -1,0 +1,177 @@
+---
+// "How many minutes is N miles" page.
+import Base from '../layouts/Base.astro';
+import H2 from './H2.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import RelatedTools from './RelatedTools.astro';
+import Callout from './Callout.astro';
+import MinutesTool, { MODES, typicalDrive, hm, words, wordsRange } from './calculator/MinutesTool';
+import { MINUTE_MILES, minutesSlug, RADIUS_DATE, radiusSlug, RADIUS_MILES } from '../data/radius-pages';
+import { ADDRESS_SAMPLES, CITY_SAMPLES } from '../data/route-samples';
+import { formatNumber } from '../lib/geo';
+import { SITE, abs } from '../lib/site';
+import '../styles/calculator.css';
+
+interface Props { n: number }
+const { n } = Astro.props;
+const MI = 1609.344;
+const unit = n === 1 ? 'mile' : 'miles';
+const Unit = n === 1 ? 'Mile' : 'Miles';
+const slug = minutesSlug(n);
+const [lo, hi] = typicalDrive(n);
+const range = wordsRange(n / hi, n / lo);
+const walk = words(n / 3);
+const brisk = words(n / 4);
+const run = words(n / 6);
+const bike = words(n / 12);
+const hwy = words(n / 60);
+const km = n * 1.609344;
+
+// Real drives of a similar length from our route sample (free-flowing traffic).
+const samples = [...ADDRESS_SAMPLES, ...CITY_SAMPLES]
+  .map((s) => ({ name: `${s.a.name} to ${s.b.name}`, mi: s.car[0] / MI, min: s.car[1] / 60 }))
+  .sort((a, b) => Math.abs(Math.log(a.mi / n)) - Math.abs(Math.log(b.mi / n)))
+  .slice(0, 4)
+  .sort((a, b) => a.mi - b.mi);
+
+const idx = MINUTE_MILES.indexOf(n);
+const neighbours = MINUTE_MILES.filter((_, i) => Math.abs(i - idx) <= 3 && i !== idx);
+const radiusPage = RADIUS_MILES.includes(n) ? radiusSlug(n) : null;
+
+// Mental math: at 60 mph a mile a minute.
+const scale = n <= 5 ? 'short' : n <= 30 ? 'local' : n <= 100 ? 'regional' : 'long';
+
+const title = `How Many Minutes Is ${n} ${Unit}?`;
+const seoTitle = `How Many Minutes Is ${n} ${Unit}? Drive, Walk & Bike Times`;
+const description = `${n} ${unit} takes about ${range} to drive at typical speeds, ${hwy} at 60 mph, ${bike} by bike and ${walk} on foot. See the time at every speed.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Miles to minutes', href: '/miles-to-minutes-calculator/' },
+  { name: `${n} ${unit} in minutes`, href: slug },
+];
+const faqs = [
+  { q: `How many minutes is ${n} ${unit} by car?`, a: `About ${range} at the average speeds typical for a trip of ${n} ${unit} (${lo}–${hi} mph). On an open highway at 60 mph it takes ${hwy}, and in slow city traffic at 20 mph it takes ${words(n / 20)}.` },
+  { q: `How long does it take to walk ${n} ${unit}?`, a: `About ${walk} at a typical walking pace of 3 mph, or ${brisk} at a brisk 4 mph, not counting stops.` },
+  { q: `How long does it take to run ${n} ${unit}?`, a: `About ${run} at an easy running pace of 6 mph (10 minutes per mile). At 7.5 mph, an 8-minute-mile pace, it takes ${words(n / 7.5)}.` },
+  { q: `How long does it take to bike ${n} ${unit}?`, a: `About ${bike} at a steady 12 mph, a comfortable pace on flat roads. At 15 mph it takes ${words(n / 15)}.` },
+  { q: `How far is ${n} ${unit} in kilometers?`, a: `${n} ${unit} is ${formatNumber(km, 2)} kilometers.` },
+];
+const appSchema = {
+  '@type': 'WebApplication',
+  '@id': abs(`${slug}#calculator`),
+  name: 'Miles to Minutes Calculator',
+  url: abs(slug),
+  description,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  isAccessibleForFree: true,
+  inLanguage: SITE.lang,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@id': abs('/#organization') },
+};
+---
+<Base title={seoTitle} description={description} path={slug} breadcrumbs={crumbs} faqs={faqs} schema={[appSchema]} datePublished={RADIUS_DATE} dateModified={RADIUS_DATE}>
+  <div class="wrap hero">
+    <Breadcrumbs items={crumbs} />
+    <h1>{title}</h1>
+    <p class="lede">{`${n} ${unit} takes about ${range} to drive at typical average speeds, or ${hwy} at a steady 60 mph. On foot it takes about ${walk}, and by bike about ${bike}.`}</p>
+  </div>
+
+  <div class="wrap">
+    <MinutesTool client:load initialMiles={n} />
+  </div>
+
+  <div class="wrap article">
+    <H2 id="how-long-at-each-speed">{`How long ${n} ${unit} takes at each speed`}</H2>
+    <p>{`Time is distance divided by speed. For ${n} ${unit}, every extra 10 mph of average speed saves less time than the one before, which is why the jump from walking to driving matters far more than the jump from 50 to 60 mph.`}</p>
+    <div class="table-scroll">
+      <p class="table-title" aria-hidden="true">{`Time to travel ${n} ${unit}`}</p>
+      <table>
+        <caption class="visually-hidden">{`Time to travel ${n} ${unit}`}</caption>
+        <thead><tr><th scope="col">How you travel</th><th scope="col" class="num">Average speed</th><th scope="col" class="num">Time</th><th scope="col" class="num">In minutes</th></tr></thead>
+        <tbody>
+          {MODES.map((m) => (
+            <tr class={m.mph >= lo && m.mph <= hi && m.group === 'drive' ? 'is-highlight' : undefined}>
+              <th scope="row">{m.label}</th>
+              <td class="num">{m.mph} mph</td>
+              <td class="num">{hm(n / m.mph)}</td>
+              <td class="num">{formatNumber((n / m.mph) * 60, (n / m.mph) * 60 < 10 ? 1 : 0)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">Highlighted rows are the average speeds typical for a drive of this length. Times are moving time with no stops.</p>
+
+    <H2 id="how-long-to-drive">{`How long does it take to drive ${n} ${unit}?`}</H2>
+    {scale === 'short' && <p>{`A drive of ${n} ${unit} is almost always on town or city streets, where traffic lights, junctions and parking hold the average speed down to 20–30 mph. Expect about ${range}. In a dense city center at rush hour, ${words(n / 15)} or more is common.`}</p>}
+    {scale === 'local' && <p>{`A ${n} mile drive usually mixes town streets with faster roads, so the average speed lands around ${lo}–${hi} mph and the trip takes about ${range}. If most of it is on a highway, it can be as quick as ${hwy}; in heavy traffic it can take ${words(n / 20)}.`}</p>}
+    {scale === 'regional' && <p>{`Over ${n} ${unit} most of the trip is usually on highways or main roads, with slower sections at each end. Average speeds of ${lo}–${hi} mph are typical, so plan on about ${range}. On a clear interstate at 70 mph it could be ${words(n / 70)}.`}</p>}
+    {scale === 'long' && <p>{`A ${n} mile trip is a long drive. Even with most of it on highways, stops for fuel, food and rest bring the average down to around ${lo}–${hi} mph, so allow about ${range} of driving, plus breaks. Safety advice commonly suggests a 15-minute break every two hours, which would add roughly ${Math.floor(n / hi / 2) * 15} minutes.`}</p>}
+
+    {samples.length > 0 && (
+      <>
+        <p>{`For comparison, these are real drives of a similar length from our route sample, timed in free-flowing traffic by an OpenStreetMap routing engine:`}</p>
+        <div class="table-scroll">
+          <p class="table-title" aria-hidden="true">Real drives of a similar length</p>
+          <table>
+            <caption class="visually-hidden">Real drives of a similar length</caption>
+            <thead><tr><th scope="col">Drive</th><th scope="col" class="num">Road distance</th><th scope="col" class="num">Drive time</th><th scope="col" class="num">Average speed</th></tr></thead>
+            <tbody>
+              {samples.map((s) => (
+                <tr>
+                  <th scope="row">{s.name}</th>
+                  <td class="num">{formatNumber(s.mi, 1)} mi</td>
+                  <td class="num">{hm(s.min / 60)}</td>
+                  <td class="num">{formatNumber(s.mi / (s.min / 60), 0)} mph</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    )}
+
+    <H2 id="walk-run-bike">{`Walking, running and cycling ${n} ${unit}`}</H2>
+    <ul>
+      <li>{`Walking at 3 mph, a relaxed pace, ${n} ${unit} takes ${walk}. At a brisk 4 mph it takes ${brisk}.`}</li>
+      <li>{`Running at 6 mph, a 10-minute-mile pace, it takes ${run}. At an 8-minute-mile pace (7.5 mph) it takes ${words(n / 7.5)}.`}</li>
+      <li>{`Cycling at 12 mph, an easy pace on flat ground, it takes ${bike}. At 15 mph it takes ${words(n / 15)}.`}</li>
+    </ul>
+    {n >= 20 && <p>{`${n} ${unit} on foot is a long day: at 3 mph that is ${walk} of walking before any breaks, so most people would split it across a day or more.`}</p>}
+
+    <H2 id="quick-math">The quick way to work it out</H2>
+    <p>{`At 60 mph you cover one mile a minute, so ${n} ${unit} takes ${words(n / 60)}. From there:`}</p>
+    <ul>
+      <li>{`At 30 mph, double it: ${words(n / 30)}.`}</li>
+      <li>{`At 40 mph, add half: ${words(n / 40)}.`}</li>
+      <li>{`At 45 mph, add a third: ${words(n / 45)}.`}</li>
+      <li>{`At 20 mph, triple it: ${words(n / 20)}.`}</li>
+    </ul>
+    <p>The general formula is <strong>minutes = miles ÷ mph × 60</strong>.</p>
+
+    <Callout title={`${n} ${unit} in kilometers`}>
+      {`${n} ${unit} is ${formatNumber(km, 2)} km. At 100 km/h, a common motorway speed outside the US, it takes ${words(km / 100)}; at 50 km/h, a typical town limit, ${words(km / 50)}.`}
+    </Callout>
+
+    <H2 id="other-distances">Other distances</H2>
+    <ul class="radius-links">
+      {neighbours.map((m) => <li><a href={minutesSlug(m)}>{m} {m === 1 ? 'mile' : 'miles'} in minutes</a></li>)}
+      <li><a href="/miles-to-minutes-calculator/">Any distance</a></li>
+      {radiusPage && <li><a href={radiusPage}>{`${n} mile radius from me`}</a></li>}
+    </ul>
+
+    <H2 id="frequently-asked-questions">Frequently asked questions</H2>
+    <div class="faq">
+      {faqs.map((q, i) => (
+        <details open={i < 2}>
+          <summary><h3>{q.q}</h3><span class="faq-toggle" aria-hidden="true"></span></summary>
+          <p>{q.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <RelatedTools current="/miles-to-minutes-calculator/" />
+  </div>
+</Base>

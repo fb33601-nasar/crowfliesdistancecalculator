@@ -18,6 +18,15 @@ const I: Record<string, string> = {
 };
 
 const BY_SECTION: Record<string, string> = {
+  'how-to-use-the-miles-to-minutes-calculator': 'measure',
+  'the-formula': 'formula',
+  'what-average-speed-should-you-use': 'route',
+  'walking-running-and-cycling-speeds': 'compass',
+  'minutes-for-common-distances': 'table',
+  'how-long-at-each-speed': 'table',
+  'how-long-to-drive': 'route',
+  'walk-run-bike': 'compass',
+  'quick-math': 'formula',
   'examples-of-as-the-crow-flies-in-a-sentence': 'meaning',
   'where-does-the-phrase-come-from': 'info',
   'do-crows-really-fly-in-a-straight-line': 'compass',
